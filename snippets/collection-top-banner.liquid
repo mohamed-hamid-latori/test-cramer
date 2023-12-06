@@ -1,0 +1,103 @@
+{% if collection.metafields.top_banner.heading != blank %}
+    {% if collection.metafields.top_banner.link != blank %}<a class="collection-top-banner-link" href="{{collection.metafields.top_banner.link}}">{% endif %}
+        <div class="collection-top-banner">
+            <div class="banner-content">
+                <h2 class="heading">{{ collection.metafields.top_banner.heading }}</h2>
+                {% if collection.metafields.top_banner.text != blank %}
+                    <div class="text">
+                        {{ collection.metafields.top_banner.text }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% if collection.metafields.top_banner.link != blank %}</a>{% endif %}
+
+    {% liquid
+        assign banner_image = collection.metafields.top_banner.image | first
+        assign enable_overlay = collection.metafields.top_banner.enable_overlay
+        assign overlay_color = collection.metafields.top_banner.overlay_color
+
+        assign heading_color = collection.metafields.top_banner.heading_color | default: '#ffffff'
+        assign text_color = collection.metafields.top_banner.text_color | default: '#ffffff'
+
+        assign heading_font_size_desktop = collection.metafields.top_banner.heading_font_size_desktop | default: '30'
+        assign heading_font_size_mobile = collection.metafields.top_banner.heading_font_size_mobile | default: '28'
+        assign text_font_size_desktop = collection.metafields.top_banner.text_font_size_desktop | default: '16'
+        assign text_font_size_mobile = collection.metafields.top_banner.text_font_size_mobile | default: '14'
+
+        assign banner_height_desktop = collection.metafields.top_banner.min_height_desktop | default: '350'
+        assign banner_height_tablet = collection.metafields.top_banner.min_height_tablet | default: '350'
+        assign banner_height_mobile = collection.metafields.top_banner.min_height_mobile | default: '350'
+    %}
+    <style>
+        .collection-top-banner-link {
+            text-decoration: none;
+        }
+        .collection-top-banner {
+        {% if banner_image %}
+            {% if enable_overlay %}
+                {% if overlay_color %}
+                    background: linear-gradient(0deg, {{overlay_color | append: '66' }}, {{overlay_color | append: '66' }}), url({{ banner_image.cloudinary_src }});
+                {% else %}
+                    background: #000000;
+                {% endif %}
+            {% else %}
+                background: url({{ banner_image.cloudinary_src }}); 
+            {% endif %}
+            background-size:cover;
+            background-repeat: no-repeat;
+        {% else %}
+            {% if overlay_color %}
+                background: overlay_color;
+            {% else %}
+                background: #000000;
+            {% endif %}
+        {% endif %}
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: {{ banner_height_desktop }}px;
+            text-align: center;
+            padding: 2rem;
+            margin: 0 40px;
+        }
+
+        .heading {
+            font-size: {{ heading_font_size_desktop }}px;
+            line-height: 1.17;
+            letter-spacing: .05em;
+            color: {{heading_color}};
+            margin-bottom: 20px;
+        }
+
+        .text * {
+            font-size: {{ text_font_size_desktop }}px;
+            color: {{text_color}};
+        }
+
+        @media screen and (max-width: 992px) {
+            .collection-top-banner {
+                margin: 0 32px;
+            }
+        }
+        @media screen and (max-width: 768px) {
+
+            .collection-top-banner {
+                margin: 0 20px;
+                min-height: {{ banner_height_tablet }}px;
+            }
+            .heading {
+                font-size: {{ heading_font_size_mobile }}px;
+            }
+            .text * {
+                font-size: {{ text_font_size_mobile }}px;
+            }
+        }
+
+        @media screen and (max-width: 425px) {
+            .collection-top-banner {
+                min-height: {{ banner_height_mobile }}px;
+            }
+        }
+    </style>
+{% endif %}

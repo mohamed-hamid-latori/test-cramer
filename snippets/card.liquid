@@ -1,0 +1,86 @@
+{% comment %}
+	@params
+	image 			- {image object}
+	title 			- {string} 
+	subtitle 		- {string}
+	link 			- {url string}
+	link_1_label 	- {string}
+	link_1_url 		- {url string}
+	link_2_label 	- {string}
+	link_2_url 		- {url string}
+{% endcomment %}
+
+{%- assign image = image | default: settings.placeholder_image -%}
+
+{%- capture card_links -%}
+	{%- if link_1_label != blank and link_1_url != blank -%}
+		<a href="{{ link_1_url }}" class="link card__button">
+			{{- link_1_label -}}
+		</a>
+	{%- endif -%}
+
+	{%- if link_2_label != blank and link_2_url != blank -%}
+		<a href="{{ link_2_url }}" class="link card__button">
+			{{- link_2_label -}}
+		</a>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture card_image -%}
+	{%- if image != blank -%}
+		<div class="card__image-wrapper" data-card-image-wrapper>
+			<picture>
+				<img
+					src="{{ image | img_url: '480x' }}"
+					srcset="{{ image | img_url: '480x' }} 1x, {{ image | img_url: '960x' }} 2x"
+					alt="{{ image.alt | default: title }}"
+					class="card__image"
+				/>
+			</picture>
+
+			{%- if card_links != blank -%}
+				<div class="card__buttons-wrapper card__buttons-wrapper--desktop">
+					{{- card_links -}}
+				</div>
+			{%- endif -%}
+
+			{%- if link -%}
+				<a href="{{ link }}" class="card__link-wrapper"></a>
+			{%- endif -%}
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture card_description -%}
+	{%- if title != blank -%}
+		{%- if link != blank -%}
+			<a href="{{ link }}" class="card__title">
+				{{- title -}}
+			</a>
+		{%- else -%}
+			<h4 class="card__title">
+				{{- title -}}
+			</h4>
+		{%- endif -%}
+	{%- endif -%}
+
+	{%- if subtitle != blank -%}
+		<p class="card__subtitle">
+			{{- subtitle -}}
+		</p>
+	{%- endif -%}
+
+	{%- if card_links != blank -%}
+		<div class="card__buttons-wrapper card__buttons-wrapper--mobile">
+			{{- card_links -}}
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- if card_image != blank or card_description != blank -%}
+	<div class="card" data-card>
+		{{- card_image -}}
+
+		{{- card_description -}}
+	</div>
+{%- endif -%}

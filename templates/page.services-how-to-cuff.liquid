@@ -1,0 +1,81 @@
+{%- layout none -%}
+
+{%- capture denim_gallery -%}
+	{%- assign gallery_title =  page.metafields.service-cuff.denim_item_title -%}
+
+	{%- for title in gallery_title -%}
+
+		{%- assign index = forloop.index0 -%}
+		{%- assign gallery_img = page.metafields.service-cuff.denim_item_image[index] -%}
+		{%- assign gallery_text =  page.metafields.service-cuff.denim_item_text[index] -%}
+		{%- assign gallery_img = page.metafields.service-cuff.denim_item_image[index] | first -%}
+
+		<div class="swiper-slide slider__slide denim-gallery__slide collection-subcategories__slide">
+			<div class="denim-gallery-item">
+				<div class="denim-gallery-item__image-wrapper" data-card-image-wrapper>
+					<picture>
+						<source srcset="{{ gallery_img.cloudinary_src | append: 'w_480' }} 1x, {{ gallery_img.cloudinary_src | append: 'w_960' }} 2x" media="(max-width: 480px)">
+						<source srcset="{{ gallery_img.cloudinary_src | append: 'w_767' }} 1x, {{ gallery_img.cloudinary_src | append: 'w_1534' }} 2x" media="(max-width: 767px)">
+						<source srcset="{{ gallery_img.cloudinary_src | append: 'w_991' }} 1x, {{ gallery_img.cloudinary_src | append: 'w_1982' }} 2x" media="(max-width: 991px)">
+
+						<img srcset="{{ gallery_img.cloudinary_src | append: 'w_300' }} 1x, {{ gallery_img.cloudinary_src | append: 'w_600' }} 2x"
+							 src="{{ gallery_img.cloudinary_src | append: 'w_300' }}"
+							 class="denim-gallery-item__image"
+							 alt=""
+						>
+					</picture>
+				</div>
+
+				<div class="denim-gallery-item__title">
+					{{- title -}}
+				</div>
+				{{- gallery_text -}}
+			</div>
+		</div>
+	{%- endfor -%}
+
+{%- endcapture -%}
+
+<div class="slider denim-content-how-to-cuff__slider">
+	<div class="swiper-container slider__container denim-gallery__container" data-denim-gallery-slider>
+		<div class="swiper-wrapper slider__wrapper denim-gallery">
+			{{- denim_gallery -}}
+		</div>
+
+		<button class="slider__arrow slider__arrow--prev how-to-cuff-arrow" data-slider-arrow data-slider-arrow-prev>
+			{%- render 'icon-chevron' -%}
+		</button>
+
+		<button class="slider__arrow slider__arrow--next js-slider-arrow-next how-to-cuff-arrow" data-slider-arrow data-slider-arrow-next>
+			{%- render 'icon-chevron' -%}
+		</button>
+
+		<div class="slider__pagination" data-slider-pagination></div>
+	</div>
+</div>
+
+{%- capture denim_content -%}
+	{%- assign content_title    = page.metafields.denim-content-cuff.page_content_title -%}
+	{%- assign content_textarea = page.metafields.denim-content-cuff.page_content_textarea -%}
+
+	<div class="denim-content">
+		{%- for title in content_title -%}
+			{%- assign index = forloop.index0 -%}
+
+			<div class="denim-content-row page-custom-container">
+				<div class="denim-content-title denim-content-column">
+					<div class="denim-content-title__field">
+						{{- title -}}
+					</div>
+				</div>
+				<div class="denim-content-textarea denim-content-column">
+					<div class="denim-content-textarea__field">
+						{{- content_textarea[index] -}}
+					</div>
+				</div>
+			</div>
+		{%- endfor -%}
+	</div>
+{%- endcapture -%}
+
+{{- denim_content -}}

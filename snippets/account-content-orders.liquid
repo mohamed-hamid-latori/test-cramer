@@ -1,0 +1,29 @@
+{% comment %}
+	@params
+	customer 		- {customer object} *required
+{% endcomment %}
+
+<section class="account-content account-orders">
+	<div class="account-content__container">
+		<div class="account-content__header">
+ 			<h1 class="account-content__header-title">
+ 					<span>
+                    	{{- 'customer.account.orders.title' | t -}}
+                 	</span>
+                 
+                 	<div class="account-content__header-icon">
+                     	{% render 'icon-account-cart' %}
+                	</div>
+ 			</h1>
+ 		</div>
+		
+		<div class="account-orders__content-container">
+			<h3 class="account-orders__title">			
+					<span>
+                    	{{- 'customer.account.orders.recent' | t -}}
+                 	</span>
+              </h3>
+			{%- render 'account-orders-table-paginated', paginate_by: 10 -%}
+		</div>
+	</div>
+</section>

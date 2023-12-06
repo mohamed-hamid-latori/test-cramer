@@ -1,0 +1,196 @@
+{% comment %}
+	@params
+	customer 		- {customer object} *required
+{% endcomment %}
+
+<section class="account-content account-information">
+	<div class="account-content__container">
+		<div class="account-content__header">
+			<div class="account-content__header-wrapper">
+				<h1 class="account-content__header-title">
+					{{- 'customer.account.information.title' | t -}}
+				</h1>
+
+				<div class="account-content__header-icon">
+					{%- render 'icon-personal-information' -%}
+				</div>
+			</div>
+		</div>
+
+		<div class="account-information__content">
+			{% form 'create_customer', action: '', data-cf-view: '', rv-cf-custom-form: '', data-cf-form-id: 'OLt77P' %}
+				<input type="hidden" name="redirect" value="false" />
+				
+				<div class="form__row account-information__row">
+					<div class="form__col account-information__col">
+						<div class="input-group input-group--floating-label form__input-group account-information__input-container">
+							{%- assign first_name = {customer.first_name} -%}
+
+							<input name="customer[first_name]" 
+								type="text" id="FirstName" 
+								class="input input-group__input form__input account-information__input" 
+								value="{{- first_name -}}" 
+								autocapitalize="words" 
+								placeholder="{{ 'customer.account.information.first_name' | t }}"
+							>
+							
+							<label for="FirstName" class="input-group__label">{{ 'customer.account.information.first_name' | t }}</label>
+						</div>
+					</div>
+
+					<div class="form__col account-information__col">
+						<div class="input-group input-group--floating-label form__input-group">
+							{%- assign last_name = {customer.last_name} -%} 
+
+							<input name="customer[last_name]" 
+								type="text" id="LastName" 
+								class="input input-group__input form__input account-information__input" 
+								value="{{- last_name -}}" 
+								autocapitalize="words" 
+								placeholder="{{ 'customer.account.information.last_name' | t }}"
+							>
+							
+							<label for="LastName" class="input-group__label">{{ 'customer.account.information.last_name' | t }}</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="form__row account-information__row">
+					<div class="form__col account-information__col">
+						<div class="input-group input-group--floating-label form__input-group">
+							{%- assign gender = customer.metafields.customer_fields.data.gender -%}
+							
+							<div class="custom-select custom-select--floating-label account-information__select-container">
+								<label class="custom-select__label">{{ 'customer.account.information.gender' | t }}</label>
+
+								<select name="customer[gender]" 
+									id="select_2" 
+									class="custom-select__select js-gender-selector" 
+									data-custom-select 
+									data-custom-select-placeholder="Make a selection"
+								>
+									{%- if gender == blank -%}<option></option> {%- endif -%}
+									
+									<option value="Men"{% if gender == "Men" %} selected {% endif %}>{{ 'customer.account.information.gender_men' | t }}</option>
+									<option value="Women" {% if gender == "Women" %} selected {% endif %}>{{ 'customer.account.information.gender_women' | t }}</option>
+								</select>
+
+								<div class="custom-select__dropdown" data-custom-select-dropdown></div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form__col account-information__col">
+						<div class="input-group input-group--floating-label form__input-group">
+							{%- assign birthday = customer.metafields.customer_fields.data.birthday_date | date:"%Y-%m-%d" -%}
+
+							<input name="customer[birthday_date]"
+								type="date" 
+								id="Birthday" 
+								class="input input-group__input form__input account-information__input" 
+								value="{{birthday}}"  
+								placeholder="{{ 'customer.account.information.birthday' | t }}"
+							>
+
+							<label for="date" class="input-group__label">{{ 'customer.account.information.birthday' | t }}</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="form__row account-information__row">
+					<div class="form__col account-information__col">
+						<div class="input-group input-group--floating-label form__input-group">
+							{%- assign email = {customer.email} -%}
+
+							<input type="email"
+								name="customer[email]" 
+								id="Email" 
+								class="input input-group__input form__input account-information__input" 
+								value="{{- email -}}"  
+								placeholder="{{ 'templates.contact.form.email' | t }}*"
+								required
+							>
+
+							<label for="Email" class="input-group__label">{{ 'templates.contact.form.email' | t }}*</label>
+						</div>
+
+						<span class="error-message js-error-email" style="display: none;"></span>
+					</div>
+
+					<div class="form__col account-information__col">
+						<div class="input-group input-group--floating-label form__input-group">
+							{%- assign phone = {customer.phone} -%}
+
+							<input type="tel" 
+								name="customer[phone]" 
+								id="PhoneNumber" 
+								class="input input-group__input form__input account-information__input" 
+								value="{{- phone -}}"
+								pattern="[+]{1}[0-9]{11,14}"
+								minlength="8"
+								maxlength="15"
+								placeholder="{{ 'templates.contact.form.phone' | t }}"
+							>
+						
+							<label for="PhoneNumber" class="input-group__label">{{ 'templates.contact.form.phone' | t }}</label>
+						</div>
+						
+						<span class="error-message js-error-phone" style="display: none;"></span>
+					</div>
+				</div>
+
+				<button type="submit" id="submit_button" class="button button--primary button--main account-information__submit-button">
+					<span rv-unless="customer_saving">
+						<span rv-if="customer_logged_in">{{ 'customer.account.information.save_changes' | t }}</span>
+					</span>
+				</button>
+			{% endform %}
+		</div>	
+
+		<div class="account-information__change-password">
+			<input type="checkbox" 
+				id="change-password" 
+				class="checkbox"
+			>
+
+			<label for="change-password" 
+				class="account-information__change-password-label"
+			>
+				{{ 'customer.account.information.change_password' | t }}
+			</label>
+
+			<div class="account-information__change-password-item">
+				{%- form 'recover_customer_password', id: "resetPasswordForm" -%} 
+					<input type="email"
+							value="{{ customer.email }}"
+							name="email"
+							id="RecoverEmail"
+							autocorrect="off"
+							autocapitalize="off"
+							autocomplete="email"
+							placeholder="Email address"
+							class="hidden"
+					>
+					<label for="RecoverEmail">
+					</label>
+
+					{%- if form.errors -%}
+						<p class="form__message">
+							{{ form.errors.messages['form'] }}
+						</p>
+					{%- endif -%}
+
+					<button id="submitForm" type="submit" class="button button--secondary account-information__resset-password-button">{{ 'customer.account.information.reset_password' | t }}</button>
+				{%- endform -%}
+			</div>
+
+			<div class="account-information__change-password--success" data-change-password-success>
+				<p class="account-information__change-password-text account-information__change-password-text--success">{{ 'customer.account.information.mail_success' | t }}</p>
+			</div>
+
+			<div class="account-information__change-password--error" data-change-password-error>
+				<p class="account-information__change-password-text account-information__change-password-text--error">{{ 'customer.account.information.mail_error' | t }}</p>
+			</div>
+		</div>
+	</div>
+</section>

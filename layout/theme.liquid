@@ -1,0 +1,343 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+<head>
+  {% render 'elevar-head' %}
+	{% include 'kiwiSizing' %}
+
+
+	{%- include 'load-metafields' -%}
+
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="theme-color" content="">
+	<meta name="google-site-verification" content="LeQCY5k-kg3jZ93BuckBraNt0X_YqoRHWE5dm1d_MkI" />
+	<link rel="canonical" href="{{ canonical_url }}">
+	<link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+	{% assign page_types = 'index,collection,product' | split: ',' %}
+	{% assign template_suffix = template.suffix | strip %}
+
+	{% unless page_types contains template.name or template_suffix == 'landing-men' or template_suffix == 'landing-women' %}
+		{% render 'customer-fields', customer_api: true, version: '4.8.1' %}
+	{% endunless %}
+
+	{%- if settings.favicon != blank -%}
+		<link rel="icon" type="image/png" href="{{ settings.favicon | img_url: '32x32' }}">
+	{%- endif -%}
+
+	{%- capture page_title -%}
+		{% if template contains 'product' %}
+			{{ product.vendor }}
+		{% endif %}
+
+		{{ page_title }}
+	{%- endcapture -%}
+
+	<title>
+		{{- page_title -}}
+	</title>
+
+	{%- assign enable_default_analytics_connection = settings.enable_default_analytics_connection -%}
+
+	{%- assign google_tag_manager_id = settings.google_tag_manager_id -%}
+
+	{%- if enable_default_analytics_connection -%}
+		{%- if google_tag_manager_id != blank -%}
+			<!-- Google Tag Manager -->
+			<script>
+				(function (w, d, s, l, i) {
+					w[l] = w[l] || [];
+					w[l].push({
+						'gtm.start':
+							new Date().getTime(), event: 'gtm.js'
+					});
+					var f = d.getElementsByTagName(s)[0],
+						j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+					j.async = true;
+					j.src =
+						'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+					f.parentNode.insertBefore(j, f);
+				})(window, document, 'script', 'dataLayer', '{{- google_tag_manager_id -}}');
+			</script>
+			<!-- End Google Tag Manager -->
+		{%- endif -%}
+	{%- endif -%}
+
+	{%- assign google_ads_id = settings.google_ads_id -%}
+
+	{%- if enable_default_analytics_connection -%}
+		{%- if google_ads_id != blank -%}
+			<!-- Global site tag (gtag.js) - Google Ads -->
+			<script async src="https://www.googletagmanager.com/gtag/js?id={{- google_ads_id -}}"></script>
+			<script>
+				window.dataLayer = window.dataLayer || [];
+
+				function gtag() {
+					dataLayer.push(arguments);
+				}
+
+				gtag('js', new Date());
+
+				gtag('config', '{{- google_ads_id -}}');
+			</script>
+		{%- endif -%}
+	{%- endif -%}
+
+	{% if page_description %}
+		<meta name="description" content="{{ page_description | escape }}">
+	{% endif %}
+
+	{% render 'meta-tags' %}
+
+	<script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
+
+	{% if false %}{{ content_for_header }}{% endif %}
+
+	{% render 'content-for-header' %}
+
+	{% render 'cookie-consent' %}
+
+	{%- assign rel_preload = 'stylesheet' -%}
+
+	{{ 'base.css' | asset_url | stylesheet_tag: preload: true }}
+	{{ 'custom.css' | asset_url | stylesheet_tag: preload: true }}
+
+	{%- include 'apps-head' -%}
+
+	{%- capture template_name -%}
+		{%- if template.directory != blank -%}{{- template.directory -}}/{%- endif -%}{{- template.name -}}{%- if template.suffix != blank -%}.{{- template.suffix -}}{%- endif -%}
+	{%- endcapture -%}
+
+	<meta property="theme:template" content="{{- template_name -}}">
+
+	{%- capture search_terms -%}
+		{{- search.terms -}}
+	{%- endcapture -%}
+
+	{%- if search_terms != blank -%}
+		<meta property="search:terms" content="{{- search_terms -}}">
+	{%- endif -%}
+
+	{%- capture collection_title -%}
+		{{- collection.title -}}
+	{%- endcapture -%}
+
+	{%- if collection_title != blank -%}
+		<meta property="collection:title" content="{{- collection_title -}}">
+	{%- endif -%}
+
+	<link rel="preload stylesheet" as="style" href="{{- 'main.build.min.css' | asset_url -}}">
+
+	{%- if settings.disable_pinch_to_zoom == true -%}
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	{%- endif -%}
+
+	<script>
+		document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+	</script>
+
+	{% if template contains 'customers' %}
+		{{ 'shopify_common.js' | shopify_asset_url | script_tag }}
+		{{ 'customer_area.js'  | shopify_asset_url | script_tag }}
+	{% endif %}
+
+	{% if template contains 'product' %}
+		{% if product.media[0] %}
+			<link rel="preload" href="{{ product.media[0] | img_url: '540x' }}" as="image">
+		{% endif %}
+	{% endif %}
+
+	{% if template contains 'collection' %}
+		{% for product in collection.products limit: 4 %}
+			{% if product.media[0] %}
+				<link rel="preload" href="{{ product.media[0] | img_url: '360x' }}" as="image">
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+
+	{% comment %}
+		@TODO:
+		Minify redirect by cookie script before deploying to production
+	{% endcomment %}
+
+	<script>
+		const redirect_cookie_value_female = "{{ settings.redirect_cookie_value_female }}";
+		const redirect_cookie_value_male = "{{ settings.redirect_cookie_value_male }}";
+
+		const redirect_link_female = "{{ settings.redirect_link_female }}";
+		const redirect_link_male = "{{ settings.redirect_link_male }}";
+
+		initRedirectByCookie();
+
+		function initRedirectByCookie() {
+			if (!redirect_link_female || !redirect_link_male) {
+				return null;
+			}
+
+			redirectByCookie();
+		}
+
+		function redirectByCookie() {
+			let currentUrl = window.location.pathname;
+
+			if (currentUrl !== "/") {
+				return null;
+			}
+
+			let cookie = getCookie("preferredGender");
+
+			if (!cookie) {
+				return false;
+			}
+
+			let url = null;
+
+			switch (cookie) {
+				case redirect_cookie_value_female:
+					url = redirect_link_female;
+					break;
+				case redirect_cookie_value_male:
+					url = redirect_link_male;
+					break;
+				default:
+					return null;
+			}
+
+			if (!url) {
+				return null;
+			}
+
+			window.location = url;
+		}
+
+		function getCookie(name) {
+			let matches = document.cookie.match(new RegExp(
+				"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+			));
+			return matches ? decodeURIComponent(matches[1]) : undefined;
+		}
+	</script>
+
+	{% include 'globo.formbuilder.scripts' %}
+
+	{%- if shop.permanent_domain contains 'hose-mit-herz.myshopify.com' -%}
+		{% render 'shogun-head' %}
+	{%- endif -%}
+
+	{%- if shop.permanent_domain contains 'cramerco.myshopify.com' -%}
+		{% render 'trengo-head' %}
+	{%- endif -%}
+</head>
+
+{%- capture money_format_output -%}
+	{%- if settings.currency_format == 'money_with_currency_format' -%}
+		{{- shop.money_with_currency_format | strip_html -}}
+	{%- else -%}
+		{{- shop.money_format | strip_html -}}
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- assign body_classes = "" -%}
+
+{%- capture template_class -%}
+	template-{{ template.name | handle }}
+	{% if template.suffix != blank %}template-{{ template.suffix | handle }}{% endif %}
+{%- endcapture %}
+
+{%- assign body_classes = body_classes | append: template_class -%}
+
+{%- if template == '404-template' -%}
+	{%- assign body_classes = body_classes | append: " error-404-template" -%}
+{% else -%}
+	{%- capture template_class -%}
+		{{- template.name | handle -}}
+	{%- endcapture -%}
+
+	{%- assign body_classes = body_classes | append: " " | append: "template_class" -%}
+{%- endif -%}
+
+<body
+	class="{{- body_classes -}}"
+	data-money-format="{{- money_format_output -}}"
+	data-shop-url="{{- shop.url -}}"
+	data-current-lang="{{- request.locale.iso_code -}}"
+>
+  {% render 'elevar-body-end' %}
+	{%- if shop.permanent_domain contains 'cc-newseum.myshopify.com' -%}
+	{%- endif -%}
+
+	{%- unless shop.permanent_domain contains 'cc-newseum.myshopify.com' -%}
+		{%- if enable_default_analytics_connection -%}
+			{%- if google_tag_manager_id != blank -%}
+				<!-- Google Tag Manager (noscript) -->
+				<noscript>
+					<iframe
+						src="https://www.googletagmanager.com/ns.html?id={{- google_tag_manager_id -}}"
+						height="0"
+						width="0"
+						style="display: none; visibility: hidden"
+					></iframe>
+				</noscript>
+				<!-- End Google Tag Manager (noscript) -->
+			{%- endif -%}
+		{%- endif -%}
+	{%- endunless -%}
+
+	{%- include 'apps-body-start' -%}
+
+	{%- section 'header' -%}
+
+	<main
+		id="MainContent"
+		class="content{% if template contains 'cart' %} content--column{% endif %}"
+		role="main"
+		tabindex="-1"
+	>
+		{{ content_for_layout }}
+	</main>
+
+	{%- unless template contains 'cart' -%}
+		{%- section 'footer-content-blocks' -%}
+		{%- section 'footer-social-icons' -%}
+		{%- section 'footer' -%}
+		{%- section 'minicart' -%}
+	{%- endunless -%}
+
+	{%- section 'global-newsletter-popup' -%}
+
+	<script>
+		window.routes = {
+			cart_add_url: '{{ routes.cart_add_url }}',
+			cart_change_url: '{{ routes.cart_change_url }}',
+			cart_update_url: '{{ routes.cart_update_url }}'
+		};
+
+		window.cartStrings = {
+			error: `{{ 'sections.cart.cart_error' | t }}`,
+			quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t }}`
+		}
+
+		window.variantStrings = {
+			addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+			soldOut: `{{ 'products.product.sold_out' | t }}`,
+			unavailable: `{{ 'products.product.unavailable' | t }}`,
+		}
+	</script>
+
+	{%- include 'apps-body-end' -%}
+
+	<script src="{{- 'main.build.min.js' | asset_url -}}" defer></script>
+
+	{%- include 'bc_banner' -%}
+
+	<!-- **BEGIN** Hextom QAB Integration // Main Include - DO NOT MODIFY -->
+	{% render 'hextom_qab_main', product: product, customer: customer %}
+	<!-- **END** Hextom QAB Integration // Main Include - DO NOT MODIFY -->
+
+	{%- include 'swymSnippet' -%}
+
+{% include 'swymSnippet' %}
+
+</body>
+</html>

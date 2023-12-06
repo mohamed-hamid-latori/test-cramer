@@ -1,0 +1,284 @@
+{% comment %}
+	@params
+	product 				  - {product object} *required
+	footer_text 			  - {string}
+	enable_rating 			  - {boolean}
+	enable_sharing 			  - {boolean}
+	enable_size_chart 		  - {boolean}
+	size_chart_title 		  - {string}
+	size_chart_icon 		  - {image}
+	size_chart_text 		  - {string}
+	delivery_description 	  - {blocks}
+	store_availability_text   - {string}
+	store_availability_image  - {image}
+	services_heading 		  - {string}
+	services 				  - {blocks}
+	free_services_svg_men 	  - {html} -- svg icon
+	free_services_svg_women   - {html} -- svg icon
+{% endcomment %}
+
+{%- assign current_variant 		= product.selected_or_first_available_variant -%}
+
+{%- assign product_type 		= product.type | handleize -%}
+{%- assign product_subtitle 	= product.metafields.product.product_subtitle -%}
+
+{%- assign product_vendor 					= product.vendor -%}
+{%- assign product_vendor_handle 			= product_vendor | handleize -%}
+{%- assign product_vendor_klaviyo_list_id 	= shop.metafields.vendors.klaviyo_list_id[product_vendor_handle] -%}
+
+{%- capture product_rating -%}
+	{%- if enable_rating -%}
+		{%- render 'product-rating', product: product -%}
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture product_description -%}
+	{%-
+		render 'product-description',
+		product: product,
+		delivery_description: delivery_description
+	-%}
+{%- endcapture -%}
+
+{%- capture product_free_services -%}
+	{%- assign has_sale = false -%}
+
+	{%- if current_variant.compare_at_price > current_variant.price -%}
+		{%- assign has_sale = true -%}
+	{%- endif -%}
+
+	{%- if has_sale == false -%}
+		{%-
+			render 'product-free-services',
+			product: product,
+			services_heading: services_heading,
+			services: services,
+			free_services_svg_men: free_services_svg_men,
+			free_services_svg_women: free_services_svg_women
+		-%}
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture meta_video -%}
+	{%- assign video_url 			= product.metafields.accentuate.video_link -%}
+
+	{%- if video_url != blank -%}
+		<div class="product-meta__video-wrapper">
+			<iframe src="{{- video_url -}}" class="js-vimeo product-meta__video" allow="autoplay; encrypted-media" allowfullscreen title="{{ block.settings.description | escape }}"></iframe>
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture product_availability -%}
+	{%-
+		render 'product-availability',
+		product: product,
+		info_text: store_availability_text,
+		info_image: store_availability_image
+
+	-%}
+{%- endcapture -%}
+
+<div class="product-meta">
+	<div class="product-meta__header">
+		{%- if product_rating != blank -%}
+			<div class="product-meta__rating">
+				{{- product_rating -}}
+			</div>
+		{%- endif -%}
+
+		{%- if product_vendor != blank -%}
+			<div class="product-meta__vendor">
+				<span class="product-meta__vendor-value">
+					{{- product_vendor | link_to_vendor -}}
+				</span>
+
+				{%- if product_vendor_klaviyo_list_id != blank -%}
+					<button type="button" class="product-meta__vendor-button product-meta__vendor-button--hidden" data-vendor-popup-trigger>
+						{{- 'products.product.vendor.follow' | t -}}
+					</button>
+
+					{%-
+						render 'product-vendor-subscription',
+						vendor: product_vendor,
+						klaviyo_list_id: product_vendor_klaviyo_list_id
+					-%}
+				{%- endif -%}
+			</div>
+		{%- endif -%}
+
+		<div class="product-meta__header-row">
+			<div class="product-meta__header-col product-meta__header-col--title">
+				<h1 class="product-meta__title">
+					{{- product.title -}}
+				</h1>
+			</div>
+
+			<div class="product-meta__header-col product-meta__header-col--price">
+				<div class="product-meta__price" data-product-price-wrapper>
+					{%- if product.compare_at_price_max > product.price -%}
+						{%- assign has_sale = false -%}
+
+						{%- if current_variant.compare_at_price > current_variant.price -%}
+							{%- assign has_sale = true -%}
+						{%- endif -%}
+
+						<div class="product-meta__price-value product-meta__price-value--compare-price{% unless has_sale %} hidden{% endunless %}" data-product-compare-price>
+							{%- if has_sale -%}
+								{{- current_variant.compare_at_price | money -}}
+							{%- endif -%}
+						</div>
+					{%- endif -%}
+
+					<div class="product-meta__price-value{% if has_sale %} product-meta__price-value--sale{% endif %}" data-product-price>
+						{{- current_variant.price | money | replace: '.', ''  -}}
+					</div>
+
+					{%- assign has_unit = false -%}
+
+					{%- if current_variant.unit_price_measurement -%}
+						{%- assign has_unit = true -%}
+					{%- endif -%}
+
+					{%- capture unit_price_separator -%}
+						<span aria-hidden="true">/</span>
+					{%- endcapture -%}
+
+					{%- capture unit_price_base_unit -%}
+						<span data-unit-price-base-unit>
+							{%- if current_variant.unit_price_measurement -%}
+								{%- if current_variant.unit_price_measurement.reference_value != 1 -%}
+									{{- current_variant.unit_price_measurement.reference_value -}}
+								{%- endif -%}
+
+								{{- current_variant.unit_price_measurement.reference_unit -}}
+							{%- endif -%}
+						</span>
+					{%- endcapture -%}
+
+					<div class="product-meta__price-value product-meta__price-value--unit{% unless has_unit %} hidden{% endunless %}">
+						<span data-unit-price>{{- current_variant.unit_price | money -}}</span>{{- unit_price_separator -}}{{- unit_price_base_unit -}}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="product-meta__header-row">
+			<div class="product-meta__header-col product-meta__header-col--title">
+				{%- if product_subtitle != blank -%}
+					<h2 class="product-meta__subtitle">
+						{{- product_subtitle -}}
+					</h2>
+				{%- endif -%}
+			</div>
+
+			<div class="product-meta__header-col product-meta__header-col--price">
+				<p class="product-meta__price-note" data-product-price-note>
+					{{- 'products.product.price.note' | t -}}
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="product-meta__form">
+		{%-
+			render 'product-form',
+			product: product,
+			enable_size_chart: enable_size_chart,
+			size_chart_title: size_chart_title,
+			size_chart_icon: size_chart_icon,
+			size_chart_icon_svg: size_chart_icon_svg,
+			size_chart_text: size_chart_text,
+            excluded_vendors: excluded_vendors
+		-%}
+	</div>
+
+	<div class="product-meta__delivery{% unless current_variant.inventory_quantity <= 0 and current_variant.inventory_policy != "continue" %} hidden{% endunless %}" data-notice-out-of-stock data-delivery-notice>
+		<p
+			class="product-meta__delivery-notice"
+			data-delivery-notice-text
+			data-delivery-status="{% if delivery_status %}{{- delivery_status | handleize -}}{% endif %}"
+		>
+			{{- 'products.delivery_notice.out_of_stock' | t -}}
+		</p>
+	</div>
+	<div class="product-meta__delivery{% unless current_variant.inventory_quantity > 2 %} hidden{% endunless %}" data-notice-more-then-two data-delivery-notice>
+		<p
+			class="product-meta__delivery-notice"
+			data-delivery-notice-text
+			data-delivery-status="{% if delivery_status %}{{- delivery_status | handleize -}}{% endif %}"
+		>
+			{{- 'products.delivery_notice.in_stock' | t -}}
+		</p>
+	</div>
+	<div class="product-meta__delivery{% unless current_variant.inventory_quantity <= 2 and current_variant.inventory_quantity > 0 %} hidden{% endunless %}" data-notice-less-then-two data-delivery-notice>
+		<p
+			class="product-meta__delivery-notice"
+			data-delivery-notice-text
+			data-delivery-status="{% if delivery_status %}{{- delivery_status | handleize -}}{% endif %}"
+		>
+			{{- 'products.delivery_notice.low_stock' | t -}}
+		</p>
+	</div>
+
+	{%- if product_free_services != blank -%}
+		<div class="product-meta__free-services">
+			{{- product_free_services -}}
+		</div>
+	{%- endif -%}
+
+	{%- if product_availability != blank -%}
+		<div class="product-meta__availability">
+			<div class="product-meta__availability-opener" data-availability-drawer-open>
+				<p class="product-meta__availability-opener-title">
+					{{- 'products.product.pickup_availability.button.title' | t -}}
+				</p>
+
+				<p class="product-meta__availability-opener-subtitle">
+					{{- 'products.product.pickup_availability.button.subtitle' | t -}}
+				</p>
+			</div>
+
+			{{- product_availability -}}
+		</div>
+	{%- endif -%}
+
+	{%- if product_description != blank -%}
+		<div class="product-meta__description">
+			{{- product_description -}}
+		</div>
+	{%- endif -%}
+
+	{%- if footer_text != blank or enable_sharing == true -%}
+		<div class="product-meta__footer">
+			{%- if footer_text != blank -%}
+				<div class="product-meta__footer-contact">
+					{{- footer_text -}}
+				</div>
+			{%- endif -%}
+
+			{%- if enable_sharing == true -%}
+				{%- assign share_link = product.url | prepend: shop.url -%}
+
+				<div class="product-meta__footer-share">
+					<a
+						href="whatsapp://send?text={{- 'products.product.share_message' | t: link: share_link | url_encode -}}"
+						class="share-button share-button--whatsapp"
+					>
+						<span class="share-button__icon">
+							{%- render 'icon-whatsapp' -%}
+						</span>
+
+						<span class="link share-button__text">
+							{{- 'products.product.share_whatsapp' | t -}}
+						</span>
+					</a>
+				</div>
+			{%- endif -%}
+		</div>
+	{%- endif -%}
+
+	{%- if meta_video != blank -%}
+		{{- meta_video -}}
+	{%- endif -%}
+</div>

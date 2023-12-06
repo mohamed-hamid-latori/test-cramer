@@ -1,0 +1,151 @@
+{%- capture brands_nav -%}
+	{%- for block in section.blocks -%}
+		{%- assign tab_title = block.settings.brands_item_title -%}
+		{%- assign tab_url = block.settings.brands_item_url -%}
+
+		{%- if tab_title == blank and tab_url == blank -%}
+			{%- continue -%}
+		{%- endif -%}
+
+		{%- if tab_title != blank and tab_url != blank -%}
+			<li class="brands-page-tabs__item">
+				<a class="brands-page-tabs__link" href="{{ tab_url }}">{{ tab_title }}</a>
+			</li>
+		{%- endif -%}
+	{%- endfor -%}
+{%- endcapture -%}
+
+<section
+	class="brands-page"
+	data-section-id="{{- section.id -}}"
+	data-section-type="brands-page"
+>
+	<div class="brands-page-wrap">
+		<h2 class="brands-page__title">
+			{{- page.title -}}
+		</h2>
+
+		<div class="brands-page__sticky js-brands-page__sticky">
+			<div class="container container--inner brands-page__container">
+				<div class="brands-page__search brands-search">
+					<input id="brands-search__field" class="brands-search__field js-brands-search__field" type="text" name="name" placeholder="{{ 'general.search.search_by_brand' | t }}">
+					<div class="brands-search__icon">
+						{%- render 'search-icon' -%}
+					</div>
+				</div>
+
+				<div class="brands-page-tabs">
+					<ul class="brands-page-tabs__list">
+						{{- brands_nav -}}
+					</ul>
+				</div>
+
+				<div class="brands-page__filter">
+					{%- for link in linklists.brands.links -%}
+						{%- for child_link in link.links -%}
+							{%- if child_link.title contains '[HEADING]' -%}
+								{%- assign menu_head = child_link.title | remove: "[HEADING]" | strip -%}
+								{%- assign menu_head_anchor = menu_head | prepend: "#letter-" -%}
+
+								<span class="brands-page__anchor js-brands-page__anchor" data-id="letter-{{ menu_head }}">
+										{{- menu_head -}}
+									</span>
+							{%- endif -%}
+						{%- endfor -%}
+					{%- endfor -%}
+				</div>
+				<button class="link brands-page__filter-clear js-brands-page__filter-clear">Auswahl aufheben</button>
+			</div>
+		</div>
+
+		<div class="container container--inner brands-page__container">
+
+			<div class="brands-page__content-wrapper">
+				<div class="brands-page__info">
+					{{ section.settings.brands_info }}
+				</div>
+
+				<div class="brands-page__content js-brands-page__content">
+
+					{%- assign menu = section.settings.brand_filter_menu -%}
+
+					<ul class="menu menu_role--main">
+						{%- for link in linklists[menu].links -%}
+							<li class="menu-link menu-link_level--first">
+								{%- if link.links.size > 0 -%}
+									<ul class="menu dropdown-child">
+										{%- for child_link in link.links -%}
+											{%- if child_link.title contains '[HEADING]' -%}
+
+												{%- assign menu_head = child_link.title | remove: "[HEADING]" | strip -%}
+
+												<li class="menu-link menu-link--header" data-id="letter-{{ menu_head }}">
+													<span id="letter-{{ menu_head }}" class="menu-link__head">{{ menu_head }}</span>
+
+													{%- if child_link.links.size > 0 -%}
+														<ul class="menu dropdown-grandchild">
+															{%- for grandchild_link in child_link.links -%}
+																<li class="menu-link">
+																	<a class="menu-link__route js-menu-link__route" href="{{ grandchild_link.url }}">{{ grandchild_link.title }}</a>
+																</li>
+															{%- endfor -%}
+														</ul>
+													{%- endif -%}
+												</li>
+											{%- else -%}
+												<li class="menu-link" data-head="{{ menu_head }}">
+													<a href="{{ child_link.url }}">{{ child_link.title }}</a>
+												</li>
+											{%- endif -%}
+
+										{%- endfor -%}
+									</ul>
+								{%- endif -%}
+							</li>
+						{%- endfor -%}
+					</ul>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+</section>
+
+{%- schema -%}
+	{
+		"name": "Brands",
+		"settings": [
+			{
+				"type": "text",
+				"id": "brands_info",
+				"label": "Brands info",
+				"default": "*nur in unseren stationären Läden"
+			},
+			{
+				"type": "link_list",
+				"id": "brand_filter_menu",
+				"label": "Choose menu"
+			}
+		],
+		"blocks": [
+			{
+			"type": "Tabs",
+			"name": "Tab",
+				"settings": [
+				{
+					"type": "text",
+					"id": "brands_item_title",
+					"label": "Brands title"
+				},
+				{
+					"type": "url",
+					"id": "brands_item_url",
+					"label": "Brands url"
+				}
+				]
+			}
+		]
+	}
+{%- endschema -%}

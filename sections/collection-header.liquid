@@ -1,0 +1,38 @@
+{% comment %}
+	@params
+	collection 				- {collection object} *required
+{% endcomment %}
+
+{%- assign enable_breadcrumbs 	= section.settings.enable_breadcrumbs -%}
+{%- assign collection_title 	= collection.metafields.collection.custom_collection_title | default: collection.title -%}
+
+{%- if collection -%}
+	<div class="collection collection-header">
+		<div class="container container--full-width collection__container">
+			{%- if enable_breadcrumbs -%}
+				<div class="collection-header__breadcrumbs">
+					{%- render 'breadcrumbs' -%}
+				</div>
+			{%- endif -%}
+
+			<h1 class="collection-header__title">
+				{{- collection_title -}}
+			</h1>
+		</div>
+	</div>
+	{% render 'collection-top-banner.liquid', collection %}
+{%- endif -%}
+
+{% schema %}
+{
+	"name": "Collection header",
+	"settings": [
+		{
+			"type": "checkbox",
+			"id": "enable_breadcrumbs",
+			"label": "Enable breadcrumbs",
+			"default": true
+		}
+	]
+}
+{% endschema %}

@@ -1,0 +1,72 @@
+{%- capture items -%}
+    {%- for block in section.blocks -%}
+        {%- assign text                 = block.settings.image_text | replace: '<svg','<div class="help-center-contact-info__svg-container"> <svg' | replace: '</svg>', '</svg> </div>' -%}
+        {%- assign url                  = block.settings.link -%}
+
+        {%- if text != blank -%}
+            <li class="help-center-contact-info__item">
+                {%- if url != blank -%}
+                    <a href="{{- url -}}" class="help-center-contact-info__item-link">
+                        {{- text -}}
+                    </a> 
+                {%- else -%}
+                    <p class="help-center-contact-info__item-link">
+                        {{- text -}}
+                    </p>
+                {%- endif -%}
+            </li>    
+        {%- endif -%}
+        
+    {%- endfor -%}
+{%- endcapture -%}
+
+{%- assign title              = section.settings.title -%}
+
+<section class="help-center-contact-info"
+        data-section-id="{{- section.id -}}"
+        data-section-type="help-center-contact-info" 
+>
+    {%- if items != blank and title != blank -%}
+       <div class="help-center-contact-info__container ">
+            <h3 class="help-center-contact-info__title">
+                {{- title -}}
+            </h3>
+
+            <ul class="help-center-contact-info__list">
+                {{- items-}}
+            </ul>
+        </div> 
+    {%- endif -%}
+</section>
+
+{% schema %}
+    {
+        "name": "Help center info",
+        "settings": [
+            {
+                "type": "text",
+                "id": "title",
+                "label": "Title",
+                "default": "We're here to help!"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "image_text",
+                "name": "Image with text",
+                "settings": [
+                    {
+                        "type": "html",
+                        "id": "image_text",
+                        "label": "Text with icon"
+                    },
+                    {
+                        "type": "url",
+                        "id": "link",
+                        "label": "Link for text"
+                    }                    
+                ]
+            }
+        ]
+    }
+{% endschema %}

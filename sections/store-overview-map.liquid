@@ -1,0 +1,73 @@
+{%- assign modal_image		 = section.settings.store_image -%}
+{%- assign modal_description = section.settings.store_description -%}
+
+{%- assign store_latitude 	= section.settings.store_latitude -%}
+{%- assign store_longitude 	= section.settings.store_longitude -%}
+
+{%- assign google_map_link = section.settings.google_map_link -%}
+
+{%- capture modal -%}
+	{%- if modal_image != blank -%}
+		<div class="store-overview-map__modal-image-wrapper">
+			<picture>
+				<img src="{{ modal_image | img_url: '270x' }}"
+					 srcset="{{ modal_image | img_url: '270x' }} 1x, {{ modal_image | img_url: '540x' }} 2x"
+					 alt="{{- modal_image.alt -}}"
+					 class="store-overview-map__modal-image"
+				/>
+			</picture>
+		</div>
+	{%- endif -%}
+
+	{%- if modal_description != blank -%}
+		<div class="store-overview-map__modal-text">
+			{{- modal_description -}}
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+
+<section
+	class="store-overview-map"
+	data-section-id="{{- section.id -}}"
+	data-section-type="store-overview-map"
+>
+	<div class="container store-overview-map__container js-map-container" id="map-container">
+		{%- if modal != blank -%}
+			<template data-store-overview-map-modal>
+				<div class="store-overview-map__modal">
+					{{- modal -}}
+				</div>
+			</template>
+		{%- endif -%}
+
+		{%- if google_map_link != blank -%}
+			<div class="store-overview-map__map-wrapper">
+				<iframe src="{{google_map_link}}" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+			</div>
+		{%- endif -%}
+
+	</div>
+</section>
+
+{% schema %}
+{
+	"name": "Store overview map",
+	"settings": [
+		{
+			"type": "text",
+			"id": "google_map_link",
+			"label": "Google map link"
+		},
+		{
+			"type": "image_picker",
+			"id": "store_image",
+			"label": "Store image"
+		},
+		{
+			"type": "richtext",
+			"id": "store_description",
+			"label": "Store description"
+		}
+	]
+}
+{% endschema %}

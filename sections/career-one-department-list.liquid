@@ -1,0 +1,138 @@
+{%- capture jobs -%}
+    {%- for block in section.blocks -%}
+        {%- assign title                = block.settings.title -%}
+        {%- assign date                 = block.settings.date -%}
+        {%- assign location             = block.settings.location -%}
+        {%- assign url                  = block.settings.url -%}
+        {%- assign gender               = block.settings.gender -%}
+        
+        {%- if title != blank and location != blank -%}
+            <a  href="{{- url-}}"
+                class="career-one-department-list__row"
+            >
+                <div class="career-one-department-list__item">
+                    <div class="career-one-department-list__upper-line">
+                        <h4 class="career-one-department-list__item-title">
+                            {{ title }} {{ gender }}
+                        </h4>
+
+                        {%- if date != blank -%}
+                            <p class="career-one-department-list__item-date">
+                                {{- date -}}
+                            </p> 
+                        {%- endif -%}
+                    </div> 
+
+                    <div class="career-one-department-list__bottom-line">
+                        <p class="career-one-department-list__location">
+                            {{- location -}}
+                        </p>
+                    </div>
+                </div>
+            </a>
+        {%- endif -%}
+    {%- endfor -%}
+{%- endcapture -%}
+
+{%- assign heading                  = section.settings.heading -%}
+{%- assign title                    = section.settings.title -%}
+{%- assign text                     = section.settings.text -%}
+
+<section class="career-one-department-list"
+        data-section-id="{{- section.id -}}"
+        data-section-type="career-one-department-list"
+>
+    <div class="container career-one-department-list__container">
+        {%- if heading != blank -%}
+            <h1 class="career-one-department-list__heading">
+                {{- heading -}}
+            </h1>
+        {%- endif -%}
+        
+        {%- if jobs != blank -%}
+            <div class="career-one-department-list__col">
+                {{- jobs-}}
+            </div>
+        {%- endif -%}
+        
+        {%- if title != blank and text != blank -%}
+            <div class="career-one-department-list__bottom-content">
+                <h3 class="career-one-department-list__bottom-content-title">
+                    {{- title -}}
+                </h3>
+
+                <div class="career-one-department-list__bottom-content-text">
+                    {{- text-}}
+                </div>
+            </div>
+        {%- endif -%}
+    </div>
+</section>
+
+
+{% schema %}
+    {
+        "name": "One Department",
+        "settings": [
+            {
+                "type": "text",
+                "id": "heading",
+                "label": "Heading",
+                "default": "OFFENE STELLEN"
+            },
+            {
+                "type": "header",
+                "content": "Bottom block"
+            },
+            {
+                "type": "text",
+                "id": "title",
+                "label": "Title",
+                "default": "BEI DEN AKTUELLEN STELLENANGEBOTEN WAR NICHTS FÜR DICH DABEI?"
+            },
+            {
+                "type": "richtext",
+                "id": "text",
+                "label": "Text",
+                "default": "<p>Macht nichts, interessante Bewerbungen mit einer persönlichen Note haben bei uns immer eine Chance. Wir lassen uns gerne von deinen Fähigkeiten überzeugen – bewerbe dich einfach initiativ.</p>"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "Department",
+                "name": "Department",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Title",
+                        "default": "Modeberater*innen "
+                    },
+                    {
+                        "type": "text",
+                        "id": "gender",
+                        "label": "Gender",
+                        "default": "(m/w/d)"
+                    },
+                    {
+                        "type": "text",
+                        "id": "date",
+                        "label": "Date",
+                        "default": "May, 15, 2021"
+                    },
+                    {
+                        "type": "text",
+                        "id": "location",
+                        "label": "Location",
+                        "default": "Erlangen, Nürnberg"
+                    },
+                    {
+                        "type": "url",
+                        "id": "url",
+                        "label": "Link"
+                    }
+                ]
+            }
+        ]
+    }
+{% endschema %}

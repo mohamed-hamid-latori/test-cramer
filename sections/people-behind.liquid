@@ -1,0 +1,280 @@
+{%- assign title = section.settings.title -%}
+{%- assign slides_count = 0 -%}
+
+{%- capture people_behind_html -%}
+	{%- for block in section.blocks -%}
+		{%- assign type = block.type -%}
+
+		{%- case type -%}
+			{%- when "three_images_top_large" -%}
+				{%- assign top_image 			= block.settings.image -%}
+				{%- assign left_bottom_image 	= block.settings.left_bottom_image -%}
+				{%- assign right_bottom_image 	= block.settings.right_bottom_image -%}
+
+				{%- if top_image == blank and left_bottom_image == blank and right_bottom_image == blank -%}
+					{%- continue -%}
+				{%- endif -%}
+
+				{%- assign slides_count = slides_count | plus: 1 -%}
+
+				<div class="swiper-slide people-behind__item people-behind__item--large-top">
+					<div class="people-behind__item-row">
+						<div class="people-behind__item-block">
+							<div class="people-behind__item-block-row">
+								<div class="people-behind__item-block-column people-behind__item-block-column--large">
+									<div class="people-behind__image-wrapper">
+										<img
+											class="people-behind__image"
+											src="{{- top_image | img_url: '645x' -}}"
+											srcset="{{ top_image | img_url: '645x' }} 1x, {{ top_image | img_url: '1290x' }} 2x, {{ top_image | img_url: '1935x' }} 3x"
+											alt="{{- top_image.alt -}}"
+										>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="people-behind__item-row">
+						<div class="people-behind__item-block">
+							<div class="people-behind__item-block-row">
+								<div class="people-behind__item-block-column people-behind__item-block-column--rectangle">
+									<div class="people-behind__image-wrapper">
+										<img
+											class="people-behind__image"
+											src="{{- left_bottom_image | img_url: '645x' -}}"
+											srcset="{{ left_bottom_image | img_url: '645x' }} 1x, {{ left_bottom_image | img_url: '1290x' }} 2x, {{ left_bottom_image | img_url: '1935x' }} 3x"
+											alt="{{- left_bottom_image.alt -}}"
+										>
+									</div>
+								</div>
+
+								<div class="people-behind__item-block-column people-behind__item-block-column--square">
+									<div class="people-behind__image-wrapper">
+										<img
+											class="people-behind__image"
+											src="{{- right_bottom_image | img_url: '645x' -}}"
+											srcset="{{ right_bottom_image | img_url: '645x' }} 1x, {{ right_bottom_image | img_url: '1290x' }} 2x, {{ right_bottom_image | img_url: '1935x' }} 3x"
+											alt="{{- right_bottom_image.alt -}}"
+										>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			{%- when "three_images_bottom_large" -%}
+				{%- assign left_top_image 	= block.settings.image -%}
+				{%- assign right_top_image 	= block.settings.right_top_image -%}
+				{%- assign bottom_image 	= block.settings.bottom_image -%}
+
+				{%- if left_top_image == blank and right_top_image == blank and bottom_image == blank -%}
+					{%- continue -%}
+				{%- endif -%}
+
+				{%- assign slides_count = slides_count | plus: 1 -%}
+
+				<div class="swiper-slide people-behind__item people-behind__item--large-bottom">
+					<div class="people-behind__item-row people-behind__item-row--first">
+						<div class="people-behind__item-block">
+							<div class="people-behind__item-block-row">
+								<div class="people-behind__item-block-column people-behind__item-block-column--rectangle">
+									<div class="people-behind__image-wrapper">
+										<img
+											class="people-behind__image"
+											src="{{- left_top_image | img_url: '645x' -}}"
+											srcset="{{ left_top_image | img_url: '645x' }} 1x, {{ left_top_image | img_url: '1290x' }} 2x, {{ left_top_image | img_url: '1935x' }} 3x"
+											alt="{{- left_top_image.alt -}}"
+										>
+									</div>
+								</div>
+
+								<div class="people-behind__item-block-column people-behind__item-block-column--square">
+									<div class="people-behind__image-wrapper">
+										<img
+											class="people-behind__image"
+											src="{{- right_top_image | img_url: '645x' -}}"
+											srcset="{{ right_top_image | img_url: '645x' }} 1x, {{ right_top_image | img_url: '1290x' }} 2x, {{ right_top_image | img_url: '1935x' }} 3x"
+											alt="{{- right_top_image.alt -}}"
+										>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="people-behind__item-row people-behind__item-row--second">
+						<div class="people-behind__item-block">
+							<div class="people-behind__item-block-row">
+								<div class="people-behind__item-block-column people-behind__item-block-column--large">
+									<div class="people-behind__image-wrapper">
+										<img
+											class="people-behind__image"
+											src="{{- bottom_image | img_url: '645x' -}}"
+											srcset="{{ bottom_image | img_url: '645x' }} 1x, {{ bottom_image | img_url: '1290x' }} 2x, {{ bottom_image | img_url: '1935x' }} 3x"
+											alt="{{- bottom_image.alt -}}"
+										>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			{%- when "two_images" -%}
+				{%- assign top_image 		= block.settings.image -%}
+				{%- assign bottom_image 	= block.settings.bottom_image -%}
+
+				{%- if top_image == blank and bottom_image == blank  -%}
+					{%- continue -%}
+				{%- endif -%}
+
+				{%- assign slides_count = slides_count | plus: 1 -%}
+
+				<div class="swiper-slide people-behind__item people-behind__item--large-bottom">
+					<div class="people-behind__item-row">
+						<div class="people-behind__item-block">
+							<div class="people-behind__item-block-row">
+								<div class="people-behind__item-block-column people-behind__item-block-column--large">
+									<div class="people-behind__image-wrapper">
+										<img
+											class="people-behind__image"
+											src="{{- top_image | img_url: '645x' -}}"
+											srcset="{{ top_image | img_url: '645x' }} 1x, {{ top_image | img_url: '1290x' }} 2x, {{ top_image | img_url: '1935x' }} 3x"
+											alt="{{- top_image.alt -}}"
+										>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="people-behind__item-row">
+						<div class="people-behind__item-block">
+							<div class="people-behind__item-block-row">
+								<div class="people-behind__item-block-column people-behind__item-block-column--large">
+									<div class="people-behind__image-wrapper">
+										<img
+											class="people-behind__image"
+											src="{{- bottom_image | img_url: '645x' -}}"
+											srcset="{{ bottom_image | img_url: '645x' }} 1x, {{ bottom_image | img_url: '1290x' }} 2x, {{ bottom_image | img_url: '1935x' }} 3x"
+											alt="{{- bottom_image.alt -}}"
+										>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			{%- else -%}
+				{%- continue -%}
+		{%- endcase -%}
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- if people_behind_html != blank -%}
+	<section
+		class="people-behind"
+		data-section-id="{{- section.id -}}"
+		data-section-type="people-behind"
+		data-slides-count="{{- slides_count -}}"
+	>
+		{%- if title != blank -%}
+			<div class="container people-behind__container">
+				<h2 class="people-behind__title">
+					{{- title -}}
+				</h2>
+			</div>
+		{%- endif -%}
+
+		<div class="people-behind__items-wrapper people-behind__items-wrapper--desktop">
+			<div class="swiper-container container container--slider people-behind__container js-people-behind-slider">
+				<div class="swiper-wrapper people-behind__wrapper">
+					{{- people_behind_html -}}
+				</div>
+			</div>
+		</div>
+
+		<div class="people-behind__items-wrapper people-behind__items-wrapper--mobile">
+			<div class="container people-behind__container">
+				<div class="row people-behind__row">
+					{{- people_behind_html -}}
+				</div>
+			</div>
+		</div>
+	</section>
+{%- endif -%}
+
+{%- schema -%}
+	{
+		"name": "People Behind",
+		"max_blocks": 3,
+		"settings": [
+			{
+				"type": "text",
+				"id": "title",
+				"label": "Title",
+				"default": "Our atmosphere"
+			}
+		],
+		"blocks": [
+			{
+				"type": "three_images_top_large",
+				"name": "3 images, large at top",
+				"settings": [
+					{
+						"type": "image_picker",
+						"id": "image",
+						"label": "Top image"
+					},
+					{
+						"type": "image_picker",
+						"id": "left_bottom_image",
+						"label": "Left bottom image"
+					},
+					{
+						"type": "image_picker",
+						"id": "right_bottom_image",
+						"label": "Right bottom image"
+					}
+				]
+			},
+			{
+				"type": "three_images_bottom_large",
+				"name": "3 images, large at bottom",
+				"settings": [
+					{
+						"type": "image_picker",
+						"id": "image",
+						"label": "Left top image"
+					},
+					{
+						"type": "image_picker",
+						"id": "right_top_image",
+						"label": "Right top image"
+					},
+					{
+						"type": "image_picker",
+						"id": "bottom_image",
+						"label": "Bottom image"
+					}
+				]
+			},
+			{
+				"type": "two_images",
+				"name": "2 images",
+				"settings": [
+					{
+						"type": "image_picker",
+						"id": "image",
+						"label": "Top image"
+					},
+					{
+						"type": "image_picker",
+						"id": "bottom_image",
+						"label": "Bottom image"
+					}
+				]
+			}
+		]
+	}
+{%- endschema -%}

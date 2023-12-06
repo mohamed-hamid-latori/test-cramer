@@ -1,0 +1,180 @@
+{% comment %}
+	@params
+	product 				- {product object} *required
+	delivery_description 	- {blocks}
+{% endcomment %}
+
+{%- assign product_description = product.description -%}
+{%- assign formatted_product_description = product_description | split: '*' -%}
+
+{%- assign accordions = '' -%}
+
+{%- assign notification_accordion_content = product.selected_or_first_available_variant.metafields.variant_info.notification -%}
+{%- assign variant_washing = product.selected_or_first_available_variant.metafields.variant.variant_washing -%}
+{%- assign formatted_variant_washing = product.selected_or_first_available_variant.metafields.variant.variant_washing | split: '*'  -%}
+
+{%- if notification_accordion_content != blank or variant_washing != blank -%}
+	{%- capture notification_accordion -%}
+		<div class="accordion__item product-description__accordion-item js-toggle-item active" data-notification-content>
+			<button class="accordion__item-toggler product-description__accordion-item-toggler js-toggle-button">
+				{{- 'products.product.accordions.notification' | t -}}
+			</button>
+
+			<div class="accordion__item-content product-description__accordion-item-content js-toggle-content active" style="display: block;" >
+				{{- notification_accordion_content -}}
+
+				{%- if formatted_variant_washing.size > 0 -%}
+					{% if notification_accordion_content != blank %}<br><br>{% endif %}
+					
+					<ul class="product-description__list product-description__list--bullets">
+						{%- for variant_washing_item in formatted_variant_washing -%}
+							<li class="product-description__list-item">{{ variant_washing_item }}</li>
+						{%- endfor -%}
+					</ul>
+				{%- else -%}
+					{{- variant_washing -}}
+				{%- endif -%}
+			</div>
+		</div>
+	{%- endcapture -%}
+
+	{%- assign accordions = accordions | append: notification_accordion -%}
+{%- endif -%}
+
+{%- capture delivery_description_items -%}
+	{%- for delivery_description_item in delivery_description -%}
+		{%- assign item_title 	= delivery_description_item.settings.title -%}
+		{%- assign item_icon 	= delivery_description_item.settings.icon -%}
+		{%- assign item_tooltip = delivery_description_item.settings.tooltip -%}
+
+		{%- if item_title == blank -%}
+			{%- continue -%}
+		{%- endif -%}
+
+		<li class="product-description__list-item">
+			{%- if item_icon != blank -%}
+				<span class="product-description__list-item-icon">
+					{{- item_icon -}}
+				</span>
+			{%- endif -%}
+
+			<span class="product-description__list-item-title">
+				{{- item_title -}}
+			</span>
+
+			{%- if item_tooltip != blank -%}
+				<span class="product-description__list-item-tooltip">
+					<span class="product-description__list-item-tooltip-icon">
+						{%- render 'icon-tooltip' -%}
+					</span>
+
+					<span class="product-description__list-item-tooltip-content">
+						{{- item_tooltip -}}
+					</span>
+				</span>
+			{%- endif -%}
+		</li>
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- capture delivery_accordion -%}
+	{%- if delivery_description_items != blank -%}
+		<div class="accordion__item product-description__accordion-item js-toggle-item">
+			<button class="accordion__item-toggler product-description__accordion-item-toggler js-toggle-button">
+				{{- 'products.product.accordions.delivery' | t -}}
+			</button>
+
+			<div class="accordion__item-content product-description__accordion-item-content js-toggle-content">
+				<ul class="product-description__list">
+					{{- delivery_description_items -}}
+				</ul>
+			</div>
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- assign accordions = accordions | append: delivery_accordion -%}
+
+{%- capture description_accordion -%}
+	{%- if product_description != blank -%}
+		<div class="accordion__item product-description__accordion-item js-toggle-item">
+			<button class="accordion__item-toggler product-description__accordion-item-toggler js-toggle-button">
+				{{- 'products.product.accordions.description' | t -}}
+			</button>
+
+			<div class="accordion__item-content product-description__accordion-item-content js-toggle-content">
+				{%- if formatted_product_description.size > 0 -%}
+					<ul class="product-description__list product-description__list--bullets">
+						{%- for description_item in formatted_product_description -%}
+							<li class="product-description__list-item">{{ description_item }}</li>
+						{%- endfor -%}
+					</ul>
+				{%- else -%}
+					{{- product_description -}}
+				{%- endif -%}
+			</div>
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- assign accordions = accordions | append: description_accordion -%}
+
+{%- assign material 			= product.selected_or_first_available_variant.metafields.variant_info.product_material -%}
+{%- assign care_instructions 	= product.metafields.product.product_care_instructions.references -%}
+
+{%- capture care_instructions -%}
+	{%- for instruction in care_instructions -%}
+		{%- assign instruction_text = shop.metafields.globals.care_instruction_text[instruction.index] -%}
+		{%- assign instruction_icon = shop.metafields.globals.care_instruction_icon[instruction.index] -%}
+
+		{%- if instruction_text == blank -%}
+			{%- continue -%}
+		{%- endif -%}
+
+		<li class="product-description__list-item">
+			{%- if instruction_icon != blank -%}
+				<span class="product-description__list-item-icon">
+					{{- instruction_icon -}}
+				</span>
+			{%- endif -%}
+
+			<span class="product-description__list-item-title">
+				{{- instruction_text -}}
+			</span>
+		</li>
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- capture material_accordion -%}
+	{%- if material != blank or care_instructions != blank -%}
+		<div class="accordion__item product-description__accordion-item js-toggle-item">
+			<button class="accordion__item-toggler product-description__accordion-item-toggler js-toggle-button">
+				{{- 'products.product.accordions.material' | t -}}
+			</button>
+
+			<div class="accordion__item-content product-description__accordion-item-content js-toggle-content" data-material-content>
+				{%- if material != blank -%}
+					<p class="product-description__material">
+						{{- material -}}
+					</p>
+				{%- endif -%}
+
+				{%- if care_instructions != blank -%}
+					<ul class="product-description__list product-description__list--material">
+						{{- care_instructions -}}
+					</ul>
+				{%- endif -%}
+			</div>
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- assign accordions = accordions | append: material_accordion -%}
+
+{%- if accordions != blank -%}
+	<div class="product-description">
+		<div class="accordion product-description__accordion js-toggle-container" data-accordion-mode="multiple">
+			{{- accordions -}}
+		</div>
+	</div>
+{%- endif -%}

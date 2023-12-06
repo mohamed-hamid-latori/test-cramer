@@ -1,0 +1,89 @@
+{% comment %}
+	@params
+	vendor 				- {vendor object} *required
+	klaviyo_list_id 	- {string} *required
+{% endcomment %}
+
+{%- capture popup_content -%}
+	{%- if vendor != blank and klaviyo_list_id != blank -%}
+		<h3 class="vendor-subscription__title">
+			{{- 'products.product.vendor.subscription.title' | t: vendor: vendor -}}
+		</h3>
+
+		<form
+			id="subscription_form"
+			class="form vendor-subscription__form klaviyo_gdpr_embed_{{- klaviyo_list_id -}}"
+			action="//manage.kmail-lists.com/subscriptions/subscribe"
+			data-ajax-submit="//manage.kmail-lists.com/ajax/subscriptions/subscribe"
+			method="GET"
+			target="_blank"
+			rel="noopener noreferrer"
+			novalidate="novalidate"
+			data-klaviyo="true"
+			data-klaviyo-form
+		>
+			<input type="hidden" name="g" value="{{- klaviyo_list_id -}}">
+
+			<div class="form__row" data-klaviyo-form-element>
+				<div class="form__col">
+					<div class="input-group input-group--floating-label form__input-group">
+						<input type="email"
+							   name="email"
+							   id="k_id_email"
+							   class="input input-group__input form__input"
+							   value="{%- if customer -%}{{- customer.email -}}{%- endif -%}"
+							   placeholder="{{- 'products.product.vendor.subscription.email' | t -}}"
+							   autocorrect="off"
+							   autocapitalize="off"
+							   data-validate="email"
+						/>
+
+						<label
+							for="k_id_email"
+							class="input-group__label"
+						>
+							{{- 'products.product.vendor.subscription.email' | t -}}
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="form__row" data-klaviyo-form-element>
+				<div class="form__col">
+					<button class="button button--primary button--full-width">
+						{{- 'products.product.vendor.subscription.submit' | t -}}
+					</button>
+				</div>
+			</div>
+
+			<div class="vendor-subscription__form-messages">
+				<div
+					class="vendor-subscription__form-messages-value vendor-subscription__form-messages-value--success hidden"
+					data-klaviyo-success
+					data-success-message="{{- 'products.product.vendor.subscription.success' | t: vendor: vendor -}}"
+				>
+					{{- 'products.product.vendor.subscription.success' | t: vendor: vendor -}}
+				</div>
+
+				<div
+					class="vendor-subscription__form-messages-value vendor-subscription__form-messages-value--error hidden"
+					data-klaviyo-error
+				></div>
+			</div>
+		</form>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- if popup_content != blank -%}
+	<div class="popup vendor-subscription" data-popup data-vendor-popup>
+		<div class="popup__overlay" data-popup-close></div>
+
+		<div class="popup__wrapper vendor-subscription__wrapper" data-popup-content>
+			<div class="popup__content-wrapper">
+				<div class="popup__content">
+					{{- popup_content -}}
+				</div>
+			</div>
+		</div>
+	</div>
+{%- endif -%}

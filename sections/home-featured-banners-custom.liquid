@@ -1,0 +1,141 @@
+{%- capture featured_banners_custom -%}
+  {%- for block in section.blocks -%}
+    {%- assign image 		= block.settings.image -%}
+    {%- assign title 		= block.settings.title -%}
+    {%- assign subtitle 	= block.settings.subtitle -%}
+    {%- assign description 	= block.settings.description -%}
+    {%- assign button_text 	= block.settings.button_text -%}
+    {%- assign button_link 	= block.settings.button_link -%}
+    {%- assign link_target 	= block.settings.link_target -%}
+
+    {%- if image == blank -%}
+      {%- continue -%}
+    {%- endif -%}
+
+    {%- capture image_html -%}
+      {%- render 'image' with image: image, size: 'm', image_class: 'featured-banner__image' -%}
+    {%- endcapture -%}
+
+    <div class="featured-banners__column">
+      <div class="featured-banner">
+        {%- if title != blank -%}
+          <h2 class="featured-banner__title">
+            {{- title -}}
+          </h2>
+        {%- endif -%}
+
+        {%- if button_link != blank -%}
+          <a class="featured-banner__image-wrapper" href="{{- button_link -}}" target="{{- link_target -}}">
+            {{- image_html -}}
+          </a>
+        {%- else -%}
+          <div class="featured-banner__image-wrapper">
+            {{- image_html -}}
+          </div>
+        {%- endif -%}
+
+        <h3 class="featured-banner__subtitle">
+          {%- if button_link != blank -%}
+            <a class="featured-banner__subtitle-link" href="{{- button_link -}}" target="{{- link_target -}}">
+              {{- subtitle -}}
+            </a>
+          {%- else -%}
+            {{- subtitle -}}
+          {%- endif -%}
+        </h3>
+
+        {%- if description != blank -%}
+          <div class="featured-banner__description">
+            {{- description -}}
+          </div>
+        {%- endif -%}
+
+        {%- if button_text != blank and button_link != blank -%}
+          <a class="link featured-banner__button" href="{{- button_link -}}" target="{{- link_target -}}">
+            {{- button_text -}}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if featured_banners_custom != blank -%}
+  <section
+    class="featured-banners"
+    data-section-id="{{- section.id -}}"
+    data-section-type="featured-banners"
+  >
+    <div class="container featured-banners__container">
+      <div class="row featured-banners__row">
+        {{- featured_banners_custom -}}                 
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{%- schema -%}
+{
+  "name": "Featured Banners Custom",
+  "blocks": [
+    {
+      "type": "featured_banner",
+      "name": "Featured Banner Custom",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading"
+        },
+        {
+          "type": "text",
+          "id": "subtitle", 
+          "label": "Subheading"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text",
+          "default": "Shop now"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        },
+        {
+		  "type": "select",
+		  "id": "link_target",
+		  "label": "Öffnen als neuen Tab",
+		  "default": "_self",
+		  "options": [
+			{
+			 "value": "_self",
+			 "label": "Nein"
+							},
+			{
+			 "value": "_blank",
+			 "label": "Ja"
+							}
+					]
+		}
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured banners Custom"
+    }
+  ]
+}
+{%- endschema -%}

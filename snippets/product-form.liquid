@@ -1,0 +1,128 @@
+{% comment %}
+	@params
+	product 				- {product object} *required
+	enable_size_chart 		- {boolean}
+	size_chart_title 		- {string}
+	size_chart_icon 		- {image}
+	size_chart_text 		- {string}
+{% endcomment %}
+
+{%- assign enable_wishlist = settings.enable_wishlist -%}
+
+{%- assign tags = product.tags | downcase -%}
+
+{%- assign is_offline_only = false -%}
+
+{%- if tags contains 'offline only' -%}
+	{%- assign is_offline_only = true -%}
+{%- endif -%}
+
+{%- if product != blank -%}
+	{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+	{%- capture product_options -%}
+		{%- unless product.has_only_default_variant -%}
+          {%- assign upcased_excluded_vendors = excluded_vendors | upcase -%}
+          {%- assign upcased_excluded_vendors = upcased_excluded_vendors | split: "," -%}
+          {%- assign vendor = product.vendor | upcase -%}
+
+			<div class="product-form__options {% if upcased_excluded_vendors contains vendor %} hide-unavailable-variants {% endif %}">
+				{%- render 'product-options',
+					product: product,
+					enable_size_chart: enable_size_chart,
+					size_chart_title: size_chart_title,
+					size_chart_icon: size_chart_icon,
+					size_chart_icon_svg: size_chart_icon_svg,
+					size_chart_text: size_chart_text,
+                    excluded_vendors: excluded_vendors
+				-%}
+			</div>
+		{%- endunless -%}
+	{%- endcapture -%}
+
+	{%- capture no_script -%}
+		<select name="id" class="no-js hidden">
+			{%- for variant in product.variants -%}
+				<option
+					{% if variant == current_variant %}selected="selected"{% endif %}
+					{% unless variant.available %}disabled="disabled"{% endunless %}
+					value="{{ variant.id }}"
+				>
+					{{- variant.title -}}
+				</option>
+			{%- endfor -%}
+		</select>
+	{%- endcapture -%}
+
+	{%- capture form_submit -%}
+		<div class="product-form__submit">
+			<div class="product-form__submit-row">
+				{%- if is_offline_only -%}
+					<button class="button button--primary product-form__button product-form__button--main"
+							type="button"
+							name="add"
+							disabled="disabled"
+					>
+						<span>
+							{{- 'products.product.button.offline_only' | t -}}
+						</span>
+					</button>
+				{%- else -%}
+					<button class="button button--primary product-form__button product-form__button--main"
+						type="submit"
+						name="add"
+						data-add-to-cart
+						disabled
+						{% unless current_variant.available %}disabled="disabled"{% endunless %}
+					>
+						<span data-add-to-cart-text>
+							{%- if current_variant -%}
+								{%- if current_variant.available -%}
+									{{- 'products.product.add_to_cart' | t -}}
+								{%- else -%}
+									{{- 'products.product.sold_out' | t -}}
+								{%- endif -%}
+							{%- else -%}
+								{{- 'products.product.unavailable' | t -}}
+							{%- endif -%}
+						</span>
+					</button>
+
+					<button
+						name="add"
+						class="button button--primary product-form__button product-form__button--main klaviyo-bis-trigger hidden"
+						href="#"
+						id="klaviyoNoticeMe"
+						data-klaviyo-back-in-stock-button
+					>
+						<span>
+							{{- 'products.product.notifice_when_available' | t -}}
+						</span>
+					</button>
+				{%- endif -%}
+
+				{%- if enable_wishlist == true -%}
+					<button type="button" class="button button--secondary button--wishlist product-form__button product-form__button--wishlist hidden" data-add-to-wishlist></button>
+				{%- endif -%}
+			</div>
+		</div>
+	{%- endcapture -%}
+
+	{%- capture sucess_toast -%}
+		<div class="product-form__success-toast product-form__success-toast--hidden" data-add-to-cart-success>
+			<p class="product-form__success-toast-message">
+				{{- 'general.cart.item_added' | t -}}
+			</p>
+		</div>
+	{%- endcapture -%}
+
+	{%- form 'product', product, class: 'product-form', data-product-form: '' -%}
+		{{- product_options -}}
+
+		{{- no_script -}}
+
+		{{- form_submit -}}
+
+		{{- sucess_toast -}}
+	{%- endform -%}
+{%- endif -%}

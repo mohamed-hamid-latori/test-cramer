@@ -1,0 +1,50 @@
+{% assign title = section.settings.title %}
+{% assign subtitle = section.settings.subtitle %}
+{% assign html = section.settings.html %}
+
+<section class="instashop" data-section-id="{{- section.id -}}" data-section-type="instashop">
+	<div class="container container--full-width">
+		<div class="instashop__breadcrumbs">
+			{% render 'breadcrumbs' %}
+		</div>
+
+		{%- if title != blank or subtitle != blank -%}
+			<div class="instashop__header">
+				{%- if title != blank -%}
+					<h1 class="instashop__title">{{- title -}}</h1>
+				{%- endif -%}
+
+				{%- if subtitle != blank -%}
+					<div class="instashop__subtitle">
+						{{- subtitle -}}
+					</div>
+				{%- endif -%}
+			</div>
+		{%- endif -%}
+
+		{{- html -}}
+	</div>
+</section>
+
+{% schema %}
+{
+	"name": "Instagram gallery",
+	"settings": [
+		{
+			"id": "title",
+			"type": "text",
+			"label": "Heading"
+		},
+		{
+			"id": "subtitle",
+			"type": "richtext",
+			"label": "Section subtitle"
+		},
+		{
+			"id": "html",
+			"type": "html",
+			"label": "Content"
+		}
+	]
+}
+{% endschema %}

@@ -1,0 +1,204 @@
+{% assign zify_slider_products_navs = "6" | split: "," %} {% assign zify_collecsions = "marken-brands-stone-island" | split: "/" %}
+        {% assign product_limit = 20 %}
+        {% assign slider_show_title= 1 %}
+        {% assign slider_remove_copyright= 0 %}
+        {% assign slider_isFreePlan= 0 %}
+        {% assign slider_price= 1 %}
+        {% assign slider_addtocart= 0 %}
+        {% assign slider_viewmore= 0 %}
+        {% assign slider_rtl= false %}
+        {% assign slider_lazyLoad= false %}
+        {% assign slider_loop= false %}
+        {% assign slider_rewind= true %}
+        {% assign slider_autoplayHoverPause= false %}
+        {% assign slider_slide_auto = true %}
+        {% assign slider_show_nav = true %}
+        {% assign slider_show_dots = true %}
+        {% assign slider_autoplay_timeout = 3000 %}
+        {% assign slider_smart_speed = 250 %}
+        {% assign slider_color_success = "FFFFFF" %}
+        {% assign slider_bg_success = "28A745" %}
+        {% assign slider_rps_mb = 1 %}
+        {% assign slider_rps_sm = 2 %}
+        {% assign slider_rps_md = 4 %}
+        {% assign slider_rps_ln = 4 %}
+        {% assign enable_showall = 0 %}
+        {% assign slide_by = 1 %}
+        {% assign slider_width_img = 650 %}
+        {% assign slider_height_img =  %}
+        {% assign slider_crop_img = 0 %}
+        {% assign slider_scale_img = 0 %}
+        {% assign slider_show_variants = 0 %}
+        {% assign btn_add = "Add To Cart" %}
+        {% assign btn_view = "View More" %}
+        {% assign view_all = "View All" %}
+        {% assign add_success = "was added to the cart!" %}
+        {% assign slider_enable = 1 %}
+            {% assign slider_class_enable = "owl-carousel owl-theme" %}
+            {% assign zify_nav_left = '<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><polyline class="a" points="11040,1920 4960,8000 11040,14080 "></polyline></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><polyline class="a" points="11040,1920 4960,8000 11040,14080 "></polyline></svg>||<svg viewBox="2000 0 12000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><path class="c" d="M4800,14080h6400c528,0,960-432,960-960V2880c0-528-432-960-960-960H4800c-528,0-960,432-960,960 v10240C3840,13648,4272,14080,4800,14080z"></path><path class="a" d="M6860.8,8102.7l1693.9,1693.9c28.9,28.9,63.2,43.4,102.7,43.4s73.8-14.5,102.7-43.4l379-379 c28.9-28.9,43.4-63.2,43.4-102.7c0-39.6-14.5-73.8-43.4-102.7L7926.9,8000l1212.2-1212.2c28.9-28.9,43.4-63.2,43.4-102.7 c0-39.6-14.5-73.8-43.4-102.7l-379-379c-28.9-28.9-63.2-43.4-102.7-43.4s-73.8,14.5-102.7,43.4L6860.8,7897.3 c-28.9,28.9-43.4,63.2-43.4,102.7S6831.9,8073.8,6860.8,8102.7L6860.8,8102.7z"></path></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><path class="a" d="M4037.7,8357.3l5891.8,5891.8c100.6,100.6,219.7,150.9,357.3,150.9s256.7-50.3,357.3-150.9 l1318.1-1318.1c100.6-100.6,150.9-219.7,150.9-357.3c0-137.6-50.3-256.7-150.9-357.3L7745.9,8000l4216.4-4216.4 c100.6-100.6,150.9-219.7,150.9-357.3c0-137.6-50.3-256.7-150.9-357.3l-1318.1-1318.1c-100.6-100.6-219.7-150.9-357.3-150.9 s-256.7,50.3-357.3,150.9L4037.7,7642.7c-100.6,100.6-150.9,219.7-150.9,357.3C3886.8,8137.6,3937.1,8256.7,4037.7,8357.3 L4037.7,8357.3z"></path></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><path class="a" d="M4037.7,8357.3l5891.8,5891.8c100.6,100.6,219.7,150.9,357.3,150.9s256.7-50.3,357.3-150.9 l1318.1-1318.1c100.6-100.6,150.9-219.7,150.9-357.3c0-137.6-50.3-256.7-150.9-357.3L7745.9,8000l4216.4-4216.4 c100.6-100.6,150.9-219.7,150.9-357.3c0-137.6-50.3-256.7-150.9-357.3l-1318.1-1318.1c-100.6-100.6-219.7-150.9-357.3-150.9 s-256.7,50.3-357.3,150.9L4037.7,7642.7c-100.6,100.6-150.9,219.7-150.9,357.3C3886.8,8137.6,3937.1,8256.7,4037.7,8357.3 L4037.7,8357.3z"></path></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;left:0;width:100%;height:100%;"><circle class="c" cx="8000" cy="8000" r="5920"></circle><polyline class="a" points="7777.8,6080 5857.8,8000 7777.8,9920 "></polyline><line class="a" x1="10142.2" y1="8000" x2="5857.8" y2="8000"></line></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><circle class="c" cx="8000" cy="8000" r="6080"></circle><polygon class="a" points="8789.5,4902.8 8789.5,5846.4 6801.7,8000 8789.5,10153.6 8789.5,11097.2 5930.5,8000 "></polygon></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><circle class="c" cx="8000" cy="8000" r="6080"></circle><polygon class="a" points="8789.5,4902.8 8789.5,5846.4 6801.7,8000 8789.5,10153.6 8789.5,11097.2 5930.5,8000 "></polygon></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><circle class="c" cx="8000" cy="8000" r="6260.9"></circle><polyline class="a" points="7930.4,5495.7 5426.1,8000 7930.4,10504.3 "></polyline><line class="a" x1="10573.9" y1="8000" x2="5426.1" y2="8000"></line></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><circle class="c" cx="8000" cy="8000" r="6260.9"></circle><polyline class="a" points="7930.4,5495.7 5426.1,8000 7930.4,10504.3 "></polyline><line class="a" x1="10573.9" y1="8000" x2="5426.1" y2="8000"></line></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><circle class="c" cx="8000" cy="8000" r="6240"></circle><path class="a" d="M5738.1,7867.2l2689.6-2689.5c38.5-38.4,82.8-57.8,132.8-57.8c50,0,94.3,19.3,132.8,57.8l288.5,288.6 c38.5,38.5,57.7,82.7,57.7,132.8c0,50.1-19.2,94.3-57.7,132.8L6713.5,8000.1l2268.2,2268.3c38.5,38.5,57.7,82.7,57.7,132.7 c0,50.1-19.2,94.3-57.7,132.8l-288.5,288.5c-38.5,38.5-82.7,57.7-132.8,57.7c-50,0-94.3-19.2-132.8-57.7L5738.2,8132.8 c-38.4-38.4-57.7-82.7-57.7-132.8S5699.6,7905.8,5738.1,7867.2z"></path></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><circle class="c" cx="8000" cy="8000" r="6240"></circle><path class="a" d="M5738.1,7867.2l2689.6-2689.5c38.5-38.4,82.8-57.8,132.8-57.8c50,0,94.3,19.3,132.8,57.8l288.5,288.6 c38.5,38.5,57.7,82.7,57.7,132.8c0,50.1-19.2,94.3-57.7,132.8L6713.5,8000.1l2268.2,2268.3c38.5,38.5,57.7,82.7,57.7,132.7 c0,50.1-19.2,94.3-57.7,132.8l-288.5,288.5c-38.5,38.5-82.7,57.7-132.8,57.7c-50,0-94.3-19.2-132.8-57.7L5738.2,8132.8 c-38.4-38.4-57.7-82.7-57.7-132.8S5699.6,7905.8,5738.1,7867.2z"></path></svg>' | split: "||" %}
+{% assign zify_nav_right = '<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><polyline class="a" points="4960,1920 11040,8000 4960,14080 "></polyline></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><polyline class="a" points="4960,1920 11040,8000 4960,14080 "></polyline></svg>||<svg viewBox="2000 0 12000 16000" style="width:30px;height:100%;"><path class="c" d="M11200,14080H4800c-528,0-960-432-960-960V2880c0-528,432-960,960-960h6400 c528,0,960,432,960,960v10240C12160,13648,11728,14080,11200,14080z"></path><path class="a" d="M9139.2,8102.7L7445.3,9796.6c-28.9,28.9-63.2,43.4-102.7,43.4c-39.6,0-73.8-14.5-102.7-43.4 l-379-379c-28.9-28.9-43.4-63.2-43.4-102.7c0-39.6,14.5-73.8,43.4-102.7L8073.1,8000L6860.8,6787.8 c-28.9-28.9-43.4-63.2-43.4-102.7c0-39.6,14.5-73.8,43.4-102.7l379-379c28.9-28.9,63.2-43.4,102.7-43.4 c39.6,0,73.8,14.5,102.7,43.4l1693.9,1693.9c28.9,28.9,43.4,63.2,43.4,102.7S9168.1,8073.8,9139.2,8102.7L9139.2,8102.7z"></path></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><path class="a" d="M11962.3,8357.3l-5891.8,5891.8c-100.6,100.6-219.7,150.9-357.3,150.9s-256.7-50.3-357.3-150.9 L4037.7,12931c-100.6-100.6-150.9-219.7-150.9-357.3c0-137.6,50.3-256.7,150.9-357.3L8254.1,8000L4037.7,3783.6 c-100.6-100.6-150.9-219.7-150.9-357.3c0-137.6,50.3-256.7,150.9-357.3l1318.1-1318.1c100.6-100.6,219.7-150.9,357.3-150.9 s256.7,50.3,357.3,150.9l5891.8,5891.8c100.6,100.6,150.9,219.7,150.9,357.3C12113.2,8137.6,12062.9,8256.7,11962.3,8357.3 L11962.3,8357.3z"></path></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><path class="a" d="M11962.3,8357.3l-5891.8,5891.8c-100.6,100.6-219.7,150.9-357.3,150.9s-256.7-50.3-357.3-150.9 L4037.7,12931c-100.6-100.6-150.9-219.7-150.9-357.3c0-137.6,50.3-256.7,150.9-357.3L8254.1,8000L4037.7,3783.6 c-100.6-100.6-150.9-219.7-150.9-357.3c0-137.6,50.3-256.7,150.9-357.3l1318.1-1318.1c100.6-100.6,219.7-150.9,357.3-150.9 s256.7,50.3,357.3,150.9l5891.8,5891.8c100.6,100.6,150.9,219.7,150.9,357.3C12113.2,8137.6,12062.9,8256.7,11962.3,8357.3 L11962.3,8357.3z"></path></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><circle class="c" cx="8000" cy="8000" r="5920"></circle><polyline class="a" points="8222.2,6080 10142.2,8000 8222.2,9920 "></polyline><line class="a" x1="5857.8" y1="8000" x2="10142.2" y2="8000"></line></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><circle class="c" cx="8000" cy="8000" r="6080"></circle><polygon class="a" points="7210.5,4902.8 7210.5,5846.4 9198.3,8000 7210.5,10153.6 7210.5,11097.2 10069.5,8000 "></polygon></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><circle class="c" cx="8000" cy="8000" r="6080"></circle><polygon class="a" points="7210.5,4902.8 7210.5,5846.4 9198.3,8000 7210.5,10153.6 7210.5,11097.2 10069.5,8000 "></polygon></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><circle class="c" cx="8000" cy="8000" r="6260.9"></circle><polyline class="a" points="8069.6,5495.7 10573.9,8000 8069.6,10504.3 "></polyline><line class="a" x1="5426.1" y1="8000" x2="10573.9" y2="8000"></line></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><circle class="c" cx="8000" cy="8000" r="6260.9"></circle><polyline class="a" points="8069.6,5495.7 10573.9,8000 8069.6,10504.3 "></polyline><line class="a" x1="5426.1" y1="8000" x2="10573.9" y2="8000"></line></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><circle class="c" cx="8000" cy="8000" r="6240"></circle><path class="a" d="M10261.9,7867.2L7572.3,5177.8c-38.5-38.4-82.8-57.8-132.8-57.8c-50,0-94.3,19.3-132.8,57.8l-288.5,288.6 c-38.5,38.5-57.7,82.7-57.7,132.8c0,50.1,19.2,94.3,57.7,132.8l2268.2,2268.2l-2268.2,2268.3c-38.5,38.5-57.7,82.7-57.7,132.7 c0,50.1,19.2,94.3,57.7,132.8l288.5,288.5c38.5,38.5,82.7,57.7,132.8,57.7c50,0,94.3-19.2,132.8-57.7l2689.5-2689.5 c38.4-38.4,57.7-82.7,57.7-132.8S10300.4,7905.8,10261.9,7867.2z"></path></svg>||<svg viewBox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;"><circle class="c" cx="8000" cy="8000" r="6240"></circle><path class="a" d="M10261.9,7867.2L7572.3,5177.8c-38.5-38.4-82.8-57.8-132.8-57.8c-50,0-94.3,19.3-132.8,57.8l-288.5,288.6 c-38.5,38.5-57.7,82.7-57.7,132.8c0,50.1,19.2,94.3,57.7,132.8l2268.2,2268.2l-2268.2,2268.3c-38.5,38.5-57.7,82.7-57.7,132.7 c0,50.1,19.2,94.3,57.7,132.8l288.5,288.5c38.5,38.5,82.7,57.7,132.8,57.7c50,0,94.3-19.2,132.8-57.7l2689.5-2689.5 c38.4-38.4,57.7-82.7,57.7-132.8S10300.4,7905.8,10261.9,7867.2z"></path></svg>' | split: "||" %}
+{% assign zify_nav_css = '.zify-nav{width:40px;height:40px;display:block;position:absolute;cursor:pointer;opacity: 0;top: 50%;margin-top: -20px} .zify-nav .a {fill: none;stroke: #000;stroke-width: 960;stroke-miterlimit: 10} .zify-navleft{left:0px} .zify-navright{right:0} .zify-products-slider:hover .zify-nav{opacity: 1}||.zify-nav{width:40px;height:40px;display:block;position:absolute;cursor:pointer;opacity: 0;top: 50%;margin-top: -20px} .zify-nav .a {fill: none;stroke: #fff;stroke-width: 960;stroke-miterlimit: 10} .zify-navleft{left:0px} .zify-navright{right:0} .zify-products-slider:hover .zify-nav{opacity: 1}||.zify-nav{width:40px;height:40px;display:block;position:absolute;cursor:pointer;opacity: 0;top: 50%;margin-top: -20px;} .zify-nav .c {fill:#000;fill-opacity:.5;stroke:#fff;stroke-width:120;stroke-miterlimit:10;stroke-opacity:0.5;} .zify-nav .a {fill:#fff;opacity:.8;} .zify-nav:hover .c {fill-opacity:.3;} .zify-nav:hover .a {opacity:1;} .zify-navright{right: 0px} .zify-navleft{left:0px} .zify-products-slider:hover .zify-nav{opacity: 1}||.zify-nav{width:40px;height:40px;display:block;position:absolute;cursor:pointer;opacity: 0;top: 50%;margin-top: -20px;}.zify-nav .a {fill: #ddd;fill-opacity: .7;stroke: #000;stroke-width: 160;stroke-miterlimit: 10;stroke-opacity: .7}.zify-navright{right:0}.zify-products-slider:hover .zify-nav{opacity: 1}||.zify-nav{width:40px;height:40px;display:block;position:absolute;cursor:pointer;opacity: 0;top: 50%;margin-top: -20px;}.zify-nav .a {fill: #333;fill-opacity: .7;stroke: #000;stroke-width: 160;stroke-miterlimit: 10;stroke-opacity: .7}.zify-navright{right:0}.zify-products-slider:hover .zify-nav{opacity: 1}||.zify-nav{width:40px;height:40px;display:block;position:absolute;cursor:pointer;opacity: 0;top: 50%;margin-top: -20px} .zify-nav .a {fill: none;stroke: #686767;;stroke-width: 400;stroke-miterlimit: 10;} .zify-nav .c {fill: none;stroke: #686767;;stroke-width: 400;stroke-miterlimit: 10;} .zify-navright{right:0}.zify-products-slider:hover .zify-nav{opacity: 1}||.zify-nav{width:40px;height:40px;display:block;position:absolute;cursor:pointer;opacity: 0;top: 50%;margin-top: -20px} .zify-nav .c {fill: #fff;fill-opacity: 0.7;} .zify-nav .a {fill: #333;} .zify-navright{right:0}.zify-products-slider:hover .zify-nav{opacity: 1}||.zify-nav{width:40px;height:40px;display:block;position:absolute;cursor:pointer;opacity: 0;top: 50%;margin-top: -20px} .zify-nav .c {fill: #000;fill-opacity: 0.7;} .zify-nav .a {fill: #ddd;} .zify-navright{right:0}.zify-products-slider:hover .zify-nav{opacity: 1}||.zify-nav{width:40px;height:40px;display:block;position:absolute;cursor:pointer;opacity: 0;top: 50%;margin-top: -20px} .zify-nav .c {fill: #000;fill-opacity: 0.5} .zify-nav:hover .c{opacity: .5} .zify-nav .a {fill: none;stroke: #fff;stroke-width: 350;stroke-miterlimit: 10} .zify-navright{right:0}.zify-products-slider:hover .zify-nav{opacity: 1}||.zify-nav{width:40px;height:40px;display:block;position:absolute;cursor:pointer;opacity: 0;top: 50%;margin-top: -20px} .zify-nav .c {fill: #fff;opacity: .3} .zify-nav:hover .c{opacity: .5} .zify-nav .a {fill: none;stroke: #000;stroke-width: 350;stroke-miterlimit: 10} .zify-navright{right:0}.zify-products-slider:hover .zify-nav{opacity: 1}||.zify-nav{width:40px;height:40px;display:block;position:absolute;cursor:pointer;opacity: 0;top: 50%;margin-top: -20px} .zify-nav .c {fill: #fff;fill-opacity: .8} .zify-nav .a {fill: #333;opacity: .8;} .zify-navright{right:0}.zify-products-slider:hover .zify-nav{opacity: 1}||.zify-nav{width:40px;height:40px;display:block;position:absolute;cursor:pointer;opacity: 0;top: 50%;margin-top: -20px} .zify-nav .c {fill: #000;fill-opacity: .8} .zify-nav .a {fill: #ddd;opacity: .8;} .zify-navright{right:0}.zify-products-slider:hover .zify-nav{opacity: 1}' | split: "||" %}
+{% assign i = 0 %}
+{% for zify_collecsion in zify_collecsions %}
+  {% assign count = 0 %}
+  {% assign collection = collections[zify_collecsion] %}
+  {% assign products = collection.products %}
+
+  	<div class="zify-collection-item-{{ collection.handle }}">
+  	{% assign nav_i = zify_slider_products_navs[i] | plus: 0 %}
+  	<style type="text/css">{{ zify_nav_css[nav_i] }}</style>
+  	{% if slider_show_title == 1 %}<h3 class="zify-silder-title zify-products-slider-title-{{ collection.handle }}"></h3>{% endif %}
+  	{% if slider_remove_copyright == 0 and slider_isFreePlan == 1 %}
+  	<div style="display:block !important;float:right;font-size:12px;color:#999 !important;text-decoration: underline;opacity: 1;z-index: 9999 !important;font-weight: bold;">Product slider by Zifyapps</div>
+  	{% endif %}
+  	<div class="zify-products-slider {{ slider_class_enable }} zify-products-slider-id-{{ collection.handle }}">
+		{% for product in products limit: product_limit %}
+		{% assign count = count | plus: 1 %}
+		<div class="zify-item-product zify-product-stt-{{ count }}" id = "item-{{ product.id }}">
+			<a href="{{ product.url }}" title="{{ product.title }}">
+			  	{%- assign featured_image = product.featured_image -%}
+			  	<img src="{{ featured_image | img_url: '650x'}}" alt="{{ featured_image.alt | escape }}">
+			  	<div class="product-title">{{ product.title }}</div>
+		    </a>
+		    {% if slider_price == 1 %}
+		    <span class="zify-price">
+		        {%- assign variant = product  -%} 
+		        {% if variant.title %}
+		          {%- assign compare_at_price = variant.compare_at_price -%}
+		          {%- assign price = variant.price -%}
+		          {%- assign available = variant.available -%}
+		        {% else %}
+		          {%- assign compare_at_price = 1999 -%}
+		          {%- assign price = 1999 -%}
+		          {%- assign available = true -%}
+		        {% endif %}
+		        {%- assign money_price = price | money -%}
+		        <dl class="price{% if available and compare_at_price > price %} price--on-sale{% endif %}" data-price>
+		          {% if section.settings.show_vendor %}
+		            <div class="price__vendor"><dt><span class="visually-hidden">{{ 'products.product.vendor' | t }}</span></dt><dd>{{ product.vendor }}</dd>
+		            </div>
+		          {% endif %}
+		          <div class="price__regular">
+		            <dt>
+		              <span class="visually-hidden visually-hidden--inline">{{ 'products.product.regular_price' | t }}</span>
+		            </dt>
+		            <dd>
+		              <span class="price-item price-item--regular" data-regular-price>
+		                {% if available %}
+		                  {% if compare_at_price > price %}
+		                    {{ compare_at_price | money }}		                  {% else %}
+		                    {{ money_price }}		                  {% endif %}
+		                {% else %}
+		                  <span class="price__badge price__badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+		                {% endif %}
+		              </span>
+		            </dd>
+		          </div>
+		          {% if available and compare_at_price > price %}
+		              <div class="price__sale">
+		                <dt>
+		                  <span class="visually-hidden visually-hidden--inline">{{ 'products.product.sale_price' | t }}</span>
+		                </dt>
+		                <dd>
+		                  <s  class="zify-product-single__price--compare">
+	                        {{ compare_at_price | money }}	                      </s>
+		                  <span class="price-item price-item--sale" data-sale-price>
+		                    {{ money_price }}		                  </span>
+		                  <span class="price-item__label" aria-hidden="true">{{ 'products.product.on_sale' | t }}</span>
+		                </dd>
+		              </div>
+		            {% endif %}
+		        </dl>
+
+		  	</span>
+		  	{% endif %}
+
+		  	{% if slider_viewmore == 1 %}
+		  	<a href="{{ product.url }}" title="{{ btn_view }} {{ product.title }}" 
+		  		class="btn btn btn-default zify-btn-viewmore">{{ btn_view }}</a>
+		  	{% endif %}
+
+			{% form 'product', product, class: 'product-form zify-addtocart-form' %}
+				<div class="product-select-group zify-product-select" {% if product.variants.size < 2 or slider_show_variants == 0 %} style="display:none" {% endif %}>
+					<select name="id" class="product-select" data-target = "{{ product.id }}">
+				    {%- for variant in product.variants -%}
+				      <option value="{{ variant.id }}" data-compare="{{ variant.compare_at_price | money }}" data-price="{{ variant.price | money }}" data-image="{{ variant.featured_image | img_url: '650x'}}">{{ variant.title }}</option>
+				    {%- endfor -%}
+				  	</select>
+				</div>
+				{% if slider_addtocart == 1 and product.variants.size < 2 %}
+					{%- if product.available -%}
+					<button type="submit" {% unless product.available %} disabled="disabled"{% endunless %} class="btn btn btn-default zify-addtocart-submit">
+					  {{ btn_add }}					</button>
+					{%- else -%}
+					  <span class="price__badge price__badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+					  <a href="{{ product.url }}" title="{{ btn_view }} {{ product.title }}" 
+					  	class="btn btn btn-default zify-btn-viewmore">{{ btn_view }}</a>
+					{%- endif -%}
+				{% else %}
+					<a href="{{ product.url }}" title="{{ btn_view }} {{ product.title }}" 
+						class="btn btn btn-default zify-btn-viewmore">{{ btn_view }}</a>
+				{% endif %}
+			{% endform %}
+			{% if compare_at_price > price %}
+	        <div class="item_marks">
+	        	<span class="item_mark item_discount">-{{ compare_at_price | minus: price | times: 100.0 | divided_by: compare_at_price | round}}%</span>
+	        </div>
+	       	{% endif %}
+		</div>
+		{% endfor %}
+	</div>
+	<script type="text/javascript" charset="utf-8">
+	//<![CDATA[
+		{% if slider_enable == 1 %}
+		var zify_config_slider_collections_{{ collection.id }} ={
+		    margin:10,
+		    rtl: {{ slider_rtl }},
+		    lazyLoad: {{ slider_lazyLoad }},
+		    loop:{{ slider_loop }},
+		    rewind: {{ slider_rewind }},
+		    autoplayHoverPause: {{ slider_autoplayHoverPause }},
+		    autoplay:{{ slider_slide_auto }},
+		    autoplayTimeout:{{ slider_autoplay_timeout }},
+		    smartSpeed:{{ slider_smart_speed }},
+		    navContainer: false,
+			navClass: ['zify-nav zify-navleft','zify-nav zify-navright'],
+		    navText:['{{ zify_nav_left[nav_i] }}','{{ zify_nav_right[nav_i] }}'],
+		    nav:{{ slider_show_nav }},
+		    dots:{{ slider_show_dots }},
+		    slideBy:{{ slide_by }},
+		    responsive:{
+		        0:{
+		            items:{{ slider_rps_mb }},
+		            autoplay:{{ slider_slide_auto }},
+		            //dots:false,
+		          
+		        },
+		        480:{
+		        	items:{{ slider_rps_sm }},
+		        	autoplay:{{ slider_slide_auto }},
+		            //dots:false,
+		        },
+		        720:{
+		            items:{{ slider_rps_md }},
+		            autoplay:{{ slider_slide_auto }},
+		        },
+		        1024:{
+		            items:{{ slider_rps_ln }},
+		            autoplay:{{ slider_slide_auto }},
+		        }
+		    }
+		};
+		
+		jQuery('.zify-products-slider-id-{{ collection.handle }}').owlCarousel(zify_config_slider_collections_{{ collection.id }}); 
+	   {% endif %}
+	//]]>
+	</script>
+	{% if enable_showall == 1 %}
+	<a class="link zify-link-viewall" href="/collections/{{ collection.handle }}">{{ view_all }}</a>
+	{% endif %}
+	</div>
+
+{% assign i = i | plus: 1 %}
+{% endfor %}
+

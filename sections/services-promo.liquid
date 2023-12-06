@@ -1,0 +1,188 @@
+{%- assign title = section.settings.title -%}
+{%- assign image = section.settings.image -%}
+
+{%- assign right_column_title 			= section.settings.right_column_title -%}
+{%- assign right_column_text 			= section.settings.right_column_text -%}
+{%- assign right_column_list 			= section.settings.right_column_list -%}
+{%- assign right_column_before_image 	= section.settings.right_column_before_image -%}
+{%- assign right_column_before_caption 	= section.settings.right_column_before_caption -%}
+{%- assign right_column_after_image 	= section.settings.right_column_after_image -%}
+{%- assign right_column_after_caption 	= section.settings.right_column_after_caption -%}
+
+{%- capture left_column -%}
+	{%- if image != blank -%}
+		<div class="services-promo__banner">
+			<div class="services-promo__banner-wrapper">
+				<picture>
+					<img
+						src="{{ image | img_url: '649x' }}"
+						srcset="{{ image | img_url: '649x' }} 1x, {{ image | img_url: '1298x' }} 2x"
+						alt="{{ image.alt }}"
+						class="services-promo__banner-image"
+					/>
+				</picture>
+			</div>
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture right_column -%}
+	{%- if right_column_title != blank -%}
+		<h2 class="services-promo__title services-promo__title--small">
+			{{- right_column_title -}}
+		</h2>
+	{%- endif -%}
+
+	{%- if right_column_list != blank -%}
+		<div class="services-promo__list">
+			{{- right_column_list -}}
+		</div>
+	{%- endif -%}
+
+	{%- if right_column_before_image != blank or right_column_after_image != blank -%}
+		<div class="services-promo__blocks">
+			{%- if right_column_before_image != blank -%}
+				<div class="services-promo__blocks-item">
+					<div class="services-promo__blocks-item-image-wrapper">
+						<img
+							src="{{ right_column_before_image | img_url: '305x' }}"
+							srcset="{{ right_column_before_image | img_url: '305x' }} 1x, {{ right_column_before_image | img_url: '610x' }} 2x"
+							alt="{{ right_column_before_image.alt | default: right_column_before_caption }}"
+							class="services-promo__blocks-item-image"
+						/>
+					</div>
+
+					{%- if right_column_before_caption != blank -%}
+						<p class="services-promo__blocks-item-caption">
+							{{- right_column_before_caption -}}
+						</p>
+					{%- endif -%}
+				</div>
+			{%- endif -%}
+
+			{%- if right_column_after_image != blank -%}
+				<div class="services-promo__blocks-item">
+					<div class="services-promo__blocks-item-image-wrapper">
+						<img
+							src="{{ right_column_after_image | img_url: '305x' }}"
+							srcset="{{ right_column_after_image | img_url: '305x' }} 1x, {{ right_column_after_image | img_url: '610x' }} 2x"
+							alt="{{ right_column_after_image.alt | default: right_column_after_caption }}"
+							class="services-promo__blocks-item-image"
+						/>
+					</div>
+
+					{%- if right_column_after_caption != blank -%}
+						<p class="services-promo__blocks-item-caption">
+							{{- right_column_after_caption -}}
+						</p>
+					{%- endif -%}
+				</div>
+			{%- endif -%}
+		</div>
+	{%- endif -%}
+
+	{%- if right_column_text != blank -%}
+		<p class="services-promo__text">
+			{{- right_column_text -}}
+		</p>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- if title != blank or left_column != blank or right_column != blank %}
+	<section
+		class="services-promo"
+		data-section-id="{{- section.id -}}"
+		data-section-type="services-promo"
+	>
+		<div class="container services-promo__container">
+			{%- if title != blank -%}
+				<h2 class="services-promo__title">
+					{{- title -}}
+				</h2>
+			{%- endif -%}
+
+			{%- if left_column != blank or right_column != blank -%}
+				<div class="services-promo__row">
+					{%- if left_column != blank -%}
+						<div class="services-promo__col services-promo__col--banner">
+							{{- left_column -}}
+						</div>
+					{%- endif -%}
+
+					{%- if right_column != blank -%}
+						<div class="services-promo__col services-promo__col--blocks">
+							{{- right_column -}}
+						</div>
+					{%- endif -%}
+				</div>
+			{%- endif -%}
+		</div>
+	</section>
+{%- endif -%}
+
+{% schema %}
+{
+	"name": "Services promo",
+	"settings": [
+		{
+			"type": "text",
+			"id": "title",
+			"label": "Heading",
+			"default": "KOSTENLOSES KÜRZEN & REPARIEREN"
+		},
+		{
+			"type": "header",
+			"content": "Left column"
+		},
+		{
+			"type": "image_picker",
+			"id": "image",
+			"label": "Image"
+		},
+		{
+			"type": "header",
+			"content": "Right column"
+		},
+		{
+			"type": "text",
+			"id": "right_column_title",
+			"label": "Heading",
+			"default": " Aktuelle Bearbeitungsdauer:"
+		},
+		{
+			"type": "richtext",
+			"id": "right_column_list",
+			"label": "List",
+			"default": "<p>Kürzen ca. 1 Stunde (Stationär)</p><p>Reparaturen 2-3 Monate (Hosen bitte vor der Reparaturenannahme waschen)</p>"
+		},
+		{
+			"type": "image_picker",
+			"id": "right_column_before_image",
+			"label": "Before image"
+		},
+		{
+			"type": "text",
+			"id": "right_column_before_caption",
+			"label": "Before image caption",
+			"default": "Before"
+		},
+		{
+			"type": "image_picker",
+			"id": "right_column_after_image",
+			"label": "After image"
+		},
+		{
+			"type": "text",
+			"id": "right_column_after_caption",
+			"label": "Before image caption",
+			"default": "After"
+		},
+		{
+			"type": "textarea",
+			"id": "right_column_text",
+			"label": "Text",
+			"default": "Wir kürzen deine hose kostenlos, innerhalb von ca. Einer stunde (stationär). Das ist auch später jederzeit möglich. Und wir reparieren deine hose kostenlos, innerhalb von ca. 2-3 wochen, auch noch nach jahren."
+		}
+	]
+}
+{% endschema %}

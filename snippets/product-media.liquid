@@ -1,0 +1,338 @@
+{% comment %}
+	@params
+	product 				- {product object} *required
+	current_variant 		- {product variant object}
+{% endcomment %}
+
+{%- assign current_variant 		= current_variant | default: product.selected_or_first_available_variant -%}
+
+{%- assign tags 				= product.tags | downcase -%}
+{%- assign collections 			= product.collections | downcase -%}
+{%- assign metafields_new 		= current_variant.metafields.accentuate["neuheit"] -%}
+{%- assign metafields_sale 		= current_variant.metafields.accentuate["issale"] -%}
+
+{%- assign color_label 	= 'color,colour,couleur,colore,farbe,색,色,fxärg,farve' 	| split: ',' -%}
+{%- assign color_option = '' -%}
+
+{%- for option in product.options_with_values -%}
+	{%- assign downcased_option_name = option.name | downcase -%}
+
+	{%- if color_label contains downcased_option_name -%}
+		{%- assign color_option = 'option' | append: option.position -%}
+
+		{%- break -%}
+	{%- endif -%}
+{%- endfor -%}
+
+{%- assign current_color = '' -%}
+
+{%- if color_option != blank -%}
+	{%- assign current_color = current_variant[color_option] | downcase -%}
+{%- endif -%}
+
+{%- assign alphabetical_order 	= 'a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z' | split: ',' -%}
+{%- assign separator 			= '%%%' -%}
+
+{%- assign metafields_sale 		= current_variant.metafields.accentuate['issale'] -%}
+{%- assign metafields_new 		= current_variant.metafields.accentuate['neuheit'] -%}
+
+{%- assign has_sale = false -%}
+
+{%- if metafields_sale == 'Sale' -%}
+	{%- assign has_sale = true -%}
+{%- endif -%}
+
+{%- assign is_new = false -%}
+
+{%- if metafields_new == 'Neuheit' -%}
+	{%- assign is_new = true -%}
+{%- endif -%}
+
+{%- assign gender 		= product.metafields.product.product_gender | downcase -%}
+{%- assign is_unisex 	= false -%}
+
+{%- if gender == 'unisex' -%}
+	{%- assign is_unisex = true -%}
+{%- endif -%}
+
+{%- assign images 				= product.images -%}
+
+{%- assign gallery 				= '' -%}
+{%- assign slides 				= '' -%}
+
+{%- for value in alphabetical_order -%}
+	{%- for image in images -%}
+		{%- assign index 	= forloop.index0 -%}
+		{%- assign alt 		= image.alt | default: product.title -%}
+
+		{%- assign is_image_alt_empty = false -%}
+
+		{%- if alt == product.title -%}
+			{%- assign is_image_alt_empty = true -%}
+		{%- endif -%}
+
+		{%- assign alt_downcased = alt | downcase -%}
+
+		{%- assign order = alt_downcased | split: separator | last -%}
+
+		{%- if order == alt_downcased -%}
+			{%- assign order = nil -%}
+		{%- endif -%}
+
+		{%- unless order == value -%}
+			{%- continue -%}
+		{%- endunless -%}
+
+		{%- assign search_value 	= order | prepend: separator -%}
+		{%- assign alt 				= alt 	| replace: search_value, '' -%}
+		{%- assign alt_downcased 	= alt 	| downcase -%}
+
+		{%- capture gallery_item -%}
+			<div
+				class="product-media__gallery-col{% if current_color != '' %}{% unless alt_downcased == current_color %} hidden{% endunless %}{% endif %}"
+				data-product-gallery-item
+				{% unless is_image_alt_empty %}data-color="{{ alt_downcased }}"{% endunless %}
+				{% unless order == nil  %}data-order="{{ order }}"{% endunless %}
+			>
+        {% assign lazyload = true %}
+        {% if forloop.index == 1 or forloop.index == 2 %}
+         {% assign lazyload = 'none' %}
+        {% endif %}
+				<div class="product-media__gallery-item 1">
+					<picture>
+						{%- render 'image' with image: image, size: 'xs', image_class: 'product-media__gallery-item-image', lazyload: lazyload -%}
+					</picture>
+				</div>
+			</div>
+		{%- endcapture -%}
+
+		{%- capture slider_item -%}
+			<div
+				class="swiper-slide product-media__slide{% if current_color != '' %}{% unless alt_downcased == current_color %} hidden{% endunless %}{% endif %}"
+				data-product-slide
+				{% unless is_image_alt_empty %}data-color="{{ alt_downcased }}"{% endunless %}
+				{% unless order == nil  %}data-order="{{ order }}"{% endunless %}
+			>
+
+					{% assign lazynone = 'true' %}
+				{% if order == 'a' %}
+					{% assign lazynone = 'none' %}
+				{% endif %}
+
+				<picture>
+					{%- render 'image' with image: image, size: 'xs', image_class: 'product-media__slide-image', lazyload: lazynone -%}
+				</picture>
+			</div>
+		{%- endcapture -%}
+
+		{%- assign gallery 	= gallery 	| append: gallery_item -%}
+		{%- assign slides 	= slides 	| append: slider_item -%}
+	{%- endfor -%}
+{%- endfor -%}
+
+{%- for image in images -%}
+	{%- assign index 	= forloop.index0 -%}
+	{%- assign alt 		= image.alt | default: product.title -%}
+
+	{%- assign is_image_alt_empty = false -%}
+
+	{%- if alt == product.title -%}
+		{%- assign is_image_alt_empty = true -%}
+	{%- endif -%}
+
+	{%- assign alt_downcased = alt | downcase -%}
+
+	{%- assign order = alt_downcased | split: separator | last -%}
+
+	{%- if order == alt_downcased -%}
+		{%- assign order = nil -%}
+	{%- endif -%}
+
+	{%- if alphabetical_order contains order -%}
+		{%- continue -%}
+	{%- endif -%}
+
+	{%- assign search_value 	= order | prepend: separator -%}
+	{%- assign alt 				= alt 	| replace: search_value, '' -%}
+	{%- assign alt_downcased 	= alt 	| downcase -%}
+
+	{%- capture gallery_item -%}
+		<div
+			class="product-media__gallery-col{% if current_color != '' %}{% unless alt_downcased == current_color %} hidden{% endunless %}{% endif %}"
+			data-product-gallery-item
+			{% unless is_image_alt_empty %}data-color="{{ alt_downcased }}"{% endunless %}
+			{% unless order == nil  %}data-order="{{ order }}"{% endunless %}
+		>
+      {% assign lazyload = true %}
+      {% if forloop.index == 1 or forloop.index == 2 %}
+        {% assign lazyload = 'none' %}
+      {% endif %}
+			<div class="product-media__gallery-item 2">
+				<picture>
+				  {%- render 'image' with image: image, size: 'xs', image_class: 'product-media__gallery-item-image', lazyload: lazyload -%}
+				</picture>
+			</div>
+		</div>
+	{%- endcapture -%}
+
+	{%- capture slider_item -%}
+		<div
+			class="swiper-slide product-media__slide{% if current_color != '' %}{% unless alt_downcased == current_color %} hidden{% endunless %}{% endif %}"
+			data-product-slide
+			{% unless is_image_alt_empty %}data-color="{{ alt_downcased }}"{% endunless %}
+			{% unless order == nil  %}data-order="{{ order }}"{% endunless %}
+		>
+					{% assign lazynone = 'true' %}
+				{% if order == 'a' %}
+					{% assign lazynone = 'none' %}
+				{% endif %}
+
+				<picture>
+				{%- render 'image' with image: image, size: 'xs', image_class: 'product-media__slide-image', lazyload: lazynone -%}
+				<source srcset="{{ image | img_url: '400x' }} 1x, {{ image | img_url: '800x' }} 2x" media="(max-width: 400px)">
+				<source srcset="{{ image | img_url: '576x' }} 1x, {{ image | img_url: '1152x' }} 2x" media="(max-width: 576px)">
+				<source srcset="{{ image | img_url: '768x' }} 1x, {{ image | img_url: '1576x' }} 2x" media="(max-width: 768px)">
+				<source srcset="{{ image | img_url: '992x' }} 1x, {{ image | img_url: '1984x' }} 2x" media="(max-width: 992px)">
+				<source srcset="{{ image | img_url: '20x' }} 1x, {{ image | img_url: '20x' }} 2x" media="(max-width: 993px)">
+
+				<img
+					class="product-media__slide-image"
+					srcset="{{ image | img_url: '200x' }} 1x, {{ image | img_url: '200x' }} 2x"
+					src="{{ image | img_url: '200x' }}"
+					alt="{{ alt }}"
+					{% if current_color != '' %}{% unless alt_downcased == current_color %}
+					loading="lazy"
+					{% endunless %}{% endif %}
+				/>
+			</picture>
+		</div>
+	{%- endcapture -%}
+
+	{%- assign gallery 	= gallery 	| append: gallery_item -%}
+	{%- assign slides 	= slides 	| append: slider_item -%}
+{%- endfor -%}
+
+{%- capture badges -%}
+	{%- if tags contains 'offline only' -%}
+		{%- capture badge_offline_only -%}
+			<div class="badge badge--offline-only product-media__badge" data-product-badge="offline-only">
+				{{- 'products.product.badges.offline_only' | t -}}
+			</div>
+		{%- endcapture -%}
+	{%- endif -%}
+
+	{%- capture badge_sale -%}
+		<div class="badge badge--sale product-media__badge{% unless has_sale %} badge--hidden{% endunless %}" data-product-badge="sale">
+			{{- 'products.product.badges.sale' | t -}}
+		</div>
+	{%- endcapture -%}
+
+	{%- capture badge_new -%}
+		<div class="badge badge--new product-media__badge{% unless is_new %} badge--hidden{% endunless %}" data-product-badge="new">
+			{{- 'products.product.badges.new' | t -}}
+		</div>
+	{%- endcapture -%}
+
+	{%- if tags contains 'unisex' or is_unisex -%}
+		{%- capture badge_unisex -%}
+			<div class="badge badge--unisex product-media__badge" data-product-badge="unisex">
+				{{- 'products.product.badges.unisex' | t -}}
+			</div>
+		{%- endcapture -%}
+	{%- endif -%}
+
+	{%- if tags contains 'bestseller' -%}
+		{%- capture badge_bestseller -%}
+			<div class="badge badge--bestseller product-media__badge" data-product-badge="bestseller">
+				{{- 'products.product.badges.bestseller' | t -}}
+			</div>
+		{%- endcapture -%}
+	{%- endif -%}
+
+	{%- if tags contains '100% bio-baumwolle' -%}
+		{%- capture badge_bio_cotton -%}
+			<div class="badge badge--icon product-media__badge product-media__badge--sustainable" data-product-badge="bio-cotton">
+				{%- render 'icon-bio-cotton' -%}
+			</div>
+		{%- endcapture -%}
+	{%- endif -%}
+
+	{%- if tags contains 'eco-friendly' -%}
+		{%- capture badge_eco_friendly -%}
+			<div class="badge badge--icon product-media__badge product-media__badge--sustainable" data-product-badge="eco-friendly">
+				{%- render 'icon-eco-friendly' -%}
+			</div>
+		{%- endcapture -%}
+	{%- endif -%}
+
+	{%- if tags contains 'vegan' -%}
+		{%- capture badge_vegan -%}
+			<div class="badge badge--icon product-media__badge product-media__badge--sustainable" data-product-badge="vegan">
+				{%- render 'icon-vegan' -%}
+			</div>
+		{%- endcapture -%}
+	{%- endif -%}
+
+	{%- if badge_offline_only != blank -%}
+		{%- assign badge_unisex 	= nil -%}
+		{%- assign badge_bestseller = nil -%}
+	{%- endif -%}
+
+	{%- if badge_sale != blank -%}
+		{%- assign badge_unisex 	= nil -%}
+		{%- assign badge_bestseller = nil -%}
+	{%- endif -%}
+
+	{%- if badge_new != blank -%}
+		{%- assign badge_unisex 	= nil -%}
+		{%- assign badge_bestseller = nil -%}
+	{%- endif -%}
+
+	{%- if badge_unisex != blank -%}
+		{%- assign badge_bestseller = nil -%}
+	{%- endif -%}
+
+	{{- badge_offline_only -}}
+	{{- badge_sale -}}
+	{{- badge_new -}}
+	{{- badge_unisex -}}
+	{{- badge_bestseller -}}
+
+	{{- badge_bio_cotton -}}
+	{{- badge_eco_friendly -}}
+	{{- badge_vegan -}}
+{%- endcapture -%}
+
+<div class="product-media"
+	 data-product-media
+	 data-color-option-position="{{ color_option }}"
+	 data-current-color="{{ current_color }}"
+>
+	{%- if slides != '' -%}
+		<div class="product-media__slider">
+			<div class="swiper-container product-media__slider-container" data-product-slider>
+				<div class="swiper-wrapper product-media__slider-wrapper">
+					{{- slides -}}
+				</div>
+
+				<button class="product-media__slider-arrow product-media__slider-arrow--prev" data-product-slider-arrow-prev>
+					{%- render 'icon-chevron' -%}
+				</button>
+
+				<button class="product-media__slider-arrow product-media__slider-arrow--next" data-product-slider-arrow-next>
+					{%- render 'icon-chevron' -%}
+				</button>
+
+				<div class="product-media__slider-pagination" data-product-slider-pagination></div>
+			</div>
+		</div>
+
+		<div class="product-media__gallery" data-product-gallery>
+			<div class="product-media__gallery-row">
+				{{- gallery -}}
+			</div>
+		</div>
+
+		{{- badges -}}
+	{%- endif -%}
+</div>

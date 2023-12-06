@@ -1,0 +1,20 @@
+{% comment %}
+	@params
+	customer 		- {customer object} *required
+{% endcomment %}
+
+<section class="account-content account-newsletter">
+	<div class="account-content__container">
+		<div class="account-content__header">
+			<h1 class="account-content__header-title">
+				{{- 'customer.account.newsletter.title' | t -}}
+			</h1>
+			<div class="account-content__header-icon">
+				{%- render 'icon-account-newsletter' -%}
+			</div>
+		</div>
+		<div class="account-newsletter__content">
+			{% section 'account-newsletter' %}
+		</div>
+	</div>
+</section>

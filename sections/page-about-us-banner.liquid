@@ -1,0 +1,74 @@
+{% capture about_us_banner %}
+	{%- assign banner_image = section.settings.banner_image -%}
+	{%- assign image_mobile = section.settings.banner_image_mobile -%}
+	{%- assign banner_title = section.settings.banner_title -%}
+	{%- assign enable_breadcrumbs = section.settings.enable_breadcrumbs -%}
+
+	{%- if banner_image != blank -%}
+		<div class="about-us-banner__wrapper">
+			{%- if enable_breadcrumbs -%}
+				<div class="about-us-banner__breadcrumbs">
+					{%- render 'breadcrumbs' -%}
+				</div>
+			{%- endif -%}
+			<picture>
+				<source srcset="{{ image_mobile | img_url: '335x' }} 1x" media="(max-width: 576px)">
+				<source srcset="{{ banner_image | img_url: '1376x' }} 1x" media="(max-width: 991px)">
+				<img
+					class="about-us-banner__image"
+					src="{{ banner_image | img_url: '1376x' }}"
+					alt="{{- banner_image.alt -}}"
+				/>
+			</picture>
+
+			{%- if banner_title != blank -%}
+				<div class="about-us-banner__head">
+					<h1 class="about-us-banner__title">
+						{{- banner_title -}}
+					</h1>
+				</div>
+			{%- endif -%}
+		</div>
+	{%- endif -%}
+{% endcapture %}
+
+<section
+	class="about-us-banner"
+	data-section-type="about-us-banner"
+	data-section-id="{{ section.id }}"
+>
+	<div class="container">
+		{{- about_us_banner -}}
+	</div>
+</section>
+
+{% schema %}
+{
+	"name": "Banner",
+	"settings": [
+		{
+			"type": "checkbox",
+			"id": "enable_breadcrumbs",
+			"label": "Enable breadcrumbs",
+			"default": true
+		},
+		{
+			"type": "image_picker",
+			"id": "banner_image",
+			"label": "Banner image"
+		},
+		{
+			"type": "image_picker",
+			"id": "banner_image_mobile",
+			"label": "Banner mobile image",
+			"info": "Starting with 575px"
+		},
+		{
+			"type": "text",
+			"id": "banner_title",
+			"label": "Banner title",
+			"default": "About Us"
+		}
+	]
+}
+{% endschema %}

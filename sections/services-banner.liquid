@@ -1,0 +1,100 @@
+{%- assign video_url 	= section.settings.video_url -%}
+{%- assign title 		= section.settings.title -%}
+{%- assign text 		= section.settings.text -%}
+{%- assign button_text 	= section.settings.button_text -%}
+{%- assign button_link 	= section.settings.button_link -%}
+
+{%- capture video -%}
+	{%- if video_url != blank -%}
+		<div class="services-banner__video-wrapper">
+			<video class="services-banner__video-banner"
+				   autoplay
+				   muted
+				   loop
+				   playsinline
+				   preload="metadata"
+			>
+				<source src="{{- video_url -}}" type="video/mp4">
+			</video>
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture button -%}
+	{%- if button_text != blank and button_link != blank -%}
+		<a href="{{- button_link -}}" class= "button button--secondary services-banner__button">
+			{{- button_text -}}
+		</a>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- if video != blank -%}
+	<section
+		class="container services-banner"
+		data-section-id="{{- section.id -}}"
+		data-section-type="services-banner"
+	>
+		<div class="services-banner__video">
+			<div class="services-banner__breadcrumbs">
+				{%- render 'breadcrumbs' -%}
+			</div>
+
+			{{- video -}}
+		</div>
+
+		{%- if title != blank or text != blank or button != blank -%}
+			<div class="services-banner__content">
+				{%- if title != blank -%}
+					<h3 class="services-banner__title">
+						{{- title -}}
+					</h3>
+				{%- endif -%}
+
+				{%- if text != blank -%}
+					<p class="services-banner__text">
+						{{- text -}}
+					</p>
+				{%- endif -%}
+
+				{{- button -}}
+			</div>
+		{%- endif -%}
+	</section>
+{%- endif -%}
+
+{% schema %}
+{
+	"name": "Services banner",
+	"settings": [
+		{
+			"type": "text",
+			"id": "video_url",
+			"label": "Video URL",
+			"info": "Required"
+		},
+		{
+			"type": "text",
+			"id": "title",
+			"label": "Heading",
+			"default": "Our Free Services"
+		},
+		{
+			"type": "textarea",
+			"id": "text",
+			"label": "Text",
+			"default": "Seit vielen jahren bieten wir unseren registrierten kunden kostenlosen, umfassenden service ohne zeitliche begrenzung. Dies wollen wir auch unseren online-kunden nicht vorenthalten!"
+		},
+		{
+			"type": "text",
+			"id": "button_text",
+			"label": "Button text",
+			"default": "Register now"
+		},
+		{
+			"type": "url",
+			"id": "button_link",
+			"label": "Button link"
+		}
+	]
+}
+{% endschema %}

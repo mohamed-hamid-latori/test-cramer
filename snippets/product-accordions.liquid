@@ -1,0 +1,47 @@
+{%- comment -%}
+	@params
+	product - product object *required
+{%- endcomment -%}
+
+{%- if product != blank -%}
+	{%- assign accordion         = '' -%}
+	{%- assign accordion_title   = product.metafields.accordion.accordion_title -%}
+	{%- assign accordion_content = product.metafields.accordion.accordion_content -%}
+
+	{%- if product.metafields.accordion != blank -%}
+		{%- for title in accordion_title -%}
+			{%- assign index    = forloop.index | minus: 1 -%}
+			{%- assign content  = accordion_content[index] -%}
+
+			{%- capture accordion_item -%}
+				{%- if title != blank and content != blank -%}
+					<div class="product-accordion__item js-accordion open">
+						<div class="product-accordion__toggler js-accordion-toggler">
+							{{- title -}}
+
+							<div class="product-accordion__toggler-icon">
+								{% include 'icon-plus' %}
+							</div>
+
+							<div class="product-accordion__toggler-icon product-accordion__toggler-icon--open">
+								{% include 'icon-minus' %}
+							</div>
+						</div>
+
+						<div class="product-accordion__content js-accordion-content">
+							{{- content -}}
+						</div>
+					</div>
+				{%- endif -%}
+			{%- endcapture -%}
+
+			{%- assign accordion = accordion | append: accordion_item -%}
+		{%- endfor -%}
+	{%- endif -%}
+
+	{%- if accordion != blank -%}
+		<div class="product-accordion js-accordion-container">
+			{{- accordion -}}
+		</div>
+	{%- endif -%}
+{%- endif -%}

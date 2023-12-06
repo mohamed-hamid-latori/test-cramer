@@ -1,0 +1,139 @@
+{%- capture slider -%}
+    {%- for block in section.blocks -%}
+    
+        {%- assign collection                = collections[block.settings.collection] -%}
+		{%- assign collection_image        = block.settings.image | default: collection.image | default: placeholder_image -%}
+		{%- assign collection_title        = block.settings.title | default: collection.title -%}
+
+        {%- if collection == blank -%}
+			{%- continue -%}
+		{%- endif %}  
+
+        <div class="swiper-slide all-stores-list__slider-slide">
+            {%- render 'card',
+				image:          collection_image,
+				title:          collection_title,
+				subtitle:       block.settings.subtitle,
+				link:           collection.url,
+				link_1_label:   block.settings.link_1_label,
+				link_1_url:     block.settings.link_1_url,
+				link_2_label:   block.settings.link_2_label,
+				link_2_url:     block.settings.link_2_url -%}
+        </div>
+    {%- endfor -%}
+{%- endcapture -%}
+
+{%- assign heading          = section.settings.heading -%}
+{%- assign subtext          = section.settings.subtext -%}
+{%- if slider != blank -%}
+    <section class="all-stores-list"
+            data-section-id="{{- section.id -}}"
+            data-section-type="all-stores-list"
+    >
+        <div class="container container--no-padding all-stores-list__container">
+            {%- if heading != blank -%}
+                 <h3 class="all-stores-list__heading">{{- heading -}}</h3>
+            {%- endif -%}
+
+            {%- if subtext != blank -%}
+                <p class="all-stores-list__subtext">{{- subtext -}}</p>
+            {%- endif -%}
+
+            <div class="slider all-stores-list__slider">
+                <div class="swiper-container slider__container all-stores-list__slider-container" data-all-stores-list-slider>
+                    <div class="swiper-wrapper slider__wrapper all-stores-list__slider-wrapper">
+                        {{- slider -}}
+                    </div>
+
+                    <button class="slider__arrow slider__arrow--prev" data-slider-arrow data-slider-arrow-prev>
+    					{%- render 'icon-chevron' -%}
+    				</button>
+
+    				<button class="slider__arrow slider__arrow--next js-slider-arrow-next" data-slider-arrow data-slider-arrow-next>
+    					{%- render 'icon-chevron' -%}
+    				</button>
+                </div>
+            </div>
+        </div>
+    </section>
+{%- endif -%}
+
+{% schema %}
+{
+    "name": "Stores list",
+    "settings": [
+        {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Unsere Events"
+        },
+        {
+            "type": "text",
+            "id": "subtext",
+            "label": "Text after heading",
+            "default": "Let's celebrate active lifestyle and creativity together! Visit our events"
+        }
+    ],
+    "max_blocks": 6,
+    "blocks": [
+        {
+            "type": "event",
+            "name": "Event",
+            "settings": [
+                {
+					"type": "collection",
+					"id": "collection",
+					"label": "Collection"
+				},
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image",
+					"info": "Optional. Defaults to collection image"
+				},
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title",
+					"info": "Optional. Defaults to collection title"
+				},
+				{
+					"type": "text",
+					"id": "subtitle",
+					"label": "Subtitle",
+					"info": "Optional"
+				},
+				{
+					"type": "header",
+					"content": "First link"
+				},
+				{
+					"type": "text",
+					"id": "link_1_label",
+					"label": "Link label"
+				},
+				{
+					"type": "url",
+					"id": "link_1_url",
+					"label": "Link URL"
+				},
+				{
+					"type": "header",
+					"content": "Second link"
+				},
+				{
+					"type": "text",
+					"id": "link_2_label",
+					"label": "Link label"
+				},
+				{
+					"type": "url",
+					"id": "link_2_url",
+					"label": "Link URL"
+				}                        
+            ]
+        }
+    ]
+}
+{% endschema %}

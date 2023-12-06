@@ -1,0 +1,111 @@
+{%- capture content_image -%}
+	{%- assign content_img    =    section.settings.denim_info_img -%}
+
+	{%- if content_img != blank -%}
+		<div class="denim-info__img">
+			<img src="{{- content_img | img_url: "master" -}}" alt="{{- content_img.alt -}}">
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture content_textarea -%}
+	{%- assign content_title  =  section.settings.denim_info_title -%}
+	{%- assign content_text   =   section.settings.denim_info_text -%}
+	{%- assign content_link   =   section.settings.denim_info_link -%}
+
+	<div class="denim-info-textarea">
+		{%- if content_title != blank -%}
+			<div class="denim-info-textarea__title">
+				{{- content_title -}}
+			</div>
+		{%- endif -%}
+
+		{%- if content_text != blank -%}
+			<p>
+				{{- content_text -}}
+			</p>
+		{%- endif -%}
+
+		<ul class="denim-info-list">
+			{%- for block in section.blocks -%}
+				{%- assign content_item_icon = block.settings.denim_info_item_icon -%}
+				{%- assign content_item_title = block.settings.denim_info_item -%}
+
+				{%- if content_item_title == blank -%}
+					{%- continue -%}
+				{%- endif -%}
+
+				<li class="denim-info__item">
+					{%- if content_item_icon != blank -%}
+						<img src="{{- content_item_icon | img_url: "30x30" -}}" alt="{{- content_item_icon.alt -}}">
+					{%- endif -%}
+
+					{{- content_item_title -}}
+				</li>
+			{%- endfor -%}
+		</ul>
+
+		{%- if content_link != blank -%}
+			<a class="button button--secondary button--main denim-info__link denim-info__link--transparent" href="{{- content_link -}}">Shop sustainable</a>
+		{%- endif -%}
+	</div>
+
+{%- endcapture -%}
+
+{%- if content_image != blank and content_textarea != blank -%}
+	<section class="denim-info-section" data-section="{{ section.id }}">
+		<div class="container">
+			<div class="denim-info">
+				{{- content_image -}}
+				{{- content_textarea -}}
+			</div>
+		</div>
+	</section>
+{%- endif -%}
+
+{% schema %}
+	{
+		"name": "Denim Bible Info",
+		"settings": [
+			{
+				"type": "image_picker",
+				"id": "denim_info_img",
+				"label": "Choose image"
+			},
+			{
+				"type": "text",
+				"id": "denim_info_title",
+				"label": "Enter title"
+			},
+			{
+				"type": "richtext",
+				"id": "denim_info_text",
+				"label": "Enter text"
+			},
+			{
+				"type": "url",
+				"id": "denim_info_link",
+				"label": "Insert link"
+			}
+		],
+		"blocks": [
+			{
+				"name": "Denim Info Item",
+				"type": "item",
+				"limit": 3,
+				"settings": [
+					{
+						"type": "image_picker",
+						"id": "denim_info_item_icon",
+						"label": "Choose icon"
+					},
+					{
+						"type": "text",
+						"id": "denim_info_item",
+						"label": "Enter item title"
+					}
+				]
+			}
+		]
+	}
+{% endschema %}

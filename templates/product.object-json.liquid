@@ -1,0 +1,9 @@
+{%- layout none -%}
+
+{%- capture result -%}
+	{%- include 'object-product-json',
+		product: product
+	-%}
+{%- endcapture -%}
+
+<script data-json-response type="application/json">{{- result -}}</script>

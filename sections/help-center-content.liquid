@@ -1,0 +1,63 @@
+{%- capture content -%}
+    {%- for block in section.blocks -%}
+        {%- assign title                  = block.settings.title -%}
+        {%- assign content                = block.settings.text -%}
+
+
+
+    {%- endfor -%}
+{%- endcapture -%}
+
+<section clas="help-center-content"
+        data-section-id="{{- section.id -}}"
+        data-section-type="help-center-content"
+>
+    <div class="help-center-content__container">
+        {%- if heading != blank -%}
+            <h1 class="help-center-content__heading">
+                {{- heading -}}   
+            </h1>
+        {%- endif -%}
+        
+        {%- if content != blank -%}
+            {{- content -}}
+        {%- endif -%}
+    </div>
+</section>
+
+{% schema %}
+    {
+        "name": {},
+        "settings": [
+            {
+                "type": "text",
+                "id": "heading",
+                "label": "Heading",
+                "default": "Frequently Asked Questions"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "Allgemeines",
+                "name": "Allgemeines",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Title"
+                    },
+                    {
+                        "type": "html",
+                        "id": "text",
+                        "label": "Text",
+                        "default": "<p></p>"
+                    }           
+                ]
+            }
+        ]
+        
+    }
+{% endschema %}
+
+
+ 

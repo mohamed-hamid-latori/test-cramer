@@ -1,0 +1,254 @@
+{%- assign placeholder_image = settings.placeholder_image -%}
+
+{%- capture featured_categories -%}
+	{%- for block in section.blocks -%}
+		{%- assign collection = collections[block.settings.collection] -%}
+
+		{%- if collection == blank -%}
+			{%- continue -%}
+		{%- endif %}
+
+		{%- assign collection_image 		= block.settings.image | default: collection.image | default: placeholder_image -%}
+		{%- assign collection_title 		= block.settings.title | default: collection.title -%}
+		{%- assign collection_subtitle 		= block.settings.subtitle -%}
+		{%- assign collection_url 			= collection.url -%}
+
+		{%- assign collection_link_1_label 	= block.settings.link_1_label -%}
+		{%- assign collection_link_1_url 	= block.settings.link_1_url -%}
+		{%- assign collection_link_2_label 	= block.settings.link_2_label -%}
+		{%- assign collection_link_2_url 	= block.settings.link_2_url -%}
+
+		{%- assign collection_link_1_redirect_to 	= block.settings.link_1_redirect_to -%}
+		{%- assign collection_link_2_redirect_to 	= block.settings.link_2_redirect_to -%}
+
+		{%- capture link_1_preferred_gender -%}
+			{%- case collection_link_1_redirect_to -%}
+				{%- when 'female' -%}
+					{{- settings.redirect_cookie_value_female | handleize -}}
+				{%- when 'male' -%}
+					{{- settings.redirect_cookie_value_male | handleize -}}
+				{%- else -%}
+					nil
+			{%- endcase -%}
+		{%- endcapture -%}
+
+		{%- capture link_2_preferred_gender -%}
+			{%- case collection_link_2_redirect_to -%}
+				{%- when 'female' -%}
+					{{- settings.redirect_cookie_value_female | handleize -}}
+				{%- when 'male' -%}
+					{{- settings.redirect_cookie_value_male | handleize -}}
+			{%- endcase -%}
+		{%- endcapture -%}
+
+		{%- capture card_links -%}
+			{%- if collection_link_1_label != blank and collection_link_1_url != blank -%}
+				<a
+					href="{{ collection_link_1_url }}"
+					class="link card__button"
+					{% if link_1_preferred_gender != blank %}data-preferred-gender="{{- link_1_preferred_gender -}}"{% endif %}
+				>
+					{{- collection_link_1_label -}}
+				</a>
+			{%- endif -%}
+
+			{%- if collection_link_2_label != blank and collection_link_2_url != blank -%}
+				<a
+					href="{{ collection_link_2_url }}"
+					class="link card__button"
+					{% if link_2_preferred_gender != blank %}data-preferred-gender="{{- link_2_preferred_gender -}}"{% endif %}
+				>
+					{{- collection_link_2_label -}}
+				</a>
+			{%- endif -%}
+		{%- endcapture -%}
+
+		{%- capture card_image -%}
+			<div class="card__image-wrapper" data-card-image-wrapper>
+				<picture>
+					<img
+						src="{{ collection_image | img_url: '360x' }}"
+						srcset="{{ collection_image | img_url: '360x' }} 1x, {{ collection_image | img_url: '720x' }} 2x"
+						alt="{{ collection_image.alt | default: collection_title }}"
+						class="card__image"
+						loading="lazy"
+					/>
+				</picture>
+
+				{%- if card_links != blank -%}
+					<div class="card__buttons-wrapper card__buttons-wrapper--desktop">
+						{{- card_links -}}
+					</div>
+				{%- endif -%}
+
+				<a href="{{ collection_url }}" class="card__link-wrapper"></a>
+			</div>
+		{%- endcapture -%}
+
+		{%- capture card_description -%}
+			<a href="{{ collection_url }}" class="card__title">
+				{{- collection_title -}}
+			</a>
+
+			{%- if collection_subtitle != blank -%}
+				<p class="card__subtitle">
+					{{- collection_subtitle -}}
+				</p>
+			{%- endif -%}
+
+			{%- if card_links != blank -%}
+				<div class="card__buttons-wrapper card__buttons-wrapper--mobile">
+					{{- card_links -}}
+				</div>
+			{%- endif -%}
+		{%- endcapture -%}
+
+		<div class="swiper-slide slider__slide featured-categories__slider-slide">
+			<div class="card" data-card>
+				{{- card_image -}}
+
+				{{- card_description -}}
+			</div>
+		</div>
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- if featured_categories != blank -%}
+	<section
+		class="featured-categories"
+		data-section-id="{{- section.id -}}"
+		data-section-type="featured-categories"
+	>
+		<div class="featured-categories__container">
+			<div class="slider featured-categories__slider">
+				<div class="swiper-container slider__container" data-featured-categories-slider>
+					<div class="swiper-wrapper slider__wrapper">
+						{{- featured_categories -}}
+					</div>
+
+					<button class="slider__arrow slider__arrow--prev" data-slider-arrow data-slider-arrow-prev>
+						{%- render 'icon-chevron' -%}
+					</button>
+
+					<button class="slider__arrow slider__arrow--next js-slider-arrow-next" data-slider-arrow data-slider-arrow-next>
+						{%- render 'icon-chevron' -%}
+					</button>
+
+					<div class="slider__pagination" data-slider-pagination></div>
+				</div>
+			</div>
+		</div>
+	</section>
+{%- endif -%}
+
+{% schema %}
+{
+	"name": "Featured Categories",
+	"blocks": [
+		{
+			"type": "collection",
+			"name": "Collection",
+			"settings": [
+				{
+					"type": "collection",
+					"id": "collection",
+					"label": "Collection"
+				},
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image",
+					"info": "Optional. Defaults to collection image"
+				},
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title",
+					"info": "Optional. Defaults to collection title"
+				},
+				{
+					"type": "text",
+					"id": "subtitle",
+					"label": "Subtitle",
+					"info": "Optional"
+				},
+				{
+					"type": "header",
+					"content": "First link"
+				},
+				{
+					"type": "text",
+					"id": "link_1_label",
+					"label": "Link label"
+				},
+				{
+					"type": "url",
+					"id": "link_1_url",
+					"label": "Link URL"
+				},
+				{
+					"type": "select",
+					"id": "link_1_redirect_to",
+					"label": "Save preferred gender cookie as...",
+					"options": [
+						{
+							"value": "none",
+							"label": "None"
+						},
+						{
+							"value": "female",
+							"label": "Female"
+						},
+						{
+							"value": "male",
+							"label": "Male"
+						}
+					]
+				},
+				{
+					"type": "header",
+					"content": "Second link"
+				},
+				{
+					"type": "text",
+					"id": "link_2_label",
+					"label": "Link label"
+				},
+				{
+					"type": "url",
+					"id": "link_2_url",
+					"label": "Link URL"
+				},
+				{
+					"type": "select",
+					"id": "link_2_redirect_to",
+					"label": "Save preferred gender cookie as...",
+					"options": [
+						{
+							"value": "none",
+							"label": "None"
+						},
+						{
+							"value": "female",
+							"label": "Female"
+						},
+						{
+							"value": "male",
+							"label": "Male"
+						}
+					]
+				}
+			]
+		}
+	],
+	"templates": [
+			"index",
+			"page"
+	],
+	"presets": [
+		{
+			"name": "Featured Categories"
+		}
+	]
+}
+{% endschema %}

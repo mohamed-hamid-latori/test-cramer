@@ -1,0 +1,218 @@
+{% comment %}
+	@params
+	customer 		- {customer object} *required
+
+    Get a "get parametrs" from url for select needed address for edit
+{% endcomment %}
+{%- assign address_for_edit = '' -%}
+{%- assign curent_address = content_for_header | split:'"pageurl":"' | last | split:'"' | first | split: '?' | last | split: '\' -%}
+{%- assign curent_address = curent_address[1] | split: 'customer_address=' | last -%}
+
+{%- for address in customer.addresses -%}
+    {%- assign address_id       = address.id | append: 'string' | replace: 'string', ''-%}
+
+    {%- if address_id == curent_address -%}
+        {%- assign address_for_edit           = address -%}
+    {%- endif -%}
+{%- endfor -%}
+
+{%- capture form_for_edit -%}
+    {%- form 'customer_address', address_for_edit -%}
+        <div class="form__row account-edit-addresses__form-row">
+            <div class="form__col account-edit-addresses__form-col">
+                <div class="input-group input-group--floating-label form__input-group">
+                    <input type="text" id="AddressFirstName_{{form.id}}" class="input input-group__input form__input" name="address[first_name]" value="{{form.first_name}}" autocapitalize="words" placeholder="{{ 'customer.addresses.first_name' | t }}">
+                
+                    <label for="AddressFirstName_{{form.id}}" class="input-group__label">{{ 'customer.addresses.first_name' | t }}</label>
+                </div>
+            </div>
+
+            <div class="form__col account-edit-addresses__form-col">
+                <div class="input-group input-group--floating-label form__input-group">
+                    <input type="text" id="AddressLastName_{{form.id}}" class="input input-group__input form__input" name="address[last_name]" value="{{form.last_name}}" autocapitalize="words" placeholder="{{ 'customer.addresses.last_name' | t }}">
+                
+                    <label for="AddressLastName_{{form.id}}" class="input-group__label">{{ 'customer.addresses.last_name' | t }}</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form__row account-edit-addresses__form-row">
+            <div class="form__col account-edit-addresses__form-col">
+                <div class="input-group input-group--floating-label form__input-group">
+                    <input type="text" id="AddressCompany_{{form.id}}" class="input input-group__input form__input" name="address[company]" value="{{form.company}}" autocapitalize="words" placeholder="{{ 'customer.addresses.company' | t }}">
+                
+                    <label for="AddressCompany_{{form.id}}" class="input-group__label">{{ 'customer.addresses.company' | t }}</label>
+                </div>
+            </div>
+
+            <div class="form__col account-edit-addresses__form-col">
+                <div class="input-group input-group--floating-label form__input-group">
+                    <input type="text" id="AddressAddress1_{{form.id}}" class="input input-group__input form__input" name="address[address1]" value="{{form.address1}}" autocapitalize="words" placeholder="{{ 'customer.addresses.address1' | t }}"> 
+                
+                    <label for="AddressAddress1_{{form.id}}" class="input-group__label">{{ 'customer.addresses.address1' | t }}</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form__row account-edit-addresses__form-row">
+            <div class="form__col account-edit-addresses__form-col">
+                <div class="input-group input-group--floating-label form__input-group">
+                    <input type="text" id="AddressAddress2_{{form.id}}" class="input input-group__input form__input" name="address[address2]" value="{{form.address2}}" autocapitalize="words" placeholder="{{ 'customer.addresses.address2' | t }}">
+                
+                    <label for="AddressAddress2_{{form.id}}" class="input-group__label">{{ 'customer.addresses.address2' | t }}</label>
+                </div>
+            </div>
+            
+            <div class="form__col account-edit-addresses__form-col">
+                <div class="input-group input-group--floating-label form__input-group">
+                    <input type="text" id="AddressCity_{{form.id}}" class="input input-group__input form__input" name="address[city]" value="{{form.city}}" autocapitalize="words" placeholder="{{ 'customer.addresses.city' | t }}">
+                
+                    <label for="AddressCity_{{form.id}}" class="input-group__label">{{ 'customer.addresses.city' | t }}</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form__row account-edit-addresses__form-row">
+            <div id="AddressProvinceContainer_{{ form.id }}" 
+                style="display:none;" 
+                class="form__col account-edit-addresses__form-col"
+            >
+                <div class="custom-select custom-select--floating-label">
+                    <select
+                        id="AddressProvince_{{ form.id }}"
+                        name="address[province]"
+                        data-default="{{ form.province }}"
+                        autocomplete="address-level1"
+                        class="input input-group__input form__input js-arrow-trigger"
+                    >
+                    </select>
+
+                    <label for="AddressProvince_{{ form.id }}" class="custom-select__label account-edit-addresses__custom-select-label">{{ 'customer.addresses.province' | t }}</label>
+
+                    <span class="account-add-addresses__arrow"></span>
+                </div>
+            </div>
+
+            <div class="form__col account-edit-addresses__form-col">
+                <div class="input-group input-group--floating-label form__input-group">
+                    <input type="text" id="AddressZip_{{form.id}}" class="input input-group__input form__input" name="address[zip]" value="{{form.zip}}" autocapitalize="characters" placeholder="{{ 'customer.addresses.zip' | t }}">
+                
+                    <label for="AddressZip_{{form.id}}" class="input-group__label">{{ 'customer.addresses.zip' | t }}</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form__row account-edit-addresses__form-row">
+            <div class="form__col account-edit-addresses__form-col">
+                <div class="custom-select custom-select--floating-label">
+                    <select
+                        id="AddressCountry_{{ form.id }}"
+                        name="address[country]"
+                        data-address-country-select
+                        data-default="{{ form.country }}"
+                        data-form-id="{{ form.id }}"
+                        autocomplete="country"
+                        class="input input-group__input form__input js-arrow-trigger"
+                    >
+                        {{ all_country_option_tags }}
+                    </select>
+
+                    <label for="AddressCountry_{{form.id}}" class="custom-select__label account-edit-addresses__custom-select-label">{{ 'customer.addresses.country' | t }}</label>
+
+                    <span class="account-add-addresses__arrow"></span>
+                </div>
+            </div>
+
+            <div class="form__col account-edit-addresses__form-col">
+                <div class="input-group input-group--floating-label form__input-group">
+                    <input type="tel" id="AddressPhone_{{form.id}}" class="input input-group__input form__input" name="address[phone]" value="{{form.phone}}" placeholder="{{ 'customer.addresses.phone' | t }}">
+
+                    <label for="AddressPhone_{{form.id}}" class="input-group__label">{{ 'customer.addresses.phone' | t }}</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="account-edit-addresses__form-checkbox-container">
+            {{ form.set_as_default_checkbox }}
+
+            <label for="address_default_address_{{form.id}}" class="inline">{{ 'customer.addresses.set_default' | t }}</label>
+        </div>
+
+        <div class="account-edit-addresses__submit-button-container">
+            <input type="submit" 
+                class="button button--primary button--regular account-edit-addresses__submit-button" 
+                value="{{ 'customer.addresses.add' | t }}"
+            >
+
+            <input type="hidden" name="return_to" value="/account/addresses">
+        </div>
+    {%- endform -%}
+
+    <div class="hidden-fields" style="display: none;">
+        <div data-customer-addresses>
+            <div data-address>
+                <select
+                    id="AddressProvinceNew"
+                    name="address[province]"
+                    data-default="{{ form.province }}"
+                    autocomplete="address-level1"
+                    class="input input-group__input form__input"
+                >
+                </select>
+
+                <select id="AddressCountryNew" 
+                    class="input input-group__input form__input" 
+                    name="address[country]" 
+                    data-default="{{form.country}}"
+                >
+                    {{ all_country_option_tags }}
+                </select>
+
+                <div id="AddressCountryNew"></div>
+
+                <div id="AddressProvinceNew"></div>
+                
+                <div id="AddressProvinceContainerNew"></div>
+            </div>
+        </div>
+    </div>
+{%- endcapture -%}
+
+<section class="account-content account-edit-addresses">
+	<div class="account-content__container">
+		<div class="account-content__header">
+            <div class="account-content__back-link-container">
+                <a href="/account/addresses"
+                    class="account-content__back-link"                
+                    onclick="Shopify.CustomerAddress.toggleNewForm(); return false;"
+                >
+                    <div class="account-content__back-link-icon">
+                        {% render 'icon-search-enter' %}
+                    </div>
+                                
+                    {{ 'customer.account.addresses.back' | t }}
+                </a>
+            </div>
+
+			<div class="account-content__header-wrapper">
+				<h1 class="account-content__header-title">
+					{{ 'customer.addresses.add_new' | t }}
+				</h1>
+
+				<div class="account-content__header-icon">
+					{%- render 'icon-account-triangle' -%}
+				</div>
+			</div>
+
+            <div class="account-content-addresses__form-wrapper" data-customer-addresses>
+                <ul role="list">
+                    <li data-address>
+                        <div id="EditAddress_{{ address_for_edit.id }}">            
+                            {{ form_for_edit }}
+                        </div>
+                    </li>
+                </ul>
+            </div>                    
+		</div>
+	</div>
+</section>

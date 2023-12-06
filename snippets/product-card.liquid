@@ -1,0 +1,349 @@
+{% comment %}
+	@params
+	product 				- {product object} *required
+	current_variant 		- {variant object}
+	include_json 			- {boolean}
+{% endcomment %}
+
+{%- assign placeholder_image 	= settings.placeholder_image -%}
+
+{%- assign enable_wishlist 		= settings.enable_wishlist -%}
+
+{%- assign first_variant 		= product.variants | first -%}
+{%- assign current_variant      = current_variant | default: product.first_available_variant | default: first_variant -%}
+
+{%- assign product_title 		= product.title -%}
+{%- assign product_url       	= current_variant.url | default: product.url | within: collection -%}
+{%- assign product_vendor 		= product.vendor -%}
+
+{%- assign images 				= product.images -%}
+{%- assign tags 				= product.tags | downcase -%}
+{%- assign collections 			= product.collections | downcase -%}
+
+{%- assign metafields_sale 		= current_variant.metafields.accentuate['issale'] -%}
+{%- assign metafields_new 		= current_variant.metafields.accentuate['neuheit'] -%}
+
+{%- assign has_sale = false -%}
+
+{%- if metafields_sale == 'Sale' -%}
+	{%- assign has_sale = true -%}
+{%- endif -%}
+
+{%- assign is_new = false -%}
+
+{%- if metafields_new == 'Neuheit' -%}
+	{%- assign is_new = true -%}
+{%- endif -%}
+
+{%- assign has_only_default_variant = product.has_only_default_variant -%}
+
+{%- capture product_images -%}
+	{%- assign featured_image 	= current_variant.image | default: product.featured_image | default: placeholder_image -%}
+	{%- assign secondary_image 	= '' -%}
+
+	{%- assign alphabetical_order 	= 'a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z' | split: ',' -%}
+	{%- assign separator 			= '%%%' -%}
+
+	{%- assign color_label 	= 'color,colour,couleur,colore,farbe,색,色,fxärg,farve' 	| split: ',' -%}
+
+	{%- assign color_option = '' -%}
+	{%- assign current_color = '' -%}
+
+	{%- for option in product.options_with_values -%}
+		{%- assign downcased_option_name = option.name | downcase -%}
+
+		{%- if color_label contains downcased_option_name -%}
+			{%- assign color_option = 'option' | append: option.position -%}
+
+			{%- break -%}
+		{%- endif -%}
+	{%- endfor -%}
+
+	{%- if color_option != blank -%}
+		{%- assign current_color = current_variant[color_option] | downcase -%}
+	{%- endif -%}
+
+	{%- if current_variant and current_color != '' -%}
+		{%- for value in alphabetical_order -%}
+			{%- for image in images -%}
+				{%- assign alt 				= image.alt -%}
+				{%- assign alt_downcased 	= alt | downcase -%}
+
+				{%- if image.src == featured_image.src -%}
+					{%- continue -%}
+				{%- endif -%}
+
+				{%- assign order = alt_downcased | split: separator | last -%}
+
+				{%- if order == alt_downcased -%}
+					{%- assign order = nil -%}
+				{%- endif -%}
+
+				{%- unless order == value -%}
+					{%- continue -%}
+				{%- endunless -%}
+
+				{%- assign search_value 	= order | prepend: separator -%}
+				{%- assign alt 				= alt 	| replace: search_value, '' -%}
+				{%- assign alt_downcased 	= alt 	| downcase -%}
+
+				{%- if current_color == alt_downcased -%}
+					{%- assign secondary_image = image -%}
+
+					{%- break -%}
+				{%- endif -%}
+			{%- endfor -%}
+
+			{%- if secondary_image != blank -%}
+				{%- break -%}
+			{%- endif -%}
+		{%- endfor -%}
+	{%- endif -%}
+
+	{%- unless secondary_image -%}
+		{%- assign secondary_image = images[1] -%}
+	{%- endunless -%}
+
+	<a href="{{ product_url }}" class="product-card__image-wrapper" data-card-image-wrapper data-product-link>
+		{%- if secondary_image != blank -%}
+			<picture>
+			    <img
+					src="{{ secondary_image | img_url: '330x' }}"
+					srcset="{{ secondary_image | img_url: '330x' }} 1x, {{ secondary_image | img_url: '660x' }} 2x"
+					alt="{{ secondary_image.alt | default: product_title }}"
+					class="product-card__image product-card__image--secondary"
+					loading="lazy"
+				/>
+			</picture>
+		{%- endif -%}
+
+		<picture>
+			<img
+				src="{{ featured_image | img_url: '330x' }}"
+				srcset="{{ featured_image | img_url: '330x' }} 1x, {{ featured_image | img_url: '660x' }} 2x"
+				alt="{{ featured_image.alt | default: product_title }}"
+				class="product-card__image"
+				loading="lazy"
+			/>
+		</picture>
+	</a>
+{%- endcapture -%}
+
+{%- capture product_badges -%}
+	{%- assign badge_sale 		= nil -%}
+	{%- assign badge_new 		= nil -%}
+	{%- assign badge_bestseller = nil -%}
+	{%- if tags contains 'offline only' -%}
+		{%- capture badge_offline_only -%}
+			<div class="badge badge--offline-only product-card__badge">
+				{{- 'products.product.badges.offline_only' | t -}}
+			</div>
+		{%- endcapture -%}
+	{%- endif -%}
+
+	{%- if has_sale -%}
+		{%- capture badge_sale -%}
+			<div class="badge badge--sale product-card__badge">
+				{{- 'products.product.badges.sale' | t -}}
+			</div>
+		{%- endcapture -%}
+	{%- endif -%}
+
+	{%- if is_new -%}
+		{%- capture badge_new -%}
+			<div class="badge badge--new product-card__badge">
+				{{- 'products.product.badges.new' | t -}}
+			</div>
+		{%- endcapture -%}
+	{%- endif -%}
+
+	{%- if tags contains 'bestseller' -%}
+		{%- capture badge_bestseller -%}
+			<div class="badge badge--bestseller product-card__badge">
+				{{- 'products.product.badges.bestseller' | t -}}
+			</div>
+		{%- endcapture -%}
+	{%- endif -%}
+
+	{%- if tags contains '100% bio-baumwolle' -%}
+		{%- capture badge_bio_cotton -%}
+			<div class="badge badge--icon product-card__badge product-card__badge--sustainable">
+				{%- include 'icon-bio-cotton' -%}
+			</div>
+		{%- endcapture -%}
+	{%- endif -%}
+
+	{%- if tags contains 'eco-friendly' -%}
+		{%- capture badge_eco_friendly -%}
+			<div class="badge badge--icon product-card__badge product-card__badge--sustainable">
+				{%- include 'icon-eco-friendly' -%}
+			</div>
+		{%- endcapture -%}
+	{%- endif -%}
+
+	{%- if tags contains 'vegan' -%}
+		{%- capture badge_vegan -%}
+			<div class="badge badge--icon product-card__badge product-card__badge--sustainable">
+				{%- include 'icon-vegan' -%}
+			</div>
+		{%- endcapture -%}
+	{%- endif -%}
+
+	{%- if badge_offline_only != blank -%}
+		{%- assign badge_sale 		= nil -%}
+		{%- assign badge_new 		= nil -%}
+		{%- assign badge_bestseller = nil -%}
+	{%- endif -%}
+
+	{%- if badge_sale != blank -%}
+		{%- assign badge_new 		= nil -%}
+		{%- assign badge_bestseller = nil -%}
+	{%- endif -%}
+
+	{%- if badge_new != blank -%}
+		{%- assign badge_bestseller = nil -%}
+	{%- endif -%}
+
+	{{- badge_offline_only -}}
+	{{- badge_sale -}}
+	{{- badge_new -}}
+	{{- badge_bestseller -}}
+
+	{{- badge_bio_cotton -}}
+	{{- badge_eco_friendly -}}
+	{{- badge_vegan -}}
+{%- endcapture -%}
+
+{%- capture product_options -%}
+	{%- unless has_only_default_variant -%}
+		<div class="product-card__options">
+			{%- include 'product-card-options', product: product -%}
+		</div>
+	{%- endunless -%}
+{%- endcapture -%}
+
+{%- capture product_meta -%}
+	{%- if enable_wishlist -%}
+		<button type="button" class="button button--wishlist product-card__action hidden" data-product-card-add-to-wishlist></button>
+	{%- endif -%}
+
+	{%- if product_vendor != blank -%}
+		{{- product_vendor | link_to_vendor: class: 'product-card__vendor' -}}
+	{%- endif -%}
+
+	<a href="{{ product_url }}" class="product-card__title" data-product-link>
+		{{- product_title -}}
+	</a>
+
+	<div class="product-card__price">
+		<span class="product-card__price-value product-card__price-value--compare-price{% unless has_sale %} hidden{% endunless %}" data-compare-price>
+			{{- current_variant.compare_at_price | money -}}
+		</span>
+
+		<span class="product-card__price-value{% if has_sale %} product-card__price-value--sale{% endif %}" data-product-price>
+			{{- current_variant.price | money -}}*
+			{% if current_variant.unit_price != blank %}
+			<span class="product-card__price-unit-value">({{- current_variant.unit_price | money -}}/l)</span>
+			{% endif %}
+		</span>
+	</div>
+{%- endcapture -%}
+
+{%- capture product_form_options -%}
+	{%- unless has_only_default_variant -%}
+		{%- for option in product.options_with_values -%}
+			{%- assign option_position 	= option.position -%}
+			{%- assign option_name 		= option.name -%}
+			{%- assign option_index 	= 'option' | append: option_position -%}
+
+			{%- assign current_value 	= current_variant[option_index] -%}
+
+			{%- capture select_name -%}
+				options[{{- option_name -}}]
+			{%- endcapture -%}
+
+			{%- capture option_attribute -%}
+				option{{- option_position -}}
+			{%- endcapture -%}
+
+			<div class="custom-select product-card__form-option" data-current-value="{{ current_value }}">
+				<select
+					name="{{- select_name -}}"
+					data-option="{{- option_attribute -}}"
+					data-option-type="select"
+					class="custom-select__select product-option__select"
+					data-custom-choices
+					{% unless current_value != blank %}data-custom-choices-placeholder="true"{% endunless %}
+				>
+					{%- unless current_value != blank -%}
+						<option>
+							{{- 'products.product.options.select.placeholder' | t -}}
+						</option>
+					{%- endunless -%}
+
+					{%- for value in option.values -%}
+						{%- capture id -%}
+							Option{{- option_position -}}-{{- value -}}
+						{%- endcapture -%}
+
+						<option
+							id="{{- id -}}"
+							value="{{- value -}}"
+							{%- if current_value == value -%}selected="selected"{%- endif -%}
+						>
+							{{- value -}}
+						</option>
+					{%- endfor -%}
+				</select>
+			</div>
+		{%- endfor -%}
+	{%- endunless -%}
+{%- endcapture -%}
+
+{%- capture no_script -%}
+	<select name="id" class="no-js hidden">
+		{%- for variant in product.variants -%}
+			<option
+				{% if variant == current_variant %}selected="selected"{% endif %}
+				{% unless variant.available %}disabled="disabled"{% endunless %}
+				value="{{ variant.id }}"
+			>
+				{{- variant.title -}}
+			</option>
+		{%- endfor -%}
+	</select>
+{%- endcapture -%}
+
+{%- capture product_form -%}
+	<form action="{{- routes.cart_add_url -}}" class="product-card__form hidden" method="post" enctype="multipart/form-data" data-product-card-form>
+		<div class="product-card__form-options">
+			{{- product_form_options -}}
+		</div>
+
+		{{- no_script -}}
+	</form>
+{%- endcapture -%}
+
+{%- if product -%}
+	<div class="product-card" data-product-card>
+		<div class="product-card__media">
+			{{- product_images -}}
+
+			{{- product_badges -}}
+
+			{{- product_options -}}
+		</div>
+
+		<div class="product-card__meta">
+			{{- product_meta -}}
+
+			{{- product_form -}}
+		</div>
+
+		{%- if include_json == true -%}
+			<script type="application/json" data-product-card-json>
+				{%- include 'object-product-json', product: product -%}
+			</script>
+		{%- endif -%}
+	</div>
+{%- endif -%}

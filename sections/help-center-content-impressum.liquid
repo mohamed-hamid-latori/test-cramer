@@ -1,0 +1,177 @@
+{%- assign heading              = section.settings.heading -%}
+
+{%- capture columns -%}
+    <div class="help-center-content__column">
+    {%- for block in section.blocks -%}
+        {%- assign text                 = block.settings.text -%}    
+        {%- assign position             = block.settings.position-%}
+        {%- assign title                = block.settings.title -%}
+        {%- assign padding              = block.settings.padding -%}
+
+        {%- if position == "left" -%}
+            {%- case padding -%}
+                {%- when "normal-padding" -%}
+                    <div class="help-center-content__block">
+                        {%- if title != blank -%}
+                            <h4 class="help-center-content__block-title">{{- title -}}</h4>
+                        {%- endif -%}
+
+                        {%- if text != blank -%}
+                            {{- text -}}
+                        {%- endif -%}
+                    </div>
+                {%- when "mini-padding"-%}
+                    <div class="help-center-content__block help-center-content__block--mini-padding">
+                        {%- if title != blank -%}
+                            <h4 class="help-center-content__block-title">{{- title -}}</h4>
+                        {%- endif -%}
+
+                        {%- if text != blank -%}
+                            {{- text -}}
+                        {%- endif -%}
+                    </div>
+            {%- endcase -%}        
+        {%- endif -%}
+    {%- endfor -%}
+    </div>
+
+    <div class="help-center-content__column">
+        {%- for block in section.blocks -%}
+            {%- assign text                 = block.settings.text -%}    
+            {%- assign position             = block.settings.position -%}
+            {%- assign title                = block.settings.title -%}
+            {%- assign padding              = block.settings.padding -%}
+            {%- if position == "right" -%}
+                {%- case padding -%}
+                    {%- when "normal-padding" -%}
+                        <div class="help-center-content__block">
+                            {%- if title != blank -%}
+                                <h4 class="help-center-content__block-title">{{- title -}}</h4>
+                            {%- endif -%}
+
+                            {%- if text != blank -%}
+                                {{- text -}}
+                            {%- endif -%}
+                        </div>
+                    {%- when "mini-padding"-%}
+                        <div class="help-center-content__block help-center-content__block--mini-padding">
+                            {%- if title != blank -%}
+                                <h4 class="help-center-content__block-title">{{- title -}}</h4>
+                            {%- endif -%}
+
+                            {%- if text != blank -%}
+                               {{- text -}}
+                            {%- endif -%}
+                        </div>
+                {%- endcase -%}
+            {%- endif -%}
+        {%- endfor -%}
+    </div> 
+{%- endcapture -%}
+
+{%- assign title            = section.settings.title -%}
+{%- assign content          = section.settings.content -%}
+
+<section class="help-center-content"
+        data-section-id="{{- section.id-}}"
+        data-section-type="help-center-content-impressum"
+>
+    <div class="help-center-content__container">
+        {%- if heading != blank -%}
+            <h1 class="help-center-content__heading">
+                {{- heading -}}   
+            </h1>
+        {%- endif -%}
+
+        {%- if columns != blank -%}
+            <div class="help-center-content__columns-container">
+                {{- columns -}}
+            </div>
+        {%- endif -%}
+
+        <div class="help-center-content__bottom-content">
+            <h5 class="help-center-content__bottom-content-title">
+                {{- title -}}
+            </h5>
+
+            <div class="help-center-content__bottom-content-container">
+                {{- content -}}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% schema %}
+    {
+        "name": "Help center impressum",
+        "settings": [
+            {
+                "type": "text",
+                "id": "heading",
+                "label": "Heading",
+                "default": "Impressum disclaimer"
+            },
+            {
+                "type": "text",
+                "id": "title",
+                "label": "Title"
+            },
+            {
+                "type": "richtext",
+                "id": "content",
+                "label": "Content"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "info",
+                "name": "Information",
+                "settings": [
+                    {
+                        "type": "select",
+                        "id": "position",
+                        "label": "Choose column",
+                        "options": [
+                            {
+                                "value": "left",
+                                "label": "Left column"
+                            },
+                            {
+                                "value": "right",
+                                "label": "Right column"
+                            }
+                        ],
+                        "default": "left"
+                    },
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Title"
+                    },
+                    {
+                        "type": "richtext",
+                        "id": "text",
+                        "label": "Information"
+                    },
+                    {
+                        "type": "select",
+                        "id": "padding",
+                        "label": "Bottom space",
+                        "options": [
+                            {
+                            "value": "normal-padding",
+                            "label": "Padding 24px"
+                            },
+                            {
+                                "value": "mini-padding",
+                                "label": "Padding 12px"
+                            }
+                        ],
+                        "default": "normal-padding"
+                    }
+                ]
+            }
+        ]
+        
+    }
+{% endschema %}

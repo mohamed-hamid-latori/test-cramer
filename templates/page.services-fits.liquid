@@ -1,0 +1,247 @@
+{%- layout none -%}
+
+{%- comment -%} Denim Bible : Fits {%- endcomment -%}
+
+{%- if popup_content != blank -%}
+	<div class="popup  denim-popup" data-popup>
+		<div class="popup__overlay" data-popup-close></div>
+
+		<div class="popup__wrapper custom-popup__wrapper js-custom-popup" data-popup-content>
+			<div class="popup__content-wrapper">
+				<div class="popup__content">
+					{% include 'icon-close' %}
+					{% render 'icon-close-white' %}
+					{{- popup_content -}}
+				</div>
+			</div>
+		</div>
+	</div>
+{%- endif -%}
+
+{%- capture denim_subcategory -%}
+{%- assign gallery_title = page.metafields.denim-collection.item_title -%}
+
+{%- assign custom_collection_title    = collections[gallery_collection]metafields.custom-collection.custom_title -%}
+{%- assign custom_collection_text    = collections[gallery_collection]metafields.custom-collection.custom_description | strip_html -%}
+{%- assign custom_collection_props    = collections[gallery_collection]metafields.custom-collection.custom_collection_properties -%}
+{%- assign custom_collection_values = collections[gallery_collection]metafields.custom-collection.custom_collection_value -%}
+
+	<div class="denim-subcategory">
+		{% assign count = 0 %}
+		{%- for title in gallery_title -%}
+
+			{% assign count = count | plus: 1 %}
+
+			{%- assign index              = forloop.index0 -%}
+			{%- assign gallery_text      = page.metafields.denim-collection.item_text[index] -%}
+			{%- assign gallery_link_title = page.metafields.denim-collection.item_link_title[index] -%}
+			{%- assign gallery_link      = page.metafields.denim-collection.item_link[index] | handelize -%}
+			{%- assign gallery_img      = page.metafields.denim-collection.item_image[index] | first -%}
+			{%- assign collection          = collections[gallery_link] -%}
+			{%- assign collection_url      = collection.url %}
+
+		<div class="swiper-slide slider__slide denim-gallery__slide denim-subcategory-item__slide denim-subcategory-item">
+			<div class="" data-coll="{{- gallery_link -}}">
+
+				<a class="denim-subcategory-item__overlay js-custom-popup-trigger"
+				   data-popup-id="{{- forloop.index0 -}}" data-popup-trigger></a>
+
+				<div class="" data-card-image-wrapper>
+					<picture>
+						<source
+							srcset="{{ gallery_img.cloudinary_src | append: 'w_480' }} 1x, {{ gallery_img.cloudinary_src | append: 'w_960' }} 2x"
+							media="(max-width: 480px)">
+						<source
+							srcset="{{ gallery_img.cloudinary_src | append: 'w_767' }} 1x, {{ gallery_img.cloudinary_src | append: 'w_1534' }} 2x"
+							media="(max-width: 767px)">
+						<source
+							srcset="{{ gallery_img.cloudinary_src | append: 'w_991' }} 1x, {{ gallery_img.cloudinary_src | append: 'w_1982' }} 2x"
+							media="(max-width: 991px)">
+
+						<img
+							srcset="{{ gallery_img.cloudinary_src | append: 'w_300' }} 1x, {{ gallery_img.cloudinary_src | append: 'w_600' }} 2x"
+							src="{{ gallery_img.cloudinary_src | append: 'w_300' }}"
+							class="denim-subcategory-item__img"
+							alt="{{ gallery_img.alt }}"
+						>
+					</picture>
+				</div>
+
+				<div class="denim-subcategory-item__title">
+					{{- title -}}
+				</div>
+
+				<div class="denim-subcategory-item__text">
+					{{- gallery_text -}}
+				</div>
+
+				<a class="link denim-subcategory-item__link" href="{{- collection_url -}}">
+					{{- gallery_link_title -}}
+				</a>
+
+				{%- capture popup_content -%}
+
+				{%- assign custom_collection_title     = collections[gallery_link]metafields.custom-collection.custom_title -%}
+				{%- assign custom_collection_text     = collections[gallery_link]metafields.custom-collection.custom_description | strip_html -%}
+				{%- assign custom_collection_props     = collections[gallery_link]metafields.custom-collection.custom_collection_properties -%}
+				{%- assign custom_collection_values  = collections[gallery_link]metafields.custom-collection.custom_collection_value -%}
+				{%- assign custom_collection_gallery = collections[gallery_link]metafields.custom-collection.custom_gallery -%}
+
+					<div class="custom-popup denim-popup-content-wrapper js-popup-content">
+						<div class="denim-popup-head popup__title">
+							{{- custom_collection_title -}}
+						</div>
+						<div class="denim-popup-content popup-content">
+							<div class="denim-popup-info popup-textarea">
+								<div class="popup__title popup__title--mobile">
+									{{- custom_collection_title -}}
+								</div>
+								<p>
+									{{- custom_collection_text -}}
+								</p>
+
+								<div class="denim-popup-properties popup-properties">
+									<ul class="popup-properties-list">
+										{%- for prop in custom_collection_props -%}
+											{%- assign index = forloop.index0 -%}
+											<li class="popup-properties-item">
+												<strong
+													class="popup-properties-item__title">{{- custom_collection_props[index] -}}</strong>
+												<span
+													class="popup-properties-item__value">{{- custom_collection_values[index] -}}</span>
+											</li>
+										{%- endfor -%}
+									</ul>
+								</div>
+
+								<a class="button button--primary button--main" href="{{- collection_url -}}">
+									{{- custom_collection_title -}}
+								</a>
+							</div>
+
+							<div class="popup-gallery">
+								<div class="slider">
+									<div
+										class="swiper-container slider__container popup-slider-container js-popup-slider-container denim-gallery__container"
+										data-denim-gallery-slider>
+
+										<div
+											class="swiper-wrapper slider__wrapper denim-gallery denim-popup-gallery popup-gallery">
+											{%- for gallery_item in custom_collection_gallery -%}
+												<div class="swiper-slide slider__slide popup-gallery__slider-slide">
+													<div class="denim-popup-gallery__item popup-gallery-item">
+														<div data-card-image-wrapper>
+															<picture>
+																<source
+																	srcset="{{ gallery_item.cloudinary_src | append: 'w_480' }} 1x, {{ gallery_item.cloudinary_src | append: 'w_960' }} 2x"
+																	media="(max-width: 480px)">
+																<source
+																	srcset="{{ gallery_item.cloudinary_src | append: 'w_767' }} 1x, {{ gallery_item.cloudinary_src | append: 'w_1534' }} 2x"
+																	media="(max-width: 767px)">
+																<source
+																	srcset="{{ gallery_item.cloudinary_src | append: 'w_991' }} 1x, {{ gallery_item.cloudinary_src | append: 'w_1982' }} 2x"
+																	media="(max-width: 991px)">
+
+																<img
+																	srcset="{{ gallery_item.cloudinary_src | append: 'w_300' }} 1x, {{ gallery_item.cloudinary_src | append: 'w_600' }} 2x"
+																	src="{{ gallery_item.cloudinary_src | append: 'w_300' }}"
+																	class="denim-popup-gallery__image popup-gallery-item__img"
+																	alt="{{ gallery_item.alt }}"
+																>
+															</picture>
+														</div>
+													</div>
+												</div>
+											{%- endfor -%}
+										</div>
+
+										<div class="slider__pagination denim-slider__pagination"
+											 data-slider-pagination></div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+
+				{%- endcapture -%}
+
+				<div class="denim-subcategory-item__popup denim-popup-item__content">
+					{{- popup_content -}}
+				</div>
+
+			</div>
+		</div>
+		{%- endfor -%}
+
+	</div>
+
+{%- endcapture -%}
+
+<div class="slider slider--arrows-inverse">
+
+	<div class="popup denim-popup js-custom-popup" data-popup>
+		<div class="popup__overlay" data-popup-close></div>
+		<div class="popup__wrapper custom-popup__wrapper js-custom-popup-content" data-popup-content>
+			<div class="popup__content-wrapper">
+				<div class="popup__content">
+					<div class="popup__icon popup__icon--desktop popup__icon--close" data-popup-close>
+						{% render 'icon-close', data-popup-close: data-popup-close %}
+					</div>
+
+					<div class="popup__icon popup__icon--mobile popup__icon--close" data-popup-close>
+						{% render 'icon-close-white', data-popup-close: data-popup-close %}
+					</div>
+
+					<div class="js-popup__content-inner js-popup-content-inner"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="swiper-container slider__container denim-gallery__container" data-denim-gallery-slider>
+		<div class="swiper-wrapper slider__wrapper denim-gallery">
+			{{- denim_subcategory -}}
+		</div>
+
+		<button class="slider__arrow slider__arrow--prev js-arrow-hidden denim-gallery__arrow" data-slider-arrow data-slider-arrow-prev>
+			{%- render 'icon-chevron' -%}
+		</button>
+
+		<button class="slider__arrow slider__arrow--next js-slider-arrow-next js-arrow-hidden denim-gallery__arrow" data-slider-arrow
+				data-slider-arrow-next>
+			{%- render 'icon-chevron' -%}
+		</button>
+
+		<div class="slider__pagination" data-slider-pagination></div>
+	</div>
+</div>
+
+
+{%- capture denim_content -%}
+{%- assign content_title    = page.metafields.denim-content.page_content_title -%}
+{%- assign content_textarea = page.metafields.denim-content.page_content_textarea -%}
+
+	<div class="denim-content">
+		{%- for title in content_title -%}
+			{%- assign index = forloop.index0 -%}
+
+			<div class="denim-content-row page-custom-container">
+				<div class="denim-content-column denim-content-title">
+					<div class="denim-content-title__field">
+						{{- title -}}
+					</div>
+				</div>
+				<div class="denim-content-column denim-content-textarea">
+					<div class="denim-content-textarea__field">
+						{{- content_textarea[index] | replace: '<p><span style="white-space:pre-wrap;"><img', '<img' | replace: "<p></p>", " " -}}
+					</div>
+				</div>
+			</div>
+		{%- endfor -%}
+	</div>
+{%- endcapture -%}
+
+{{- denim_content -}}
+

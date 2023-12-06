@@ -1,0 +1,76 @@
+{%- assign image 		= section.settings.image -%}
+{%- assign image_svg 	= section.settings.image_svg -%}
+{%- assign button_text 	= section.settings.button_text -%}
+{%- assign button_link 	= section.settings.button_link -%}
+
+<section
+	class="page-404"
+	data-section-id="{{- section.id -}}"
+	data-section-type="page-404"
+>
+	<div class="container page-404__container">
+		<div class="page-404__content">
+			{%- if image_svg != blank -%}
+				<div class="page-404__image page-404__image--svg">
+					{{- image_svg -}}
+				</div>
+			{%- elsif image != blank -%}
+				<picture>
+					<img
+						src="{{- image.src | img_url: '292x' -}}"
+						srcset="{{- image.src | img_url: '292x' -}} 1x, {{- image.src | img_url: '584x' -}} 2x"
+						alt="{{- image.alt -}}"
+						class="page-404__image"
+					>
+				</picture>
+			{% endif %}
+
+			<h1 class="page-404__title">
+				{{- 'templates.404.title' | t -}}
+			</h1>
+
+			<p class="page-404__text">
+				{{- 'templates.404.text' | t -}}
+			</p>
+
+			{% if button_text != blank and button_link != blank %}
+				<a
+					href="{{ button_link }}"
+					class="button button--shadow page-404__button"
+				>
+					{{- button_text -}}
+				</a>
+			{%- endif -%}
+		</div>
+	</div>
+</section>
+
+{% schema %}
+{
+	"name": "Page 404-template",
+	"settings": [
+		{
+			"type": "image_picker",
+			"id": "image",
+			"label": "Image"
+		},
+		{
+			"type": "html",
+			"id": "image_svg",
+			"label": "404 logo SVG",
+			"info": "Overrides logo image"
+		},
+		{
+			"type": "text",
+			"id": "button_text",
+			"label": "Button text",
+			"default": "Back home"
+		},
+		{
+			"type": "url",
+			"id": "button_link",
+			"label": "Button link"
+		}
+	]
+}
+{% endschema %}

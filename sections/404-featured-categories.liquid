@@ -1,0 +1,103 @@
+{%- capture cards -%}
+	{%- for block in section.blocks -%}
+		{%- assign collection                = collections[block.settings.collection] -%}
+		{%- assign collection_image        = block.settings.image | default: collection.image | default: placeholder_image -%}
+		{%- assign collection_title        = block.settings.title | default: collection.title -%}
+
+		{%- if collection == blank -%}
+			{%- continue -%}
+		{%- endif %}
+
+		<div class="page-404-featured-categories__card">
+			{%- render 'card',
+				image: collection_image,
+				title: collection_title,
+				subtitle: block.settings.subtitle,
+				link: collection.url,
+				link_1_label: block.settings.link_1_label,
+				link_1_url: block.settings.link_1_url,
+				link_2_label: block.settings.link_2_label,
+				link_2_url: block.settings.link_2_url -%}
+		</div>
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- if cards != blank -%}
+	<section
+		class="page-404-featured-categories"
+		data-section-id="{{- section.id -}}"
+		data-section-type="page-404-featured-categories"
+	>
+		<div class="container page-404-featured-categories__container">
+			<div class="page-404-featured-categories__cards-wrapper">
+				{{- cards -}}
+			</div>
+		</div>
+	</section>
+{%- endif -%}
+
+{% schema %}
+{
+	"name": "Featured categories",
+	"settings": [],
+	"blocks": [
+		{
+			"type": "collection",
+			"name": "Collection",
+			"settings": [
+				{
+					"type": "collection",
+					"id": "collection",
+					"label": "Collection"
+				},
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image",
+					"info": "Optional. Defaults to collection image"
+				},
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title",
+					"info": "Optional. Defaults to collection title"
+				},
+				{
+					"type": "text",
+					"id": "subtitle",
+					"label": "Subtitle",
+					"info": "Optional"
+				},
+				{
+					"type": "header",
+					"content": "First link"
+				},
+				{
+					"type": "text",
+					"id": "link_1_label",
+					"label": "Link label"
+				},
+				{
+					"type": "url",
+					"id": "link_1_url",
+					"label": "Link URL"
+				},
+				{
+					"type": "header",
+					"content": "Second link"
+				},
+				{
+					"type": "text",
+					"id": "link_2_label",
+					"label": "Link label"
+				},
+				{
+					"type": "url",
+					"id": "link_2_url",
+					"label": "Link URL"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

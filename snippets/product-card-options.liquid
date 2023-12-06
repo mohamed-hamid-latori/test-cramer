@@ -1,0 +1,13 @@
+{% comment %}
+	@params
+	product 			- {product object} *required
+{% endcomment %}
+
+{%- assign size_label 	= 'size,taille,größe,tamanho,tamaño,koko,サイズ' | split: ',' -%}
+{%- for option in product.options_with_values -%}
+	{%- assign downcased_option_name = option.name | downcase -%}
+
+	{%- if size_label contains downcased_option_name -%}
+		{%- include 'product-card-size-option', product: product, option: option -%}
+	{%- endif -%}
+{%- endfor -%}

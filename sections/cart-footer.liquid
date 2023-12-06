@@ -1,0 +1,103 @@
+{%- assign linklist 			= section.settings.links -%}
+{%- assign enable_payment_icons = section.settings.enable_payment_icons -%}
+
+{%- capture help_links -%}
+	{%- if linklists[linklist].links.size > 0 -%}
+		<ul class="cart-footer__links">
+			{%- for link in linklists[linklist].links -%}
+				<li class="cart-footer__links-item">
+					{%- assign link_title 		= link.title -%}
+					{%- assign has_back_arrow 	= false -%}
+
+					{%- if link_title contains '[BACK ARROW]' -%}
+						{%- assign link_title 		= link_title | replace: '[BACK ARROW]', '' -%}
+						{%- assign has_back_arrow 	= true -%}
+					{%- endif -%}
+
+					<a
+						href="{{ link.url }}"
+						class="cart-footer__link"
+					>
+						{%- if has_back_arrow == true -%}
+							<span class="cart-footer__link-icon">
+								{%- render 'icon-back-arrow' -%}
+							</span>
+						{%- endif -%}
+
+						<span class="cart-footer__link-text">
+							{{- link_title -}}
+						</span>
+					</a>
+				</li>
+			{%- endfor -%}
+		</ul>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture payment_icons -%}
+	<div class="cart-footer__icons">
+		{%- for type in shop.enabled_payment_types -%}
+			{%- capture icon -%}
+				{%- capture icon_snippet -%}
+					icon-{{- type | replace: "_", "-" -}}
+				{%- endcapture -%}
+
+				{%- include icon_snippet -%}
+			{%- endcapture -%}
+
+			{%- assign downcased_icon = icon | downcase -%}
+
+			<div class="cart-footer__icons-item">
+				{%- if downcased_icon contains "could not find asset" -%}
+					{{- type | payment_type_svg_tag: class: 'icon' -}}
+				{%- else -%}
+					{{- icon -}}
+				{%- endif -%}
+			</div>
+		{%- endfor -%}
+	</div>
+{%- endcapture -%}
+
+{%- if help_links or payment_icons -%}
+	<div
+		class="cart-footer"
+		data-section-id="{{- section.id -}}"
+		data-section-type="cart-footer"
+	>
+		<div class="cart-footer__container">
+			<div class="cart-footer__row">
+				{%- if help_links -%}
+					<div class="cart-footer__col cart-footer__col--links">
+						{{- help_links -}}
+					</div>
+				{%- endif -%}
+
+				{%- if payment_icons -%}
+					<div class="cart-footer__col cart-footer__col--icons">
+						{{- payment_icons -}}
+					</div>
+				{%- endif -%}
+			</div>
+		</div>
+	</div>
+{%- endif -%}
+
+{% schema %}
+{
+	"name": "Cart footer",
+	"class": "cart-footer-wrapper",
+	"settings": [
+		{
+			"type": "link_list",
+			"id": "links",
+			"label": "Help links"
+		},
+		{
+			"type": "checkbox",
+			"id": "enable_payment_icons",
+			"label": "Enable payment icons",
+			"default": true
+		}
+	]
+}
+{% endschema %}

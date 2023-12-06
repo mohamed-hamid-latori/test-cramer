@@ -1,0 +1,76 @@
+{%- assign heading                  = section.settings.heading -%}
+{%- assign back_url                 = section.settings.back_url -%}
+{%- assign back_link_text           = section.settings.back_link_text -%}
+{%- assign text                     = section.settings.text  -%}
+
+<section class="career-one-department-info"
+        data-section-id="{{- section.id -}}"
+        data-section-type="career-one-department-info"
+>
+    <div class="container career-one-department-info__container">
+        <div class="career-one-department-info__breadcrumbs-wrapper">
+            {% render 'custom-breadcrumbs',
+                breadcrumbs_link: section.settings.breadcrumbs 
+            %}
+        </div>
+
+        <div class="career-one-department-info__top-row">
+            {%- if back_url != blank and back_link_text != blank-%}
+                <a href="{{- back_url -}}" class="career-one-department-info__back-link">
+                    <span class="career-one-department-info__back-link-arrow">
+                        {% render 'icon-search-enter' %} 
+                    </span>
+
+                    <span class="career-one-department-info__back-link-text">
+                        {{- back_link_text -}}
+                    </span>
+                </a>
+            {%- endif -%}
+
+            {%- if heading != blank -%}
+                <h1 class="career-one-department-info__heading">
+                    {{- heading -}}
+                </h1>
+            {%- endif -%}
+        </div>
+        
+        {%- if text != blank -%}
+            <div class="career-one-department-info__text-container">
+                {{- text -}}
+            </div>
+        {%- endif -%}
+    </div> 
+</section>      
+
+{% schema %}
+    {
+        "name": "One department info",
+        "settings" : [
+            {
+                "type": "text",
+                "id":"heading",
+                "label": "Heading"
+            },
+            {
+                "type": "text",
+                "id": "back_link_text",
+                "label": "Text for back link"
+            },
+            {
+                "type": "url",
+                "id": "back_url",
+                "label": "Back url"
+            },
+            {
+                "type": "richtext",
+                "id": "text",
+                "label": "Text"
+            },
+            {
+                "type": "link_list",
+                "id": "breadcrumbs",
+                "label": "Breadcrumbs for navigation"
+            }
+        ]
+    }
+{% endschema %}

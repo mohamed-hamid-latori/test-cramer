@@ -1,0 +1,56 @@
+{%- assign link             = section.settings.link -%}
+{%- assign title            = section.settings.title -%}
+{%- assign text             = section.settings.text -%}
+{%- assign button_text      = section.settings.button_text -%}
+
+<section class="account-order-details__return-block">
+    <div class="account-order-details__return-block">
+        {%- if title != blank -%}
+            <h3 class="account-order-details__return-title">
+                {{- title -}}
+            </h3> 
+        {%- endif -%}
+          
+        {%- if text != blank -%}
+            <div class="account-order-details__return-info">
+                {{- text -}}
+            </div>
+        {%- endif -%}
+        
+        {%- if link != blank and button_text != blank -%}
+            <div class="account-order-details__return-button">
+                <a href="{{- link -}}" class="button button--secondary button--main account-order-details__return-link">
+                    {{- button_text -}}
+                </a>
+            </div>
+        {%- endif -%}
+    </div>
+</section>
+
+{% schema %}
+    {
+        "name": "Account order detail",
+        "settings": [
+            {
+                "type": "text",
+                "id": "title",
+                "label": "Title"
+            },
+            {
+                "type": "richtext",
+                "id": "text",
+                "label": "Text"
+            },
+            {
+                "type": "url",
+                "id": "link",
+                "label": "link"
+            },
+            {
+                "type": "text",
+                "id": "button_text",
+                "label": "Button text"
+            }
+        ]
+    }
+{% endschema %}

@@ -1,0 +1,133 @@
+{% comment %}
+    @params
+	product 					- {product object} *required
+	services_heading 			- {string}
+	services 					- {blocks}
+	free_services_svg_men		- {html} -- svg code
+	free_services_svg_women  	- {html} -- svg code
+{% endcomment %}
+
+{%- capture items -%}
+	{%- for service in services -%}
+		{%- assign title = service.settings.title -%}
+
+		{%- if title == blank -%}
+			{%- continue -%}
+		{%- endif -%}
+
+		{%- assign icon 		= service.settings.icon -%}
+		{%- assign svg_icon 	= service.settings.svg_icon -%}
+		
+		<div class="product-free-services__item">
+			{%- if svg_icon != blank -%}
+				<div class="product-free-services__item-svg-icon-wrapper">
+					{{- svg_icon -}}
+				</div>
+			{%- elsif icon != blank -%}
+				<div class="product-free-services__item-icon-wrapper">
+					<picture>
+						<img
+							src="{{ icon | img_url: '22x' }}"
+							srcset="{{ icon | img_url: '22x' }} 1x, {{ icon | img_url: '44x' }} 2x"
+							alt="{{ icon.alt | default: title }}"
+							class="product-free-services__item-icon"
+						/>
+					</picture>
+				</div>
+			{%- endif -%}
+
+			<div class="product-free-services__item-text">
+				{{- title -}}
+			</div>
+		</div>
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- assign product_type 		= product.type | handleize -%}
+
+{%- if product != blank and items != blank -%}
+	<div class="product-free-services">
+		<div class="product-free-services__header">
+			{%- assign herren_collection_check 	= false -%}
+			{%- assign damen_collection_check 	= false -%}
+
+			{%- for collection in product.collections -%}
+				{%- assign collection_title = collection.title | handleize -%}
+				
+				{%if collection_title == "herren" %}
+					{%- assign herren_collection_check = true -%}
+				{%endif %}
+
+				{%- if collection_title == "damen" -%}
+					{%- assign damen_collection_check = true -%}
+				{%- endif -%}
+			{%- endfor -%}
+
+			{%- if free_services_svg_women != blank and damen_collection_check == true and herren_collection_check == true -%}
+				<div class="product-free-services__header-svg-image">
+					{{- free_services_svg_women -}}
+				</div>
+			{%- elsif free_services_svg_men != blank and herren_collection_check == true -%}
+				<div class="product-free-services__header-svg-image">
+					{{- free_services_svg_men -}}
+				</div>			
+			{%- elsif free_services_svg_women != blank -%}
+				<div class="product-free-services__header-svg-image">
+					{{- free_services_svg_women -}}
+				</div>
+			{%- else -%}
+				<div class="product-free-services__header-image-wrapper">
+					<img src="{{ "free-services-logo.jpg" | asset_img_url: '85x80' }}"
+						srcset="{{ "free-services-logo.jpg" | asset_img_url: '85x80' }} 1x, {{ "free-services-logo.jpg" | asset_img_url: '170x160' }} 2x"
+						alt="{{- services_heading -}}"
+						class="product-free-services__header-image"
+					/>
+				</div>	
+			{%- endif -%}
+
+			<div class="product-free-services__header-content" data-benefits-header-plus>
+				<div class="product-free-services__header-title">
+					<span>
+						{%- if services_heading != blank -%}
+							{{- services_heading -}}
+						{%- else -%}
+							{{- 'products.product.services.title' | t -}}
+						{%- endif -%}
+
+						<span class="product-free-services__header-icon">
+							{%- render 'icon-help' -%}
+						</span>
+					</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="product-free-services__body">
+			<div class="product-free-services__items" data-benefits-container>
+				{{- items -}}
+			</div>
+		</div>
+
+		<div class="product-free-services__footer">
+			<div class="product-free-services__link-wrapper">
+				<a href="{{ routes.account_login_url }}"
+				   class="product-free-services__link"
+				>
+					{{- 'products.product.services.sign_in' | t -}}
+				</a>
+			</div>
+
+			<div class="product-free-services__link-wrapper">
+				<a href="{{ routes.account_register_url }}"
+				   class="product-free-services__link"
+				>
+					{{- 'products.product.services.register' | t -}}
+				</a>
+			</div>
+
+			<p class="product-free-services__text">
+				{{- 'products.product.services.prompt_in_checkout' | t -}}
+			</p>
+		</div>
+	</div>
+{%- endif -%}

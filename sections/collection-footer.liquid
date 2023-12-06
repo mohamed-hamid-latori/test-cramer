@@ -1,0 +1,27 @@
+{% comment %}
+	@params
+	collection                - {collection object} *required
+{% endcomment %}
+
+{%- if collection -%}
+	{%- assign title    = collection.metafields.collection_seo.title -%}
+	{%- assign text    = collection.metafields.collection_seo.text -%}
+
+	{%- if title != blank or text != blank -%}
+		{%- render 'dynamic-seo-text',
+			title: title,
+			text: text -%}
+	{%- endif -%}
+{%- endif -%}
+
+{%- schema -%}
+{
+	"name": "Collection footer",
+	"settings": [
+		{
+			"type": "paragraph",
+			"content": "Add heading and description using metafields"
+		}
+	]
+}
+{%- endschema -%}

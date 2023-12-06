@@ -1,0 +1,52 @@
+{%- include 'swymSnippet' -%}
+
+{%- include 'boost-pfs' -%}
+{% if template contains 'collection' %}
+{% endif %}
+
+<script type="text/javascript" defer src="//www.klaviyo.com/media/js/public/klaviyo_subscribe.js"></script>
+<script type="application/javascript" async src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=RWAKhJ">
+</script>
+<script src="https://a.klaviyo.com/media/js/onsite/onsite.js" async></script>
+
+<script defer src="https://widget.reviews.io/product/dist.js"></script>
+<script defer src="https://widget.reviews.io/rating-snippet/dist.js"></script>
+<link rel="stylesheet" href="https://widget.reviews.io/rating-snippet/dist.css">
+
+<script>
+  if("ratingSnippet" in window) {
+  ratingSnippet("ruk_rating_snippet",{
+      store:"cramerco.myshopify.com",
+      color:"#414B56",
+      linebreak:true,
+      text:"Brand reviews"
+  });
+  }
+</script>
+<!-- END Reviews.io rating snippet -->
+
+<!-- START Nosto.js -->
+<script type="text/javascript">
+  (() => {window.nostojs=window.nostojs||(cb => {(window.nostojs.q=window.nostojs.q||[]).push(cb);});})();
+</script>
+
+<script type="text/javascript">
+  nostojs(api => api.setAutoLoad(false));
+</script>
+
+{%- liquid
+  if shop.permanent_domain contains 'cramerco.myshopify.com'
+      assign nosto_account_id = 'shopify-54409167041'
+  elsif shop.permanent_domain contains 'cc-newseum.myshopify.com'
+      assign nosto_account_id = 'shopify-57860948145'
+  elsif shop.permanent_domain contains 'hose-mit-herz.myshopify.com'
+      assign nosto_account_id = 'shopify-55797842071'
+  else
+      assign nosto_account_id = 'shopify-54409167041'
+  endif
+-%}
+
+<script src="//connect.nosto.com/include/{{- nosto_account_id -}}" async></script>
+
+{%- include 'nosto-tagging' -%}
+<!-- END Nosto.js -->

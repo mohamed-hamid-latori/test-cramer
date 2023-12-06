@@ -1,0 +1,96 @@
+{%- capture full_slogan -%}
+    <div class="all-stores-info__slogan-container">
+        {%- for block in section.blocks -%}
+            {%- assign slogan               = block.settings.slogan -%}
+
+            <p class="all-stores-info__slogan-item">{{- slogan -}}</p>
+        {%- endfor -%}
+    </div>
+{%- endcapture -%}  
+ 
+{%- assign title                = section.settings.title -%}
+{%- assign subtext              = section.settings.subtext -%}
+{%- assign second_subtext       = section.settings.second_subtext-%}
+{%- assign contact_info         = section.settings.contact_info  -%}
+
+<section class="container all-stores-info"
+        data-section-id="{{- section.id -}}"
+        data-section-type="all-stores-info"
+>   
+    <div class="all-stores-info__container">
+        <div class="all-stores-info__breadcrumbs-container">
+            {% render 'breadcrumbs' %}
+        </div>
+
+        {%- if title != blank -%}
+            <h3 class="all-stores-info__title">{{- title -}}</h3>
+        {%- endif -%}
+
+        {%- if subtext != blank -%}
+            <p class="all-stores-info__appeal-text all-stores-info__appeal-text--width">{{- subtext -}}</p>
+        {%- endif -%} 
+
+        {%- if full_slogan != blank -%}
+            {{- full_slogan -}}
+        {%- endif -%}
+
+        {%- if second_subtext != blank -%}
+            <p class="all-stores-info__appeal-text all-stores-info__appeal-text--width">{{- second_subtext -}}</p>
+        {%- endif -%}
+
+        {%- if contact_info != blank -%}
+            <div class="all-stores-info__contact_info">{{- contact_info -}}</div>
+        {%- endif -%}
+    </div>
+    
+</section>
+
+{% schema %}
+{
+    "name": "Stores info",
+    "max_blocks": 3,
+    "blocks": [
+        {
+            "type": "slogan",
+            "name": "Slogan",
+            "settings":[
+                {
+                    "type": "text",
+                    "id": "slogan",
+                    "label": "Slogan"
+                }
+            ]
+        }
+    ],
+    "settings": [
+        {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "unsere stores"
+        },
+        {
+            "type": "textarea",
+            "id": "subtext",
+            "label": "Appeal",
+            "default": "Bitte beachtet die Vorgaben vom bayerischen Staatsministerium <br>zwecks der aktuellen Stituation."
+        },
+        {
+            "type": "textarea",
+            "id": "second_subtext",
+            "label": "Text after appeal",
+            "default": "CRÄMER & CO ist einer der führenden denim-stores in deutschland mit einer verkaufsfläche von derzeit ca. 3750qm, verteilt auf zwei häuser in nürnberg, ein geschäft in erlangen und dem CRÄMER & CO. Online store."
+        },
+        {
+            "type": "header",
+            "content": "Contact information"
+        },
+        {
+            "type": "richtext",
+            "id": "contact_info",
+            "label": "Contact information",
+            "default": "<p>CRÄMER & CO Online Store <br> Tel. 0800 2723637 (kostenlos) <br> Montag - Freitag: 10 - 17 Uhr <br> E-Mail: onlineshop@craemerco.de<p>"
+        }
+    ]   
+}
+{% endschema %}

@@ -1,0 +1,120 @@
+<div class="breadcrumbs-wrapper">
+	{% render 'breadcrumbs' %}
+</div>
+
+{%- capture brands_popular -%}
+	{%- for block in section.blocks -%}
+		{%- assign button_text = section.settings.button_text -%}
+		{%- assign button_link = section.settings.button_link -%}
+		{%- assign section_title = section.settings.section_title -%}
+		{%- assign section_bg_color = section.settings.section_bg_color -%}
+
+		{%- assign image = block.settings.image -%}
+
+		{%- if image == blank -%}
+			{%- continue -%}
+		{%- endif -%}
+
+		{%- assign link = block.settings.link -%}
+
+		<div class="swiper-slide slider__slide page-brands__logos-item js-brands-popular-item">
+			<div class="page-brands__image-wrapper">
+				<picture>
+					<img
+						src="{{ image | img_url: '110x' }}"
+						srcset="{{ image | img_url: '110x' }} 1x, {{ image | img_url: '220x' }} 2x"
+						alt="{{ image.alt }}"
+						class="page-brands__image"
+					/>
+				</picture>
+
+				{%- if link != blank -%}
+					<a href="{{ link }}" class="page-brands__link-wrapper"></a>
+				{%- endif -%}
+			</div>
+		</div>
+	{% endfor %}
+{%- endcapture -%}
+
+{% capture variables %}
+	--customizer-bg-color: {{ section_bg_color }}
+{% endcapture %}
+
+<section
+	class="page-brands-page-wrap"
+	data-section-id="{{- section.id -}}"
+	data-section-type="popular-brands",
+	style="{{- variables | escape -}}"
+>
+
+{%- if brands_popular != blank -%}
+	<div class="page-brands--popular">
+		<div class="container container--full-width page-brands__container">
+			<div class="section__title">
+				{%- if section_title != blank -%}
+					{{- section_title -}}
+				{%- endif -%}
+			</div>
+
+			<div class="page-brands__row">
+				<div class="page-brands__col page-brands__col--logos swiper-container">
+					<div class="page-brands__logos js-brands-popular">
+						<div class="swiper-wrapper slider__wrapper page-brands-swiper">
+							{{- brands_popular -}}
+						</div>
+						<button class="slider__arrow slider__arrow--prev js-brands-popular-slider-arrow-prev">
+							{%- render 'icon-chevron' -%}
+						</button>
+
+						<button class="slider__arrow slider__arrow--next js-slider-arrow-next js-brands-popular-slider-arrow-next">
+							{%- render 'icon-chevron' -%}
+						</button>
+
+						<div class="slider__pagination js-brands-popular-slider-pagination"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{%- endif -%}
+
+</section>
+
+{% schema %}
+	{
+		"name": "Popular Brands",
+		"settings": [
+			{
+				"type": "text",
+				"id": "section_title",
+				"label": "Section title",
+				"default": "Popular Brands"
+			},
+			{
+				"type": "color",
+				"id": "section_bg_color",
+				"label": "Set background color",
+				"default": "#F4F4F4"
+			}
+			],
+			"blocks": [
+				{
+				"type": "brand",
+				"name": "Brand",
+				"settings": [
+					{
+						"type": "image_picker",
+						"id": "image",
+						"label": "Image"
+					},
+					{
+						"type": "url",
+						"id": "link",
+						"label": "Link",
+						"info": "Optional"
+					}
+				]
+			}
+		]
+	}
+{% endschema %}

@@ -1,0 +1,731 @@
+{% comment %}
+	Custom template for testing styles.
+	Remove before deploying to production.
+{% endcomment %}
+
+<style>
+	.docs-title {
+		margin-top: 20px;
+		margin-bottom: 20px;
+		margin-left: 20px;
+	}
+
+	.button {
+		margin: 5px 0;
+	}
+</style>
+
+<div class="container">
+	<h1>
+		{{- page.title -}}
+	</h1>
+
+	<p>This page is here to show off styles for standard page elements such as typography, form elements, and icons. These are hard coded in an alternate page template file.</p>
+
+	<hr>
+
+	<h4 class="docs-title">Headings</h4>
+
+	<h1>Heading 1</h1>
+	<h2>Heading 2</h2>
+	<h3>Heading 3</h3>
+	<h4>Heading 4</h4>
+	<h5>Heading 5</h5>
+	<h6>Heading 6</h6>
+
+	<h4 class="docs-title">Paragraphs</h4>
+
+	<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper.</p>
+	<p>Suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat.</p>
+
+	<h4 class="docs-title">Type styles</h4>
+
+	<ul>
+		<li><strong>Strong</strong></li>
+		<li><em>Emphasis</em></li>
+		<li><a href="#">Inline link</a></li>
+		<li><s>Strike</s></li>
+		<li><sup>Sup</sup></li>
+	</ul>
+
+	<h4 class="docs-title">Buttons</h4>
+
+	<h6 class="docs-title">Main buttons</h6>
+
+	<a href="#" class="button button--primary button--main">Add to cart</a>
+	<br/>
+	<a href="#" class="button button--secondary button--main">Add to cart</a>
+
+	<h6 class="docs-title">Large buttons</h6>
+
+	<a href="#" class="button button--primary button--large">Add to cart</a>
+	<br/>
+	<a href="#" class="button button--secondary button--large">Add to cart</a>
+
+	<h6 class="docs-title">Regular buttons</h6>
+
+	<a href="#" class="button button--primary button--regular">Add to cart</a>
+	<br/>
+	<a href="#" class="button button--secondary button--regular">Add to cart</a>
+
+	<h6 class="docs-title">Small buttons</h6>
+
+	<a href="#" class="button button--primary button--small">Add to cart</a>
+	<br/>
+	<a href="#" class="button button--secondary button--small">Add to cart</a>
+
+	<h6 class="docs-title">Text buttons</h6>
+
+	<a href="#" class="button button--text">Text button</a>
+	<br/>
+	<a href="#" class="button button--text button--text-large">Large text button</a>
+	<br/>
+	<a href="#" class="button button--text button--text-regular">Regular text button</a>
+	<br/>
+	<a href="#" class="button button--text button--text-small">Small text button</a>
+
+	<h6 class="docs-title">Link buttons</h6>
+
+	<a href="#" class="link">Shop Herren</a>
+
+	<h6 class="docs-title">Banner buttons</h6>
+
+	<a href="#" class="button button--shadow">Shop Dammen</a>
+
+	<h6 class="docs-title">Buttons with icons</h6>
+
+	<a href="#" class="button button--primary button--main button--icon-right">
+		<span>Proceed to checkout</span>
+
+		<span class="button__icon">
+			{%- render 'icon-lock' -%}
+		</span>
+	</a>
+	<br/>
+	<a href="#" class="button button--secondary button--small button--icon-left">
+		<span class="button__icon">
+			{%- render 'icon-lock' -%}
+		</span>
+
+		<span>Proceed to checkout</span>
+	</a>
+
+	<h4 class="docs-title">Default input</h4>
+
+	<h6 class="docs-title">Default input</h6>
+
+	<input type="text" class="input" placeholder="Placeholder"/>
+
+	<h6 class="docs-title">Default disabled input</h6>
+
+	<input type="text" class="input" value="Disabled" disabled/>
+
+	<h6 class="docs-title">Default success input</h6>
+
+	<input type="text" class="input success" value="Typed"/>
+
+	<h6 class="docs-title">Default error input</h6>
+
+	<input type="text" class="input error" value="Wrong value"/>
+
+	<span class="error-message">Error message</span>
+
+	<h4 class="docs-title">Textarea</h4>
+
+	<textarea class="textarea" placeholder="Your message"></textarea>
+
+	<h4 class="docs-title">Checkbox</h4>
+
+	<input type="checkbox" id="checkbox" class="checkbox"/>
+
+	<label for="checkbox">Set as default address</label>
+
+	<h4 class="docs-title">Radio</h4>
+
+	<div class="input-radio-group">
+		<input type="radio" name="radio" id="radio_0" value="radio_0" class="radio"/>
+
+		<label for="radio_0">Option 0</label>
+	</div>
+
+	<div class="input-radio-group">
+		<input type="radio" name="radio" id="radio_1" value="radio_1" class="radio"/>
+
+		<label for="radio_1">Option 1</label>
+	</div>
+
+	<h4 class="docs-title">Custom select</h4>
+
+	<h6 class="docs-title">Default custom select (with placeholder value)</h6>
+
+	<div class="custom-select">
+		<select name="select_0" id="select_0" class="custom-select__select" data-custom-select data-custom-select-placeholder="Make a selection">
+			<!--
+				- Empty option is required when adding [data-custom-select-placeholder]
+				- If not using a [data-custom-select-placeholder] - remove the empty option
+				- If need a fallback "Select value..." option - add non-empty option and remove [data-custom-select-placeholder] attribute
+			-->
+
+			<option></option>
+
+			{% for i in (0..9) %}
+				<option value="option_{{ i }}">Option {{ i }}</option>
+			{% endfor %}
+		</select>
+
+		<div class="custom-select__dropdown" data-custom-select-dropdown></div>
+	</div>
+
+	<h6 class="docs-title">Custom select with label (with placeholder value)</h6>
+
+	<div class="custom-select">
+		<label class="custom-select__label">Label</label>
+
+		<select name="select_1" id="select_1" class="custom-select__select" data-custom-select data-custom-select-placeholder="Make a selection">
+			<!--
+				- Empty option is required when adding [data-custom-select-placeholder]
+				- If not using a [data-custom-select-placeholder] - remove the empty option
+				- If need a fallback "Select value..." option - add non-empty option and remove [data-custom-select-placeholder] attribute
+			-->
+
+			<option></option>
+
+			{% for i in (0..9) %}
+				<option value="option_{{ i }}">Option {{ i }}</option>
+			{% endfor %}
+		</select>
+
+		<div class="custom-select__dropdown" data-custom-select-dropdown></div>
+	</div>
+
+	<h6 class="docs-title">Floating label custom select (with fallback option value)</h6>
+
+	<div class="custom-select custom-select--floating-label">
+		<label class="custom-select__label">Label</label>
+
+		<select name="select_2" id="select_2" class="custom-select__select" data-custom-select>
+			<option>Make a selection</option>
+
+			{% for i in (0..9) %}
+				<option value="option_{{ i }}">Option {{ i }}</option>
+			{% endfor %}
+		</select>
+
+		<div class="custom-select__dropdown" data-custom-select-dropdown></div>
+	</div>
+
+	<h4 class="docs-title">Input group</h4>
+
+	<h6 class="docs-title">Default input group</h6>
+
+	<div class="input-group">
+		<label for="" class="input-group__label">Label</label>
+		<input type="text" class="input input-group__input"/>
+	</div>
+
+	<h6 class="docs-title">Floating label input group</h6>
+
+	<div class="input-group input-group--floating-label">
+		<input type="text" class="input input-group__input" placeholder="Label"/>
+		<label for="" class="input-group__label">Label</label>
+	</div>
+
+	<h6 class="docs-title">Floating label disabled input group</h6>
+
+	<div class="input-group input-group--floating-label">
+		<input type="text" class="input disabled input-group__input" value="Disabled"/>
+		<label for="" class="input-group__label">Label</label>
+	</div>
+
+	<h6 class="docs-title">Floating label error input group</h6>
+
+	<div class="input-group input-group--floating-label">
+		<input type="text" class="input error input-group__input" value="Wrong value" placeholder="Label"/>
+		<label for="" class="input-group__label">Label</label>
+	</div>
+
+	<span class="error-message">Error message</span>
+
+	<h4 class="docs-title">Form</h4>
+
+	<form action="" class="form">
+		<div class="form__row">
+			<div class="form__col">
+				<div class="input-group input-group--floating-label form__input-group">
+					<input type="text" class="input input-group__input form__input" placeholder="First Name"/>
+					<label for="" class="input-group__label">First Name</label>
+				</div>
+			</div>
+
+			<div class="form__col">
+				<div class="input-group input-group--floating-label form__input-group">
+					<input type="text" class="input input-group__input form__input" placeholder="Last Name"/>
+					<label for="" class="input-group__label">Last Name</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="form__row">
+			<div class="form__col">
+				<div class="input-group input-group--floating-label form__input-group">
+					<input type="text" class="input input-group__input form__input" placeholder="Address"/>
+					<label for="" class="input-group__label">Address</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="form__row">
+			<div class="form__col">
+				<textarea class="textarea form__textarea" placeholder="Your message..."></textarea>
+			</div>
+		</div>
+	</form>
+
+	<h4 class="docs-title">Quantity selector</h4>
+
+	<div class="quantity-selector" data-quantity-selector>
+		<button
+			type="button"
+			class="quantity-selector__button"
+			data-quantity-selector-decrement
+		>
+			<span class="visually-hidden">
+				{{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
+			</span>
+
+			{%- render 'icon-minus' -%}
+		</button>
+
+		<input
+			type="number"
+			class="quantity-selector__input"
+			value="1"
+			min="1"
+			max="5"
+			readonly
+			data-quantity-selector-input
+		/>
+
+		<button
+			type="button"
+			class="quantity-selector__button"
+			data-quantity-selector-increment
+		>
+			<span class="visually-hidden">
+				{{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
+			</span>
+
+			{%- render 'icon-plus' -%}
+		</button>
+	</div>
+
+	<h4 class="docs-title">Badges</h4>
+
+	<div class="badge badge--coming-soon">
+		Coming Soon
+	</div>
+	<br/><br/>
+	<div class="badge badge--big badge--sale">
+		Sale
+	</div>
+
+	<h4 class="docs-title">Tags</h4>
+
+	<div class="tag">Normal waist</div>
+	<br/><br/>
+	<div class="tag tag--outline">Normal waist</div>
+	<br/><br/>
+	<div class="tag tag--link">Normal waist</div>
+
+	<h4 class="docs-title">Accordion</h4>
+
+	<h6 class="docs-title">Single open accordion</h6>
+
+	<div class="accordion js-toggle-container" data-accordion-mode="single">
+		<div class="accordion__item js-toggle-item">
+			<button class="accordion__item-toggler js-toggle-button">
+				Delivery & Return
+			</button>
+
+			<div class="accordion__item-content js-toggle-content">
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti earum explicabo harum ipsam magnam maxime nam, obcaecati officiis qui soluta?
+			</div>
+		</div>
+
+		<div class="accordion__item js-toggle-item">
+			<button class="accordion__item-toggler js-toggle-button">
+				Product Beschreibung
+			</button>
+
+			<div class="accordion__item-content js-toggle-content">
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab deserunt ea earum eveniet exercitationem id, ipsa libero officia quis vitae!
+			</div>
+		</div>
+	</div>
+
+	<h6 class="docs-title">Multiple open accordions</h6>
+
+	<div class="accordion js-toggle-container" data-accordion-mode="multiple">
+		<div class="accordion__item js-toggle-item">
+			<button class="accordion__item-toggler js-toggle-button">
+				Delivery & Return
+			</button>
+
+			<div class="accordion__item-content js-toggle-content">
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti earum explicabo harum ipsam magnam maxime nam, obcaecati officiis qui soluta?
+			</div>
+		</div>
+
+		<div class="accordion__item js-toggle-item">
+			<button class="accordion__item-toggler js-toggle-button">
+				Product Beschreibung
+			</button>
+
+			<div class="accordion__item-content js-toggle-content">
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab deserunt ea earum eveniet exercitationem id, ipsa libero officia quis vitae!
+			</div>
+		</div>
+	</div>
+
+	<h4 class="docs-title">Breadcrumbs</h4>
+
+	{%- render 'breadcrumbs' -%}
+
+	<h4 class="docs-title">Object card</h4>
+
+	<div class="card" style="max-width: 311px;">
+		<div class="card__image-wrapper">
+			<picture>
+				<img src="https://sourcingjournal.com/wp-content/uploads/2020/07/levi.jpg"
+					 alt=""
+					 class="card__image"
+				/>
+			</picture>
+
+			<div class="card__buttons-wrapper card__buttons-wrapper--desktop">
+				<a href="#" class="link card__button">
+					Shop Damen
+				</a>
+
+				<a href="#" class="link card__button">
+					Shop Herren
+				</a>
+			</div>
+
+			<a href="#" class="card__link-wrapper"></a>
+		</div>
+
+		<a href="#" class="card__title">
+			Jeans
+		</a>
+
+		<p class="card__subtitle">
+			Say goodbye to fits which don't fit
+		</p>
+
+		<div class="card__buttons-wrapper card__buttons-wrapper--mobile">
+			<a href="#" class="link card__button">
+				Shop Damen
+			</a>
+
+			<a href="#" class="link card__button">
+				Shop Herren
+			</a>
+		</div>
+	</div>
+
+	<h4 class="docs-title">Slider</h4>
+</div>
+
+<div class="container container--full-width container--no-padding">
+	<!--
+		Custom slider options (e.g. options pulled from the customizer)
+		can be added using JSON:
+
+		{%- capture custom_options -%}
+			{
+				"test": true
+			}
+		{%- endcapture -%}
+
+		Pass options to section container using data-custom-options="{{- custom_options | escape -}}"
+	-->
+
+	<section
+		class="slider"
+		data-section-id="slider"
+		data-section-type="slider"
+	>
+		<div class="swiper-container slider__container js-slider-container">
+			<div class="swiper-wrapper slider__wrapper">
+				<div class="swiper-slide slider__slide">
+					<div class="card">
+						<div class="card__image-wrapper">
+							<picture>
+								<img src="https://sourcingjournal.com/wp-content/uploads/2020/07/levi.jpg"
+									 alt=""
+									 class="card__image"
+								/>
+							</picture>
+
+							<div class="card__buttons-wrapper card__buttons-wrapper--desktop">
+								<a href="#" class="link card__button">
+									Shop Damen
+								</a>
+
+								<a href="#" class="link card__button">
+									Shop Herren
+								</a>
+							</div>
+
+							<a href="#" class="card__link-wrapper"></a>
+						</div>
+
+						<h4 class="card__title">
+							Jeans
+						</h4>
+
+						<p class="card__subtitle">
+							Say goodbye to fits which don't fit
+						</p>
+
+						<div class="card__buttons-wrapper card__buttons-wrapper--mobile">
+							<a href="#" class="link card__button">
+								Shop Damen
+							</a>
+
+							<a href="#" class="link card__button">
+								Shop Herren
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="swiper-slide slider__slide">
+					<div class="card">
+						<div class="card__image-wrapper">
+							<picture>
+								<img src="https://sourcingjournal.com/wp-content/uploads/2020/07/levi.jpg"
+									 alt=""
+									 class="card__image"
+								/>
+							</picture>
+
+							<div class="card__buttons-wrapper card__buttons-wrapper--desktop">
+								<a href="#" class="link card__button">
+									Shop Damen
+								</a>
+
+								<a href="#" class="link card__button">
+									Shop Herren
+								</a>
+							</div>
+
+							<a href="#" class="card__link-wrapper"></a>
+						</div>
+
+						<h4 class="card__title">
+							Jeans
+						</h4>
+
+						<p class="card__subtitle">
+							Say goodbye to fits which don't fit
+						</p>
+
+						<div class="card__buttons-wrapper card__buttons-wrapper--mobile">
+							<a href="#" class="link card__button">
+								Shop Damen
+							</a>
+
+							<a href="#" class="link card__button">
+								Shop Herren
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="swiper-slide slider__slide">
+					<div class="card">
+						<div class="card__image-wrapper">
+							<picture>
+								<img src="https://sourcingjournal.com/wp-content/uploads/2020/07/levi.jpg"
+									 alt=""
+									 class="card__image"
+								/>
+							</picture>
+
+							<div class="card__buttons-wrapper card__buttons-wrapper--desktop">
+								<a href="#" class="link card__button">
+									Shop Damen
+								</a>
+
+								<a href="#" class="link card__button">
+									Shop Herren
+								</a>
+							</div>
+
+							<a href="#" class="card__link-wrapper"></a>
+						</div>
+
+						<h4 class="card__title">
+							Jeans
+						</h4>
+
+						<p class="card__subtitle">
+							Say goodbye to fits which don't fit
+						</p>
+
+						<div class="card__buttons-wrapper card__buttons-wrapper--mobile">
+							<a href="#" class="link card__button">
+								Shop Damen
+							</a>
+
+							<a href="#" class="link card__button">
+								Shop Herren
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="swiper-slide slider__slide">
+					<div class="card">
+						<div class="card__image-wrapper">
+							<picture>
+								<img src="https://sourcingjournal.com/wp-content/uploads/2020/07/levi.jpg"
+									 alt=""
+									 class="card__image"
+								/>
+							</picture>
+
+							<div class="card__buttons-wrapper card__buttons-wrapper--desktop">
+								<a href="#" class="link card__button">
+									Shop Damen
+								</a>
+
+								<a href="#" class="link card__button">
+									Shop Herren
+								</a>
+							</div>
+
+							<a href="#" class="card__link-wrapper"></a>
+						</div>
+
+						<h4 class="card__title">
+							Jeans
+						</h4>
+
+						<p class="card__subtitle">
+							Say goodbye to fits which don't fit
+						</p>
+
+						<div class="card__buttons-wrapper card__buttons-wrapper--mobile">
+							<a href="#" class="link card__button">
+								Shop Damen
+							</a>
+
+							<a href="#" class="link card__button">
+								Shop Herren
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="swiper-slide slider__slide">
+					<div class="card">
+						<div class="card__image-wrapper">
+							<picture>
+								<img src="https://sourcingjournal.com/wp-content/uploads/2020/07/levi.jpg"
+									 alt=""
+									 class="card__image"
+								/>
+							</picture>
+
+							<div class="card__buttons-wrapper card__buttons-wrapper--desktop">
+								<a href="#" class="link card__button">
+									Shop Damen
+								</a>
+
+								<a href="#" class="link card__button">
+									Shop Herren
+								</a>
+							</div>
+
+							<a href="#" class="card__link-wrapper"></a>
+						</div>
+
+						<h4 class="card__title">
+							Jeans
+						</h4>
+
+						<p class="card__subtitle">
+							Say goodbye to fits which don't fit
+						</p>
+
+						<div class="card__buttons-wrapper card__buttons-wrapper--mobile">
+							<a href="#" class="link card__button">
+								Shop Damen
+							</a>
+
+							<a href="#" class="link card__button">
+								Shop Herren
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="swiper-slide slider__slide">
+					<div class="card">
+						<div class="card__image-wrapper">
+							<picture>
+								<img src="https://sourcingjournal.com/wp-content/uploads/2020/07/levi.jpg"
+									 alt=""
+									 class="card__image"
+								/>
+							</picture>
+
+							<div class="card__buttons-wrapper card__buttons-wrapper--desktop">
+								<a href="#" class="link card__button">
+									Shop Damen
+								</a>
+
+								<a href="#" class="link card__button">
+									Shop Herren
+								</a>
+							</div>
+
+							<a href="#" class="card__link-wrapper"></a>
+						</div>
+
+						<h4 class="card__title">
+							Jeans
+						</h4>
+
+						<p class="card__subtitle">
+							Say goodbye to fits which don't fit
+						</p>
+
+						<div class="card__buttons-wrapper card__buttons-wrapper--mobile">
+							<a href="#" class="link card__button">
+								Shop Damen
+							</a>
+
+							<a href="#" class="link card__button">
+								Shop Herren
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<button class="slider__arrow slider__arrow--prev js-slider-arrow-prev">
+				{%- render 'icon-chevron' -%}
+			</button>
+
+			<button class="slider__arrow slider__arrow--next js-slider-arrow-next">
+				{%- render 'icon-chevron' -%}
+			</button>
+
+			<div class="slider__pagination js-slider-pagination"></div>
+		</div>
+	</section>
+</div>

@@ -1,0 +1,40 @@
+{%- comment -%}
+
+        @param
+
+        heading                 - { String }
+        blocks                  - { Array of settings.blocks }
+
+{%- endcomment -%}  
+
+{%- capture content -%}
+    {%- for block in blocks -%}
+        
+        {%- assign heading                = block.settings.type -%}
+        {%- assign title                  = block.settings.title -%}
+        {%- assign text                   = block.settings.text -%}
+
+        
+
+    {%- endfor -%}
+{%- endcapture -%}
+
+<section clas="help-center-content"
+        data-section-id="{{- section.id -}}"
+        data-section-type="help-center-content"
+>
+    <div class="help-center-content__container">
+        {%- if heading != blank -%}
+            <h1 class="help-center-content__heading">
+                {{- heading -}}   
+            </h1>
+        {%- endif -%}
+        
+        {%- if content != blank -%}
+            {{- content -}}
+        {%- endif -%}
+    </div>
+</section>
+
+
+ 

@@ -1,0 +1,79 @@
+{%- capture denim_nav -%}
+	<div class="denim-nav-container">
+		<div class="denim-nav">
+			{%- for block in section.blocks -%}
+				{%- assign nav_index  =  forloop.index0 %}
+				{%- assign nav_img    =  block.settings.denim_nav_item_img -%}
+				{%- assign nav_title  =  block.settings.denim_nav_item_title -%}
+				{%- assign nav_link   =  block.settings.denim_nav_item_link  -%}
+
+				<div class="denim-nav-item js-denim-nav-item {% if forloop.first == true %}active{% endif %}" data-link="{{- nav_link | remove: "/pages/" -}}" data-index="{{- nav_index -}}">
+					<div class="denim-nav-item__img-wrapper">
+						<img class="denim-nav-item__img" src="{{- nav_img | img_url: "master" -}}" alt="" >
+					</div>
+					<div class="denim-nav-item__title">
+						{{- nav_title -}}
+					</div>
+					<a href="{{- nav_link -}}" class="denim-nav-item__link"></a>
+				</div>
+			{%- endfor -%}
+		</div>
+	</div>
+{%- endcapture -%}
+
+{%- capture denim_nav_content -%}
+	<div class="content-wrapper">
+		{%- assign arrat_title 		= pages[nav_page_handle].metafields.services.content_title -%}
+		{%- assign array_subtitle   = pages[nav_page_handle].metafields.services.content_text -%}
+
+		<div class="denim-nav-content js-denim-nav-content"></div>
+
+		{%- for block in section.blocks -%}
+			{%- assign nav_index  =  forloop.index0 %}
+			{%- assign nav_img    =  block.settings.denim_nav_item_img -%}
+			{%- assign nav_title  =  block.settings.denim_nav_item_title -%}
+			{%- assign nav_link   =  block.settings.denim_nav_item_link  -%}
+			{%- assign nav_page_handle  = block.settings.denim_nav_item_link | remove: "/pages/" -%}
+
+			<div class="denim-item-content js-denim-item-content {% if forloop.first == true %}active{% endif %}" data-link="{{- nav_page_handle -}}"></div>
+		{%- endfor -%}
+	</div>
+{%- endcapture -%}
+
+<section data-section-type="denim-bible-nav" data-section-id="{{- section.id -}}">
+	<div class="container">
+		{{- denim_nav -}}
+	</div>
+
+	{{- denim_nav_content -}}
+</section>
+
+{% schema %}
+	{
+		"name": "Denim Navigation",
+		"blocks": [
+			{
+				"name": "Navigation Item",
+				"type": "item",
+				"settings": [
+					{
+						"type": "image_picker",
+						"id": "denim_nav_item_img",
+						"label": "Choose image"
+					},
+					{
+						"type": "text",
+						"id": "denim_nav_item_title",
+						"label": "Enter title"
+					},
+					{
+						"type": "url",
+						"id": "denim_nav_item_link",
+						"label": "Choose page",
+						"info": "Pull content from selected page"
+					}
+				]
+			}
+		]
+	}
+{% endschema %}

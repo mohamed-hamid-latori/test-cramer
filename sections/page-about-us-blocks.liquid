@@ -1,0 +1,159 @@
+{% capture about_us_blocks %}
+	<div class="about-us-blocks__wrapper">
+		<div class="about-us-blocks__wrapper-left">
+			<div class="about-us-blocks__wrapper-left-inner">
+				{% for block in section.blocks %}
+					{% if block.type == 'block_title' %}
+						{%- assign title = block.settings.block_title -%}
+
+						{% if title != blank %}
+							<p class="about-us-blocks__title">
+								{{- title -}}
+							</p>
+						{%  endif %}
+					{% elsif block.type == 'text_with_icon' %}
+						{%- assign icon = block.settings.block_icon -%}
+						{%- assign description = block.settings.block_desc -%}
+
+						{% if description != blank and icon != blank %}
+							<div class="about-us-blocks__text-with-icon">
+								<div class="about-us-blocks__text-with-icon-text">
+									{{- description -}}
+								</div>
+
+								<div class="about-us-blocks__text-with-icon-icon">
+									<img src="{{- icon | img_url: '150x' -}}" alt="">
+								</div>
+							</div>
+						{% endif %}
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+		<div class="about-us-blocks__wrapper-right">
+			{% for block in section.blocks %}
+
+				{% if block.type == 'block_text' %}
+					{%- assign text = block.settings.block_text -%}
+
+					{% if text != blank %}
+						<div class="about-us-blocks__text">
+							{{- text -}}
+						</div>
+					{% endif %}
+				{% elsif block.type == 'block_image' %}
+					{%- assign image = block.settings.block_image -%}
+
+					{% if image != blank %}
+						<div class="about-us-blocks__image-wrapper">
+							<picture>
+								<img
+									class="about-us-blocks__image"
+									src="{{- image | img_url: '945x' -}}"
+									alt="{{ image.alt }}"
+								/>
+							</picture>
+						</div>
+					{% endif %}
+				{% elsif block.type == 'block_button' %}
+					{%- assign button_text = block.settings.block_btn_text -%}
+					{%- assign button_link = block.settings.block_btn_link -%}
+
+					{% if button_link != blank and button_text != blank %}
+						<a href="{{ button_link }}" class="about-us-blocks__link">
+							{{- button_text -}}
+						</a>
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+{% endcapture %}
+
+<section
+	class="about-us-blocks"
+	data-section-type="about-us-blocks"
+	data-section-id="{{ section.id }}"
+>
+	<div class="container">
+		{{- about_us_blocks -}}
+	</div>
+</section>
+
+{% schema %}
+{
+	"name": "Blocks",
+	"blocks": [
+		{
+			"type": "block_title",
+			"name": "Block title",
+			"settings": [
+				{
+					"type": "text",
+					"id": "block_title",
+					"label": "Block title"
+				}
+			]
+		},
+		{
+			"type": "text_with_icon",
+			"name": "Text with icon",
+			"settings": [
+				{
+					"type": "richtext",
+					"id": "block_desc",
+					"label": "Block description"
+				},
+				{
+					"type": "image_picker",
+					"id": "block_icon",
+					"label": "Block icon"
+				}
+			]
+		},
+		{
+			"type": "block_text",
+			"name": "Block text",
+			"settings": [
+				{
+					"type": "richtext",
+					"id": "block_text",
+					"label": "Block text"
+				}
+			]
+		},
+		{
+			"type": "block_image",
+			"name": "Block image",
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "block_image",
+					"label": "Block image"
+				}
+			]
+		},
+		{
+			"type": "block_button",
+			"name": "Block button",
+			"settings": [
+				{
+					"type": "text",
+					"id": "block_btn_text",
+					"label": "Block button text"
+				},
+				{
+					"type": "url",
+					"id": "block_btn_link",
+					"label": "Block button url"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "About us blocks section"
+		}
+	]
+}
+{% endschema %}

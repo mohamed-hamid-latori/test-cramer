@@ -1,0 +1,219 @@
+{% comment %}
+	@params
+	product 			- {product object} *required
+	option 				- {product option object} *required
+	current_value 		- {string}
+	enable_size_chart 	- {boolean}
+	size_chart_title 	- {string}
+	size_chart_icon 	- {image}
+	size_chart_text 	- {string}
+{% endcomment %}
+
+{%- if option != blank -%}
+	{%- assign option_position 			= option.position -%}
+	{%- assign option_name 				= option.name -%}
+
+	{%- assign option_name_downcased 	= option_name | downcase -%}
+
+	{%- unless current_value != blank -%}
+		{%- assign current_value 	= option.selected_value -%}
+	{%- endunless -%}
+
+	{%- capture select_name -%}
+		options[{{- option_name -}}]
+	{%- endcapture -%}
+
+	{%- capture select_id -%}
+		Option{{- option_position -}}
+	{%- endcapture -%}
+
+	{%- capture option_attribute -%}
+		option{{- option_position -}}
+	{%- endcapture -%}
+
+	{%- assign separator				 	= '%%%' -%}
+	{%- assign enable_custom_size_order 	= settings.enable_custom_size_order -%}
+
+	{%- if shop.permanent_domain contains 'cc-newseum.myshopify.com' -%}
+		{%- assign size_order_type = product.metafields.product.custom_size_order.references | first -%}
+	{%- else -%}
+		{%- assign size_order_type = product.metafields.options.custom_size_order.references | first -%}
+	{%- endif -%}
+
+	{%- if size_order_type == blank -%}
+		{%- assign size_order_type = shop.metafields.globals.default_custom_size_order.references | first -%}
+	{%- endif -%}
+
+	{%- if size_order_type != blank -%}
+		{%- assign size_order = shop.metafields.globals['size_order_values'][size_order_type.index] | split: separator -%}
+	{%- endif -%}
+
+	{%- capture values -%}
+		{%- if enable_custom_size_order and size_order != blank -%}
+			{%- assign available_values = option.values 	| join: separator 	| downcase -%}
+			{%- assign available_values = available_values 	| append: separator | prepend: separator -%}
+
+			{%- for value in size_order -%}
+				{%- assign prepared_value 	= value | downcase -%}
+				{%- assign search_value 	= prepared_value | prepend: separator | append: separator -%}
+
+				{%- assign option_available = false -%}
+
+				{%- if available_values contains search_value -%}
+					{%- assign option_available = true -%}
+				{%- endif -%}
+
+				{%- unless option_available -%}
+					{%- continue -%}
+				{%- endunless -%}
+
+				{%- capture id -%}
+					Option{{- option_position -}}-{{- value -}}
+				{%- endcapture -%}
+
+				{%- assign current_variant = "" -%}
+				{%- assign region_name 	   = "" -%}
+
+				{% for variant in product.variants %}
+					{%- assign variant_finded = false -%}
+
+					{%- for variant_option in variant.options -%}
+						{%- if variant_option == value -%}
+
+							{%- assign current_variant = variant -%}
+							{%- assign variant_finded  = true -%}
+
+							{% break %}
+						{%- endif -%}
+					{%- endfor -%}
+
+					{%- if variant_finded == true -%}
+						{% break %}
+					{%- endif -%}
+				{% endfor %}
+
+				{%- if current_variant.metafields.variant.region_field != null -%}
+					{%- assign region_name = current_variant.metafields.variant.region_field | prepend: '(' | append: ')' -%}
+				{%- endif -%}
+
+				<option
+					id="{{- id -}}"
+					value="{{- value -}}"
+					{%- if current_value == value -%}selected="selected"{%- endif -%}
+					data-option-name="{{- option_name_downcased -}}"
+				>
+					{{- value -}}{{- separator -}}{{- region_name -}}
+				</option>
+			{%- endfor -%}
+		{%- else -%}
+			{%- for value in option.values -%}
+				{%- capture id -%}
+					Option{{- option_position -}}-{{- value -}}
+				{%- endcapture -%}
+
+				{%- assign current_variant = "" -%}
+				{%- assign region_name 	   = "" -%}
+
+				{% for variant in product.variants %}
+					{%- assign variant_finded = false -%}
+
+					{%- for variant_option in variant.options -%}
+						{%- if variant_option == value -%}
+
+							{%- assign current_variant = variant -%}
+							{%- assign variant_finded  = true -%}
+
+							{% break %}
+						{%- endif -%}
+					{%- endfor -%}
+
+					{%- if variant_finded == true -%}
+						{% break %}
+					{%- endif -%}
+				{% endfor %}
+
+				{%- if current_variant.metafields.variant.region_field != null -%}
+					{%- assign region_name = current_variant.metafields.variant.region_field | prepend: '(' | append: ')' -%}
+				{%- endif -%}
+
+				<option
+					id="{{- id -}}"
+					value="{{- value -}}"
+					{%- if current_value == value -%}selected="selected"{%- endif -%}
+					data-option-name="{{- option_name_downcased -}}"
+				>
+					{{- value -}}{{- separator -}}{{- region_name -}}
+				</option>
+			{%- endfor -%}
+		{%- endif -%}
+	{%- endcapture -%}
+
+	<div class="product-option" data-option-name="option[{{- option_name | downcase -}}]" data-size-order="{{ size_order | json }}">
+		<label
+			for="{{- select_id -}}"
+			class="product-option__label"
+			data-option-label="{{- option_attribute -}}"
+		>
+			<span>
+				{{- option_name -}}:
+			</span>
+
+			<span data-option-value="{{- option_attribute -}}">
+				{%- if current_value -%}{{- current_value -}}{%- endif -%}
+			</span>
+		</label>
+
+		<div class="custom-select product-option__values product-option__select">
+			<select name="{{- select_name -}}"
+					id="{{- select_id -}}"
+					data-option="{{- option_attribute -}}"
+					data-option-type="select"
+					class="custom-select__select product-option__select"
+					data-custom-choices
+					data-product-option="true"
+					{% unless current_value != blank %}data-custom-choices-placeholder="true"{% endunless %}
+			>
+				{%- unless current_value != blank -%}
+					<option>
+						{{- 'products.product.options.size.placeholder' | t -}}
+					</option>
+				{%- endunless -%}
+
+				{{- values -}}
+			</select>
+		</div>
+
+		{%- assign model_size = product.metafields.product.model_size -%}
+
+		{%- if model_size != blank or enable_size_chart == true -%}
+			<div class="product-option__row">
+				{%- if model_size != blank -%}
+					<div class="product-option__col product-option__col--text">
+						<p class="product-option__text">
+							{{- model_size -}}
+						</p>
+					</div>
+				{%- endif -%}
+
+				{%- if enable_size_chart == true -%}
+					<div class="product-option__col product-option__col--link">
+						<button type="button" class="product-option__link" data-size-chart-open>
+							{{- 'products.product.options.size.size_chart_button' | t -}}
+						</button>
+					</div>
+				{%- endif -%}
+			</div>
+		{%- endif -%}
+
+		{%- if enable_size_chart == true -%}
+			{%-
+				render 'product-size-chart',
+				product: product,
+				size_chart_title: size_chart_title,
+				size_chart_icon: size_chart_icon,
+				size_chart_icon_svg: size_chart_icon_svg,
+				size_chart_text: size_chart_text
+			-%}
+		{%- endif -%}
+	</div>
+{%- endif -%}

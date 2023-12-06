@@ -1,0 +1,79 @@
+{% assign title = section.settings.brands_title %}
+{% assign button_text = section.settings.brands_button_text %}
+{% assign button_link = section.settings.brands_button_link %}
+
+{% capture about_us_brands %}
+	{%- if section.blocks.size > 0 -%}
+		<div class="about-us-brands__wrapper">
+			{% for block in section.blocks %}
+				{%- assign icon = block.settings.brands_icon -%}
+
+				{% if icon != blank %}
+					<div class="about-us-brands__item">
+						<picture>
+							<img
+								class="about-us-brands__image"
+								src="{{- icon | img_url: "106x" -}}"
+								alt="{{ icon.alt }}"
+							/>
+						</picture>
+					</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+	{%- endif -%}
+{% endcapture %}
+
+<section class="about-us-brands">
+	{% if title != blank %}
+		<h3 class="section-title about-us-brands__title">
+			{{- title -}}
+		</h3>
+	{% endif %}
+
+	<div class="container">
+		{{ about_us_brands }}
+
+		{% if button_text != blank and button_link != blank %}
+			<a href="{{- button_link -}}" class="about-us-brands__button">
+				{{- button_text -}}
+			</a>
+		{% endif %}
+	</div>
+</section>
+
+{% schema %}
+{
+	"name": "About us brands",
+	"settings": [
+		{
+			"id": "brands_title",
+			"type": "text",
+			"label": "Brands section title"
+		},
+		{
+			"id": "brands_button_text",
+			"type": "text",
+			"label": "Brands button text"
+		},
+		{
+			"id": "brands_button_link",
+			"type": "url",
+			"label": "Brands button link"
+		}
+	],
+	"blocks": [
+		{
+			"name": "Brands blocks",
+			"type": "brands_icons",
+			"settings": [
+				{
+					"id": "brands_icon",
+					"type": "image_picker",
+					"label": "Brands icon"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

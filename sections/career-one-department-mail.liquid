@@ -1,0 +1,33 @@
+{%- assign heading                  = section.settings.heading -%}
+
+<section class="career-one-department-mail"
+    data-section-id="{{- section.id -}}"
+    data-section-type="career-one-department-mail"
+>
+    
+    <div class="container career-one-department-mail__container">
+        {%- if heading != blank -%}
+            <h1 class="career-one-department-mail__heading">
+                {{- heading -}}
+            </h1>
+        {%- endif -%}
+
+        <div class="career-one-department-mail__form-wrapper">
+            {formbuilder:NjIzNDI=}
+        </div>    
+    </div>
+</section>
+
+{% schema %}
+    {
+        "name": "One Department mail",
+        "settings": [
+            {
+                "type": "text",
+                "id": "heading",
+                "label": "Heading",
+                "default": "Apply now"
+            }
+        ]
+    }
+{% endschema %}

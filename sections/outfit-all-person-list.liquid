@@ -1,0 +1,106 @@
+{%- assign heading                      = section.settings.heading -%}
+
+{%- capture items -%}
+    {%- for block in section.blocks -%}
+        {%- assign title                = block.settings.title  -%}
+        {%- assign image                = block.settings.staff_image -%}
+        {%- assign link                  = block.settings.link -%}
+
+        <div class="outfit-all-person-list__col">
+            {%- if image != blank -%}
+                <div class="outfit-all-person-list__image-wrapper">
+                    <a href="{{- link -}}"
+                        class="outfit-all-person-list__image-link"
+                    >
+                        <picture>
+                            <img
+                                src="{{ image | img_url: '437x' }}"
+                                srcset="{{ image | img_url: '437x' }} 1x, {{ image | img_url: '874x' }} 2x"
+                                alt="{{- image.alt -}}"
+                                class="outfit-all-person-list__image"
+                            />
+                        </picture>
+                    </a>
+                </div>
+            {%- endif -%}
+
+            {%- if title != blank -%}
+                <h2 class="outfit-all-person-list__title">
+                    <a href="{{- link -}}"
+                        class="outfit-all-person-list__link">
+                        {{- title -}}
+                    </a>
+                </h2>
+            {%- endif -%}
+        </div>
+    {%- endfor -%}
+
+{%- endcapture -%}
+
+<section class="outfit-all-person-list"
+    data-section-id="{{- section.id -}}"
+    data-section-type="outfit-all-person-list"
+>
+    <div class="container outfit-all-person-list__container">
+        <div class="outfit-all-person-list__breadcrumbs-container">
+            {% render 'custom-breadcrumbs',
+                breadcrumbs_link: section.settings.breadcrumbs
+            %}
+        </div>
+
+        {%- if heading != blank -%}
+            <h1 class="outfit-all-person-list__heading">
+				{{- heading -}}
+			</h1>
+        {%- endif -%}
+
+        {%- if items != blank -%}
+            <div class="outfit-all-person-list__row">
+                {{- items -}}
+            </div>
+        {%- endif -%}
+    </div>
+</section>
+
+{% schema %}
+    {
+        "name": "Outfit All person",
+        "settings": [
+            {
+                "type": "text",
+                "id": "heading",
+                "label": "Heading",
+                "default": "Staff outfits for men"
+            },
+            {
+                "type": "link_list",
+                "id": "breadcrumbs",
+                "label": "Breadcrumbs for navigation"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "item",
+                "name": "Staff block",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Title"
+                    },
+                    {
+                        "type": "image_picker",
+                        "id": "staff_image",
+                        "label": "Image"
+                    },
+                    {
+                        "type": "url",
+                        "id": "link",
+                        "label": "Link"
+                    }
+                ]
+            }
+        ]
+
+    }
+{% endschema %}

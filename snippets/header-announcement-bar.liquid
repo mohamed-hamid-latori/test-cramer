@@ -1,0 +1,14 @@
+{% comment %}
+	@params
+	content 				- {string} *required
+{% endcomment %}
+
+{%- if content != blank -%}
+	<div class="announcement-bar">
+		<div class="container container--full-width announcement-bar__container">
+			<div class="announcement-bar__content">
+				{{- content -}}
+			</div>
+		</div>
+	</div>
+{%- endif -%}

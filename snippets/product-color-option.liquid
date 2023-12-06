@@ -1,0 +1,204 @@
+{% comment %}
+	@params
+	product 			- {product object} *required
+	option 				- {product option object} *required
+	current_value 		- {string}
+{% endcomment %}
+{%- assign upcased_excluded_vendors = excluded_vendors | upcase | split: ',' -%}
+
+{%- if option != blank -%}
+	{%- assign separator 				= '%%%' -%}
+	{%- assign option_position 			= option.position -%}
+	{%- assign option_name 				= option.name -%}
+
+	{%- assign option_name_downcased 	= option_name | downcase -%}
+
+	{%- unless current_value != blank -%}
+		{%- assign current_value 	= option.selected_value -%}
+	{%- endunless -%}
+
+	{%- capture radio_name -%}
+		options[{{- option_name -}}]
+	{%- endcapture -%}
+
+	{%- capture option_attribute -%}
+		option{{- option_position -}}
+	{%- endcapture -%}
+	{%- capture values -%}
+		{%- for value in option.values -%}
+			{%- capture value_id -%}
+				Option{{- option_position -}}-{{- value -}}
+			{%- endcapture -%}
+
+			{%- assign option_image = '' -%}
+
+			{%- assign search_value = value | downcase -%}
+          	{% assign exclude_variant = false %}
+
+
+			{%- for variant in product.variants -%}
+				{%- assign image = variant.image -%}
+
+				{%- if variant.image == blank -%}
+					{%- continue -%}
+				{%- endif -%}
+
+				{%- assign alt_downcased 	= image.alt | downcase -%}
+				{%- assign order_value 		= alt_downcased | split: separator | last | prepend: separator -%}
+
+				{%- assign current_color 	= alt_downcased | replace: order_value, '' -%}
+
+				{%- if search_value == current_color -%}
+					{%- assign option_image = image -%}
+					{%- assign vendor = variant.product.vendor | upcase -%}
+                    {% if upcased_excluded_vendors contains vendor and variant.available != true %}
+    					{% assign exclude_variant = true %}
+    				{% endif %}
+                    {% unless upcased_excluded_vendors contains vendor and variant.available == false %}
+                        {% assign exclude_variant = false %}
+    					{%- break -%}
+    				{% endunless %}
+				{%- endif -%}
+			{%- endfor -%}
+          {% unless exclude_variant%}
+			<li
+				class="product-swatch product-option__swatches-item"
+				data-product-swatch
+				data-product-swatch-color="{{- value | downcase -}}"
+				data-product-swatch-index="{{- forloop.index -}}"
+			>
+				<input
+					type="radio"
+					id="{{- value_id -}}"
+					name="{{- radio_name -}}"
+					data-option="{{- option_attribute -}}"
+					data-option-type="input"
+					data-option-name="{{- option_name_downcased -}}"
+					class="product-swatch__radio"
+					data-color-selector
+					value="{{- value -}}"
+					{%- if current_value == value -%}checked="checked"{%- endif -%}
+				/>
+
+				<label
+					for="{{- value_id -}}"
+					class="product-swatch__label"
+				>
+					<span class="product-swatch__wrapper">
+						<span class="product-swatch__value">
+							{{- value -}}
+						</span>
+
+						{%- if option_image != '' -%}
+							<img
+								src="{{- option_image.src | img_url: '105x' -}}"
+								alt="{{- option_image.alt -}}"
+								class="product-swatch__image"
+								loading="lazy"
+							/>
+						{%- endif -%}
+					</span>
+				</label>
+			</li>
+            {% endunless %}
+		{%- endfor -%}
+	{%- endcapture -%}
+
+	{%- assign colors_count 		= option.values | size -%}
+	{%- assign vendor 		= product.vendor | upcase -%}
+    {% if upcased_excluded_vendors contains vendor %}
+      {%- assign colors_count 		= 0 -%}
+      {%- for value in option.values -%}
+
+          {%- assign option_image = '' -%}
+
+			{%- assign search_value = value | downcase -%}
+
+
+			{%- for variant in product.variants -%}
+				{%- assign image = variant.image -%}
+
+				{%- if variant.image == blank -%}
+					{%- continue -%}
+				{%- endif -%}
+
+				{%- assign alt_downcased 	= image.alt | downcase -%}
+				{%- assign order_value 		= alt_downcased | split: separator | last | prepend: separator -%}
+
+				{%- assign current_color 	= alt_downcased | replace: order_value, '' -%}
+
+				{%- if search_value == current_color -%}
+                    {% unless upcased_excluded_vendors contains vendor and variant.available == false %}
+                        {% assign  colors_count = colors_count | plus: 1 %}
+    					{%- break -%}
+    				{% endunless %}
+				{%- endif -%}
+      {% endfor %}
+      {% endfor %}
+    {%  endif %}
+
+	{%- assign ultra_small_plus_colors 	= colors_count | minus: 3 -%}
+	{%- assign small_plus_colors 		= colors_count | minus: 4 -%}
+	{%- assign medium_plus_colors 		= colors_count | minus: 5 -%}
+	{%- assign large_plus_colors 		= colors_count | minus: 3 -%}
+	{%- assign wide_plus_colors 		= colors_count | minus: 4 -%}
+
+	{%- capture more_colors -%}
+		{% if ultra_small_plus_colors > 0 %}
+			data-ultra-small-plus-colors="{{ 'products.product.options.color.load_more_colors' | t: count: ultra_small_plus_colors }}"
+		{% endif %}
+		{% if small_plus_colors > 0 %}
+			data-small-plus-colors="{{ 'products.product.options.color.load_more_colors' | t: count: small_plus_colors }}"
+		{% endif %}
+		{% if medium_plus_colors > 0 %}
+			data-medium-plus-colors="{{ 'products.product.options.color.load_more_colors' | t: count: medium_plus_colors }}"
+		{% endif %}
+		{% if large_plus_colors > 0 %}
+			data-large-plus-colors="{{ 'products.product.options.color.load_more_colors' | t: count: large_plus_colors }}"
+		{% endif %}
+		{% if wide_plus_colors > 0 %}
+			data-wide-plus-colors="{{ 'products.product.options.color.load_more_colors' | t: count: wide_plus_colors }}"
+		{% endif %}
+	{%- endcapture -%}
+
+	{%- if values != blank -%}
+		<div class="product-option">
+			<label
+				for="{{- select_id -}}"
+				class="product-option__label"
+				data-option-label="{{- option_attribute -}}"
+			>
+				<span>
+					{{- option_name -}}:
+				</span>
+
+				<span data-option-value="{{- option_attribute -}}">
+					{%- if current_value -%}{{- current_value -}}{%- endif -%}
+				</span>
+			</label>
+
+			<ul
+				class="product-option__values product-option__swatches"
+				data-product-swatches
+				data-swatches-displayed="3"
+				data-colors-count="{{- colors_count -}}"
+			>
+				{{- values -}}
+
+				<li
+					class="product-swatch product-option__swatches-item product-option__swatches-item--load-more"
+					data-product-swatches-load-more
+				>
+					<span class="product-swatch__label">
+						<span class="product-swatch__wrapper">
+							<span
+								class="product-swatch__value"
+								data-product-swatches-load-more-text
+							></span>
+						</span>
+					</span>
+				</li>
+			</ul>
+		</div>
+	{%- endif -%}
+{%- endif -%}

@@ -1,0 +1,126 @@
+{%- assign first_variant 		= product.variants | first -%}
+{%- assign current_variant 		= product.first_available_variant | default: first_variant -%}
+
+<div
+	class="product product--gift-card"
+	data-section-id="{{- section.id -}}"
+	data-section-type="product"
+	data-product-handle="{{- product.handle -}}"
+	data-enable-history-state="true"
+	itemscope itemtype="http://schema.org/Product"
+>
+	<meta itemprop="sku" content="{{ current_variant.sku }}">
+	<meta itemprop="name" content="{{ product.title }}{% unless product.has_only_default_variant %} - {{ current_variant.title }}{% endunless %}">
+	<meta itemprop="url" content="{{ shop.url }}{{ current_variant.url }}">
+	<div itemprop="brand" itemtype="https://schema.org/Brand" itemscope>
+        <meta itemprop="name" content="{{ product.vendor }}">
+	</div>
+	{% for image in product.images %}
+		<meta itemprop="image" content="{{ image | img_url: '600x' }}">
+	{% endfor %}
+	<meta itemprop="description" content="{{ product.description | strip_html | escape }}">
+
+	<div itemprop="offers" itemtype="https://schema.org/Offer" itemscope>
+        <link itemprop="url" href="{{ shop.url }}{{ current_variant.url }}">
+        <meta itemprop="availability" content="https://schema.org/InStock">
+        <meta itemprop="priceCurrency" content="{{ shop.currency }}">
+        <meta itemprop="itemCondition" content="https://schema.org/NewCondition">
+        <meta itemprop="price" content="{{ current_variant.price | money_without_currency | replace: '.', '' | replace: ',', '.' }}">
+        <meta itemprop="priceValidUntil" content="2025-11-16">
+	</div>
+
+	{%- assign blocks 				= section.blocks -%}
+	{%- assign delivery_description = blocks | where: 'type', 'delivery_description' -%}
+
+	<div class="container container--full-width product__container">
+		<div class="product__breadcrumbs">
+			{%- render 'breadcrumbs' -%}
+		</div>
+
+		<div class="product__row">
+			<div class="product__col product__col--media">
+				{%- render 'product-media' -%}
+			</div>
+
+			<div class="product__col product__col--meta">
+				{%-
+					render 'product-meta-gift-card',
+					footer_text: section.settings.footer_text,
+					enable_rating: section.settings.enable_rating,
+					enable_sharing: section.settings.enable_sharing,
+					services_button_text: section.settings.services_button_text,
+					services_button_link: section.settings.services_button_link,
+					delivery_description: delivery_description
+				-%}
+			</div>
+		</div>
+	</div>
+</div>
+
+{% schema %}
+{
+	"name": "Product",
+	"settings": [
+		{
+			"type": "checkbox",
+			"id": "enable_rating",
+			"label": "Enable rating",
+			"default": true
+		},
+		{
+			"type": "checkbox",
+			"id": "enable_sharing",
+			"label": "Enable sharing",
+			"default": true
+		},
+		{
+			"type": "header",
+			"content": "Main information footer"
+		},
+		{
+			"type": "richtext",
+			"id": "footer_text",
+			"label": "Footer text",
+			"default": "<p>Didn't find your size? <a href=\"/pages/contact-us\">Contact us!</a></p><p>Our tailors can help to make it fit you perfectly</p>"
+		},
+		{
+			"type": "header",
+			"content": "Free services"
+		},
+		{
+			"type": "text",
+			"id": "services_button_text",
+			"label": "Button text",
+			"default": "Free Services & Benefits for Club Member"
+		},
+		{
+			"type": "url",
+			"id": "services_button_link",
+			"label": "Button link"
+		}
+	],
+	"blocks": [
+		{
+			"type": "delivery_description",
+			"name": "Delivery & returns",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Text"
+				},
+				{
+					"type": "html",
+					"id": "icon",
+					"label": "SVG icon"
+				},
+				{
+					"type": "text",
+					"id": "tooltip",
+					"label": "Tooltip"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

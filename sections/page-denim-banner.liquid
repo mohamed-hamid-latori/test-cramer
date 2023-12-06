@@ -1,0 +1,51 @@
+{% capture denim_banner %}
+	{%- assign banner_img = section.settings.denim_banner_img -%}
+	{%- assign banner_title = section.settings.denim_banner_title -%}
+	{%- assign banner_subtitle = section.settings.denim_banner_subtitle -%}
+
+	{% if banner_img != blank %}
+		<div class="denim-banner">
+			<img class="denim-banner__img" src="{{ banner_img | img_url: "master" }}" alt="" >
+			<div class="denim-banner-head">
+				<div class="denim-banner__title">
+					{{- banner_title -}}
+				</div>
+				<div class="denim-banner__subtitle">
+					{{- banner_subtitle -}}
+				</div>
+			</div>
+		</div>
+	{% endif %}
+
+{% endcapture %}
+
+<section data-section-type="page-denim-banner" data-section-id="{{ section.id }}">
+	<div class="container">
+		{{- denim_banner -}}
+	</div>
+</section>
+
+{% schema %}
+	{
+		"name": "Denim Banner",
+		"settings": [
+			{
+				"type": "image_picker",
+				"id": "denim_banner_img",
+				"label": "Choose banner image"
+			},
+			{
+				"type": "text",
+				"id": "denim_banner_title",
+				"label": "Enter banner title",
+				"default": "Denim Bible"
+			},
+			{
+				"type": "text",
+				"id": "denim_banner_subtitle",
+				"label": "Enter banner subtitle",
+				"default": "Tips to dry and clean"
+			}
+		]
+	}
+{% endschema %}

@@ -1,0 +1,28 @@
+{%- assign title 	= section.settings.title -%}
+{%- assign text 	= section.settings.text -%}
+
+{%-
+	render 'dynamic-seo-text',
+	title: title,
+	text: text
+-%}
+
+{% schema %}
+{
+	"name": "SEO text",
+	"settings": [
+		{
+			"type": "text",
+			"id": "title",
+			"label": "Heading",
+			"default": "Crämer & Co – Best Denim Brands since 1983"
+		},
+		{
+			"type": "textarea",
+			"id": "text",
+			"label": "Text",
+			"default": "Der Onlineshop von Crämer & Co bietet seit Januar 2012 über 30.000 Hosen für Damen und Herren von mehr als 50 Marken – inklusive Jeans, Chinos und Gürtel. Ausserdem Schuhe, Oberteile, Shirts, Jacken etc. mit über 3.000 qm zählt der stationäre Flagshipstore zu den grössten Denim Stores in Deutschland."
+		}
+	]
+}
+{% endschema %}

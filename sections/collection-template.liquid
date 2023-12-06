@@ -1,0 +1,321 @@
+{%- assign sort_by 				= collection.sort_by | default: collection.default_sort_by -%}
+{%- assign products 			= collection.products | first: 60 -%}
+{%- assign products_count 		= collection.products_count -%}
+{%- assign products_per_page 	= section.settings.products_per_page -%}
+
+	<div
+		class="collection"
+		data-section-id="{{- section.id -}}"
+		data-section-type="collection"
+		data-collection
+	>
+		<div class="container container--full-width collection__container">
+			{%- if products_count > 0 -%}
+				<div class="collection__toolbar">
+					<div class="collection__toolbar-row">
+						<div class="collection__toolbar-col collection__toolbar-col--filter">
+							<div class="collection__toolbar-filter collection__toolbar-filter--mobile">
+								<div class="boost-pfs-filter-tree-mobile-button collection__toolbar-filter-item">
+									{%- render 'boost-pfs-filter-skeleton', type: 'button' -%}
+								</div>
+
+								<div class="boost-pfs-filter-custom-sorting boost-pfs-filter-top-sorting collection__toolbar-filter-item">
+									{%- render 'boost-pfs-filter-skeleton', type: 'button' -%}
+								</div>
+							</div>
+
+							<div class="collection__toolbar-filter collection__toolbar-filter--desktop">
+								<button
+									class="collection__toolbar-filter-toggle collection__toolbar-filter-toggle--show"
+									type="button"
+									data-filter-toggle
+								>
+								<span class="collection__toolbar-filter-toggle-icon">
+									{%- render 'icon-filter' -%}
+								</span>
+
+									<span>
+									{{- 'collections.filters.show' | t -}}
+								</span>
+								</button>
+
+								<button
+									class="collection__toolbar-filter-toggle collection__toolbar-filter-toggle--hide"
+									type="button"
+									data-filter-toggle
+								>
+								<span class="collection__toolbar-filter-toggle-icon">
+									{%- render 'icon-filter' -%}
+								</span>
+
+									<span>
+									{{- 'collections.filters.hide' | t -}}
+								</span>
+								</button>
+							</div>
+						</div>
+
+						<div class="collection__toolbar-col collection__toolbar-col--refine-by">
+							<div class="collection__toolbar-refine-by">
+								<div class="boost-pfs-filter-refine-by-wrapper-h collection-refine-by"></div>
+							</div>
+						</div>
+
+						<div class="collection__toolbar-col collection__toolbar-col--sort">
+							<div class="collection__toolbar-sort">
+								<div class="collection__toolbar-sort-item collection__toolbar-sort-item--select">
+									<div class="boost-pfs-filter-custom-sorting boost-pfs-filter-top-sorting collection__toolbar-sort-select">
+										{%- render 'boost-pfs-filter-skeleton', type: 'button' -%}
+									</div>
+								</div>
+
+								<div class="collection__toolbar-sort-item collection__toolbar-sort-item--layout-switch">
+									<div class="collection__toolbar-layout-switch">
+										<button class="collection__toolbar-layout-switch-item collection__toolbar-layout-switch-item--mobile hidden" data-layout-switch data-columns="1">
+											{%- render 'icon-layout-switch-1' -%}
+										</button>
+
+										<button class="collection__toolbar-layout-switch-item collection__toolbar-layout-switch-item--mobile hidden" data-layout-switch data-columns="2">
+											{%- render 'icon-layout-switch-2' -%}
+										</button>
+
+										<button class="collection__toolbar-layout-switch-item collection__toolbar-layout-switch-item--desktop hidden" data-layout-switch data-columns="3">
+											{%- render 'icon-layout-switch-3' -%}
+										</button>
+
+										<button class="collection__toolbar-layout-switch-item collection__toolbar-layout-switch-item--desktop hidden" data-layout-switch data-columns="4">
+											{%- render 'icon-layout-switch-4' -%}
+										</button>
+
+										<button class="collection__toolbar-layout-switch-item collection__toolbar-layout-switch-item--desktop hidden" data-layout-switch data-columns="5">
+											{%- render 'icon-layout-switch-5' -%}
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="collection__products-count">
+					<div class="collection__products-count-value">
+						<span class="boost-pfs-filter-total-product collection__products-count-text" data-tooltip-text="{{- 'collections.products_count_tooltip' | t -}}">
+							{%- render 'boost-pfs-filter-skeleton', width: 1 -%}
+						</span>
+					</div>
+				</div>
+
+				<div class="collection__content">
+					<div class="collection__content-row">
+						<div class="collection__content-col collection__content-col--filters" data-filter-sidebar>
+							<div class="boost-pfs-filter-tree boost-pfs-filter-tree-v collection-filters collection__filters">
+								{%- render 'boost-pfs-filter-skeleton', type: 'filter-tree' -%}
+							</div>
+						</div>
+
+						<div class="collection__content-col collection__content-col--products">
+							<div class="boost-pfs-filter-products collection__products js-collection-products boost-loading" data-collection-products>
+								{%- comment -%}
+									{%- for product in products -%}
+										<div class="collection__product js-collection-product">
+											{%-
+												include 'product-card',
+												product: product,
+												include_json: false
+											-%}
+										</div>
+									{%- endfor -%}
+								{%- endcomment -%}
+							</div>
+
+							<div class="collection__pagination">
+								<div class="collection__pagination-progress">
+									<div class="boost-pfs-filter-progress-viewed collection__pagination-progress-viewed hidden"></div>
+
+									<div class="collection__pagination-progress-bar">
+										<span class="collection__pagination-progress-bar-track"></span>
+										<span class="boost-pfs-filter-progress-bar-indicator collection__pagination-progress-bar-indicator"></span>
+									</div>
+								</div>
+
+								<div class="boost-pfs-filter-bottom-pagination"></div>
+								<div class="boost-pfs-filter-load-more"></div>
+
+								<div class="collection__pagination-loaded-message boost-pfs-filter-pagination-loaded-message hidden">
+									{{- 'general.pagination.loaded_text' | t -}}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			{%- else -%}
+				<div class="collection__no-results">
+					<h2 class="h3 collection__no-results-title">
+						{{- 'collections.no_results.title' | t -}}
+					</h2>
+				</div>
+			{%- endif -%}
+		</div>
+	</div>
+{%- comment -%}{%- paginate products by products_per_page -%}{%- endpaginate -%}{%- endcomment -%}
+
+<script>
+// Declare boostPFSThemeConfig variable
+var boostPFSThemeConfig = {
+	label: {
+		sorting: {% assign temp = 'collections.sorting.title' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Sort by" {% endunless %},
+		sorting_best_selling: {% assign temp = 'collections.sorting.best_selling' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Best Selling" {% endunless %},
+		sorting_featured: {% assign temp = 'collections.sorting.featured' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Featured" {% endunless %},
+		sorting_title_ascending: {% assign temp = 'collections.sorting.az' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Alphabetically, A-Z" {% endunless %},
+		sorting_title_descending: {% assign temp = 'collections.sorting.za' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Alphabetically, Z-A" {% endunless %},
+		sorting_price_ascending: {% assign temp = 'collections.sorting.price_ascending' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Lowest Price" {% endunless %},
+		sorting_price_descending: {% assign temp = 'collections.sorting.price_descending' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Highest Price" {% endunless %},
+		sorting_date_ascending: {% assign temp = 'collections.sorting.date_ascending' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Date, Old to New" {% endunless %},
+		sorting_date_descending: {% assign temp = 'collections.sorting.date_descending' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Date, New to Old" {% endunless %},
+		sorting_sale_descending: {% assign temp = 'collections.sorting.sale_descending' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "% Off" {% endunless %},
+		sorting_relevance: {% assign temp = 'collections.sorting.relevance' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Relevance" {% endunless %},
+		sale: {{ 'products.product.on_sale' | t | default: '' | json }},
+		sale_price: {{ 'products.product.sale_price' | t | default: '' | json }},
+		sold_out: {{ 'products.product.sold_out' | t | default: '' | json }},
+		vendor: {{ 'products.product.vendor' | t |default: '' | json }},
+		regular_price: {{ 'products.product.price.regular_price' | t | default: '' | json }},
+		from_price_html: {{ 'products.product_card.starting_at' | t | default: '' | json }},
+		current_page: {{ 'general.pagination.current_page' | t | json }},
+		unit_price: {{ 'products.product.price.unit_price' | t | json }},
+		selected_or_first_unit_price: {{ 'products.product.price.unit_price' | t | json }},
+		unit_price_separator: {{ 'accessibility.unit_price_separator' | t | default: '' | json }},
+		products_count_single: {{ 'collections.products_count_single' | t | json }},
+		products_count_plural: {{ 'collections.products_count_plural' | t | json }},
+		select_size: {{ 'products.product_card.select_size' | t | json }},
+		viewed_progress: {{ 'collections.viewed_progress' | t  | json }},
+		load_more: {{ 'collections.boost.load_more' | t | json }},
+		load_more_total: {{ 'collections.boost.load_more_total' | t  | json }},
+		refine_mobile: {{ 'collections.boost.refine_mobile' | t | json }}
+	},
+	custom: {
+		show_vendor: {% if section.settings.show_vendor %} {{ section.settings.show_vendor | json }} {% else %} false {% endif %},
+		add_image_padding: {% if section.settings.add_image_padding %} {{ section.settings.add_image_padding | json }} {% else %} false {% endif %},
+		media_size: {% if section.settings.image_ratio %} {{ section.settings.image_ratio | json }} {% else %} '' {% endif %},
+		sold_out_badge_color_scheme: {% if settings.sold_out_badge_color_scheme %} {{ settings.sold_out_badge_color_scheme | json }} {% else %} '' {% endif %},
+		sale_badge_color_scheme: {% if settings.sale_badge_color_scheme %} {{ settings.sale_badge_color_scheme | json }} {% else %} '' {% endif %},
+		products_per_page: {% if section.settings.products_per_page %} {{ section.settings.products_per_page | json }} {% else %} 60 {% endif %},
+		products_per_page_mobile: {% if section.settings.products_per_page_mobile %} {{ section.settings.products_per_page_mobile | json }} {% else %} 30 {% endif %},
+		products_per_row: {% if products_per_row %} {{ products_per_row }} {% else %} 4 {% endif %},
+		show_secondary_image: {% if section.settings.show_secondary_image %} {{ section.settings.show_secondary_image }} {% else %} false {% endif %},
+		enable_wishlist: {{ settings.enable_wishlist | json }}
+	},
+	collectionBanners: [
+		{% for banner in collection.metafields.collection_banner %}
+
+			{%- assign index = forloop.index0 -%}
+
+			{%- assign banner_image = collection.metafields.collection_banner.banner_image[index] | first -%}
+			{%- assign banner_title = collection.metafields.collection_banner.banner_title[index] -%}
+			{%- assign banner_text = collection.metafields.collection_banner.banner_text[index] -%}
+			{%- assign banner_position = collection.metafields.collection_banner.banner_position[index] -%}
+			{%- assign banner_size = collection.metafields.collection_banner.banner_size[index] -%}
+			{%- assign banner_video =  collection.metafields.collection_banner.banner_video[index] | first -%}
+			{%- assign banner_title_color = collection.metafields.collection_banner.banner_title_color[index] -%}
+			{%- assign banner_text_color = collection.metafields.collection_banner.banner_text_color[index] -%}
+			{%- assign banner_link = collection.metafields.collection_banner.banner_link[index] -%}
+			{%- assign banner_content_position = collection.metafields.collection_banner.banner_content_position[index] -%}
+
+			{
+				product_banner_title: {{ banner_title | json }},
+				product_banner_image: {{ banner_image.cloudinary_src | json }},
+				product_banner_text: {{ banner_text | json }},
+				product_banner_position: {{ banner_position | json }},
+				product_banner_size: {{ banner_size | json }},
+				product_banner_video: {{ banner_video.src | default: null | json }},
+				banner_title_color: {{ banner_title_color | json }},
+				banner_text_color: {{ banner_text_color | json }},
+				banner_link: {{ banner_link | json }},
+				banner_content_position: {{ banner_content_position | json }}
+			},
+		{% endfor %}
+	]
+};
+
+// Declare Templates
+var boostPFSTemplate = {
+	'soldOutLabelHtml': {%- render 'boost-pfs-filter-html', layout: 'soldOutLabelHtml' -%},
+	'saleLabelHtml': {%- render 'boost-pfs-filter-html', layout: 'saleLabelHtml' -%},
+	'vendorHtml': {%- render 'boost-pfs-filter-html', layout: 'vendorHtml' -%},
+	'wishlistHtml': {%- render 'boost-pfs-filter-html', layout: 'wishlistHtml' -%},
+	// Grid Template
+	'productGridItemHtml': {%- render 'boost-pfs-filter-html', layout: 'productGridItemHtml' -%},
+	// Pagination Template
+	'previousActiveHtml': {%- render 'boost-pfs-filter-html', layout: 'previousActiveHtml' -%},
+	'nextActiveHtml': {%- render 'boost-pfs-filter-html', layout: 'nextActiveHtml' -%},
+	'pageItemHtml': {%- render 'boost-pfs-filter-html', layout: 'pageItemHtml' -%},
+	'pageItemSelectedHtml': {%- render 'boost-pfs-filter-html', layout: 'pageItemSelectedHtml' -%},
+	'pageItemRemainHtml': {%- render 'boost-pfs-filter-html', layout: 'pageItemRemainHtml' -%},
+	'paginateHtml': {%- render 'boost-pfs-filter-html', layout: 'paginateHtml' -%},
+	// Sorting Template
+	'sortingHtml': {%- render 'boost-pfs-filter-html', layout: 'sortingHtml' -%},
+	// Badges
+	'badgeSustainabilityHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeSustainabilityHtml' -%},
+	'badgeOfflineOnlyHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeOfflineOnlyHtml' -%},
+	'badgeSaleHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeSaleHtml' -%},
+	'badgeNewHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeNewHtml' -%},
+	'badgeBestsellerHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeBestsellerHtml' -%},
+	'badgeBioCottonHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeBioCottonHtml' -%},
+	'badgeEcoFriendlyHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeEcoFriendlyHtml' -%},
+	'badgeVeganHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeVeganHtml' -%},
+	'collectionBannerHtml': {%- render 'boost-pfs-filter-html', layout: 'collectionBannerHtml' -%}
+};
+</script>
+
+{%- assign enable_custom_size_order = settings.enable_custom_size_order -%}
+
+{%- if enable_custom_size_order == true -%}
+	<script type="application/json" data-custom-size-orders>
+		[
+			{%- for size_order in shop.metafields.globals.size_order_values -%}
+				{{- size_order | json -}}{%- unless forloop.last -%},{%- endunless -%}
+			{%- endfor -%}
+		]
+	</script>
+
+	<script type="application/json" data-default-custom-size-order>
+		{%- assign default_size_order_type = shop.metafields.globals.default_custom_size_order.references | first -%}
+
+		{{- shop.metafields.globals['size_order_values'][default_size_order_type.index] | json -}}
+	</script>
+{%- endif -%}
+<script type="text/javascript">
+	const mobile_filters_btn_text = "{{ 'collections.filters.show_results' | t }}";
+	const checkFiltersLoadingInterval = setInterval(() => {
+		var filters_btn = document.querySelector(".boost-pfs-filter-mobile-footer button.boost-pfs-filter-show-result");
+		if (filters_btn) {
+			clearInterval(filters_btn);
+			filters_btn.innerHTML = mobile_filters_btn_text;
+		}
+	}, 500);
+</script>
+
+{% schema %}
+{
+	"name": "Product grid",
+	"settings": [
+		{
+			"type": "range",
+			"id": "products_per_page",
+			"min": 16,
+			"max": 120,
+			"step": 4,
+			"label": "Desktop products per page",
+			"default": 60
+		},
+		{
+			"type": "range",
+			"id": "products_per_page_mobile",
+			"min": 16,
+			"max": 120,
+			"step": 2,
+			"label": "Mobile products per page",
+			"default": 30
+		}
+	]
+}
+{% endschema %}

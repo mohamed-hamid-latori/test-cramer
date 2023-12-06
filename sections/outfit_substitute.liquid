@@ -1,0 +1,206 @@
+
+{%- assign column = section.settings.column -%}
+{%- assign detail = section.settings.show_product_details -%}
+{%- assign count_title = 0 -%}
+{%- assign count = 0 -%}
+{%- assign block_size = section.blocks.size -%}
+{%- assign img_max_height = 300 -%}
+{%- assign column_class = " " -%}
+{%- if column == 1 -%}
+    {%- assign img_max_height = 450 -%}
+    {%- assign column_class = " one-whole " -%}
+{%- elsif column == 2 -%}
+    {%- assign img_max_height = 350 -%}
+    {%- assign column_class = " medium-up--one-half" -%}
+{%- elsif column == 3 -%}
+    {%- assign img_max_height = 600 -%}
+    {%- assign column_class = " medium-up--one-third " -%}
+{%- endif -%}
+<div class="page-width">
+  <div class="grid grid-column-{{column}}{% if detail == true %} stl-product-desc{% else %} grid-stl-product{% endif %}">
+  {% for block in section.blocks %}
+    {% assign count = count | plus: 1 %}
+    {% if block.type == 'title' %}
+        {% assign count_title = count_title | plus: 1 %}
+        {% if count_title == 1 %}
+            {% if count > 1 %}
+                </div></div>
+            {% endif %}
+            {% if count < block_size %}
+                <div class="grid__item {{column_class}} products-group">
+            {% endif %}
+            {% assign count_title = 0 %}
+            {% assign count = 0 %}
+        {% endif %}
+        <h3 class="title">{{block.settings.title}}</h3>
+    {% endif %}
+    {% if block.type == 'product' %}
+        {% assign prod = block.settings.products %}
+        {% if count == 1 %}
+        <div class="first-product">
+          {%- assign featured_image = all_products[prod].selected_or_first_available_variant.featured_image | default: all_products[prod].featured_image -%}
+          {%- assign img_url = featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+ 
+          <a href="{{all_products[prod].url}}" class="stl-product">
+            <img class="feature-row__image lazyload"
+                 src="{{ featured_image | img_url: '520x520' }}"
+                 data-src="{{ img_url }}"
+                 data-widths="[200, 360, 520, 680, 840, 1000, 1160]"
+                 data-aspectratio="{{ featured_image.aspect_ratio }}"
+                 data-sizes="auto"
+                 tabindex="-1"
+                 alt="{{ featured_image.alt | escape }}">
+            {% if detail == true %}
+                <div class="stl-product-detail">
+                  {%- assign current_variant = all_products[prod].selected_or_first_available_variant -%}
+                  <h5 class="stl-product-name">{{all_products[prod].title}}</h5>
+                  {% include 'price', variant: current_variant %}
+                </div>
+            {% endif %}
+          </a>
+ 
+        </div>
+        <div class="grid stl-products">
+        {% else %}
+        <div class="grid__item one-whole">
+          {%- assign featured_image = all_products[prod].selected_or_first_available_variant.featured_image | default: all_products[prod].featured_image -%}
+          {%- assign img_url = featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+ 
+          <a href="{{all_products[prod].url}}" class="stl-product-img"><img class="feature-row__image lazyload"
+                 src="{{ featured_image | img_url: '180x180' }}"
+                 data-src="{{ img_url }}"
+                 data-widths="[180, 240, 300, 360]"
+                 data-aspectratio="{{ featured_image.aspect_ratio }}"
+                 data-sizes="auto"
+                 tabindex="-1"
+                 alt="{{ featured_image.alt | escape }}"></a>
+ 
+          {% if detail == true %}
+          {%- assign current_variant = all_products[prod].selected_or_first_available_variant -%}
+            <a href="{{all_products[prod].url}}" class="stl-product-name">{{all_products[prod].title}}</a>
+ 
+            {% include 'price', variant: current_variant %}
+ 
+          {% endif %}
+          </div>
+        {% endif %}
+    {% endif %}
+  {% endfor %}
+  </div>
+</div>
+
+
+<style>
+  .products-group{padding-top:10px;padding-bottom:10px;}
+  .stl-products .grid__item{margin-bottom:15px;}
+
+  .first-product{ margin-bottom: 15px; }
+  .stl-product{display: block;position:relative;}
+  .stl-product-detail{position:absolute;left:0;right:0;bottom:0;z-index:1;opacity:0;transition: opacity 1s;padding:10px;color:#fff;background: rgba(0,0,0,0.5);}
+  .stl-product-detail .stl-product-name{font-size:14px;margin: 0;padding: 0 0 5px;}
+  .stl-product:hover .stl-product-detail{opacity:1;transition: opacity 1s;}
+  .stl-product-detail .price{display:inline-block;width:auto;padding-left:10px;background: #fff;}
+ 
+  .stl-products{font-size:14px;line-height:1.2;}
+  .stl-products .price{width:auto;padding:5px 0;}
+  .stl-products .price--on-sale .price__sale{display:inline-block;}
+ 
+  .grid-column-2 .grid__item:nth-child(odd){clear:both;}
+ 
+  .stl-product-desc .stl-product-img{float:left;width:30%;margin-right:10px;}
+  @media (min-width:481px){
+    .grid-stl-product .stl-products .grid__item{width:100%;}
+    .grid-stl-product .first-product{float:left;width:74%;clear:both;}
+    .grid-stl-product .stl-products{float:right;width:26%;}
+    .grid-column-1.stl-product-desc .first-product, .grid-column-2.stl-product-desc .first-product{float:left;width:60%;clear:both;}
+    .grid-column-1.stl-product-desc .stl-products,.grid-column-2.stl-product-desc .stl-products{float:right;width:40%;}
+  }
+  @media (min-width:481px) and (max-width:749px){
+    .grid-column-1.stl-product-desc .first-product{width:60%;}
+    .grid-column-1.stl-product-desc .stl-products{width:40%;}
+    .grid-column-3.stl-product-desc .first-product{float:left;width:60%;clear:both;}
+    .grid-column-3.stl-product-desc .stl-products{float:right;width:40%;}
+  }
+  @media (min-width:750px) and (max-width:1100px){
+    .grid-column-2 .first-product, .grid-column-2 .stl-products, .grid-column-2.stl-product-desc .first-product, .grid-column-2.stl-product-desc .stl-products{float:none;width:100%;}
+    .grid-stl-product .stl-products .grid__item{width:33.33333%;}
+ 
+    .grid-column-1.grid-stl-product .first-product{width:65%;}
+    .grid-column-1.grid-stl-product .stl-products{width:35%;}
+    .grid-column-1.grid-stl-product .stl-products .grid__item{width:100%;}
+ 
+    .grid-column-3 .products-group{width:50%;}
+    .grid-column-3.grid-stl-product .stl-products .grid__item{width:100%;}
+  }
+  @media (min-width:880px) and (max-width:1100px){
+    .grid-column-1.grid-stl-product .first-product{width:50%;}
+    .grid-column-1.grid-stl-product .stl-products{width:50%;}
+    .grid-column-1.grid-stl-product .stl-products .grid__item{width:50%;}
+    .grid-column-1.stl-product-desc .first-product{float:left;width:35%;clear:both;}
+    .grid-column-1.stl-product-desc .stl-products{float:right;width:65%;}
+    .grid-column-1.stl-product-desc .stl-products .grid__item{width:50%;}
+    .grid-column-2.stl-product-desc .stl-products .grid__item, .grid-column-3.stl-product-desc .stl-products .grid__item{width:50%;}
+  }
+  @media (min-width:1101px){
+    .grid-column-3.grid-stl-product .first-product, .grid-column-3.grid-stl-product .stl-products{float:none;width:100%;}
+    .grid-column-3.grid-stl-product .stl-products .grid__item{width:33.33333%;}
+    .grid-column-1.grid-stl-product .products-group{width:50%;}
+    .grid-column-1.stl-product-desc .first-product{float:left;width:35%;clear:both;}
+    .grid-column-1.stl-product-desc .stl-products{float:right;width:65%;}
+    .grid-column-1.stl-product-desc .stl-products .grid__item{width:50%;}
+  }
+
+
+</style>
+{% schema %}
+  {
+    "name": "Shop the look",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_product_details",
+        "label": "Show product details",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "column",
+        "label": "Column",
+        "min": 1,
+        "max": 3,
+        "step": 1,
+        "default": 2
+      }
+    ],
+    "blocks": [
+      {
+        "type": "title",
+        "name": "Title",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title"
+          }
+        ]
+      },
+      {
+        "type": "product",
+        "name": "Products",
+        "settings": [
+          {
+            "type": "product",
+            "id": "products",
+            "label": "Select a product"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+ 
+{% stylesheet %}
+{% endstylesheet %}
+ 
+{% javascript %}
+{% endjavascript %}

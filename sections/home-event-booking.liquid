@@ -1,0 +1,204 @@
+{%- capture slides -%}
+	{%- for block in section.blocks -%}
+		{%- assign image = block.settings.image -%}
+
+		{%- if image == blank -%}
+			{%- continue -%}
+		{%- endif -%}
+
+		{%- assign title 				= block.settings.title -%}
+		{%- assign subtitle 			= block.settings.subtitle -%}
+		{%- assign link_label 			= block.settings.link_label -%}
+		{%- assign link_url 			= block.settings.link_url -%}
+		{%- assign left_link_label 		= block.settings.left_link_label -%}
+		{%- assign left_link_url 		= block.settings.left_link_url -%}
+		{%- assign hide_left_link 		= block.settings.hide_left_link -%}
+
+		{%- capture card_links -%}
+			{%- unless hide_left_link == true -%}
+				<a
+					href="{% if left_link_url != blank %}{{- left_link_url -}}{% else %}https://app.squarespacescheduling.com/schedule.php?owner=23669311{% endif %}"
+					class="acuity-embed-button link card__button"
+					data-acuity-embed-button
+				>
+					{%- if left_link_label != blank -%}
+						{{- left_link_label -}}
+					{%- else -%}
+						{{- 'booking.book_an_appointment' | t -}}
+					{%- endif -%}
+				</a>
+			{%- endunless -%}
+
+			{%- if link_label != blank and link_url != blank -%}
+				<a
+					href="{{ link_url }}"
+					class="link card__button"
+				>
+					{{- link_label -}}
+				</a>
+			{%- endif -%}
+		{%- endcapture -%}
+
+		{%- capture card_image -%}
+			<div class="card__image-wrapper" data-card-image-wrapper>
+				<picture>
+					<img
+						src="{{ image | img_url: '360x' }}"
+						srcset="{{ image | img_url: '360x' }} 1x, {{ image | img_url: '720x' }} 2x"
+						alt="{{ image.alt | default: title }}"
+						class="card__image"
+						loading="lazy"
+					/>
+				</picture>
+
+				{%- if card_links != blank -%}
+					<div class="card__buttons-wrapper card__buttons-wrapper--desktop">
+						{{- card_links -}}
+					</div>
+				{%- endif -%}
+
+				{%- if link_url != blank -%}
+					<a href="{{ link_url }}" class="card__link-wrapper"></a>
+				{%- endif -%}
+			</div>
+		{%- endcapture -%}
+
+		{%- capture card_description -%}
+			{%- if title != blank -%}
+				{%- if link_url != blank -%}
+					<a href="{{ link_url }}" class="card__title">
+						{{- title -}}
+					</a>
+				{%- else -%}
+					<h4 class="card__title">
+						{{- title -}}
+					</h4>
+				{%- endif -%}
+			{%- endif -%}
+
+			{%- if subtitle != blank -%}
+				<p class="card__subtitle">
+					{{- subtitle -}}
+				</p>
+			{%- endif -%}
+
+			{%- if card_links != blank -%}
+				<div class="card__buttons-wrapper card__buttons-wrapper--mobile">
+					{{- card_links -}}
+				</div>
+			{%- endif -%}
+		{%- endcapture -%}
+
+		<div class="swiper-slide slider__slide featured-categories__slider-slide">
+			<div class="card" data-card>
+				{{- card_image -}}
+
+				{{- card_description -}}
+			</div>
+		</div>
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- assign title = section.settings.title -%}
+
+{%- if slides != blank -%}
+	<section
+		class="event-booking"
+		data-section-id="{{- section.id -}}"
+		data-section-type="event-booking"
+	>
+		<div class="event-booking__container">
+			{%- if title != blank -%}
+				<div class="container container--full-width">
+					<h2 class="section-title event-booking__title">
+						{{- title -}}
+					</h2>
+				</div>
+			{%- endif -%}
+
+			<div class="slider event-booking__slider">
+				<div class="swiper-container slider__container" data-event-booking-slider>
+					<div class="swiper-wrapper slider__wrapper">
+						{{- slides -}}
+					</div>
+
+					<button class="slider__arrow slider__arrow--prev" data-slider-arrow data-slider-arrow-prev>
+						{%- render 'icon-chevron' -%}
+					</button>
+
+					<button class="slider__arrow slider__arrow--next js-slider-arrow-next" data-slider-arrow data-slider-arrow-next>
+						{%- render 'icon-chevron' -%}
+					</button>
+
+					<div class="slider__pagination event-booking__pagination" data-slider-pagination></div>
+				</div>
+			</div>
+		</div>
+	</section>
+{%- endif -%}
+
+{% schema %}
+{
+	"name": "Event Booking",
+	"settings": [
+		{
+			"type": "text",
+			"id": "title",
+			"label": "Heading",
+			"default": "Book an Event or an Appointment"
+		}
+	],
+	"blocks": [
+		{
+			"type": "card",
+			"name": "Card",
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image"
+				},
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title"
+				},
+				{
+					"type": "textarea",
+					"id": "subtitle",
+					"label": "Subtitle"
+				},
+				{
+					"type": "text",
+					"id": "left_link_label",
+					"label": "Left link",
+					"default": "Termin buchen",
+					"info": "Defaults to Termin buchen"
+				},
+				{
+					"type": "url",
+					"id": "left_link_url",
+					"label": "Left link url",
+					"info": "Defaults to Acuity scheduling modal"
+				},
+				{
+					"type": "checkbox",
+					"id": "hide_left_link",
+					"label": "Hide left link?",
+					"default": false
+				},
+				{
+					"type": "text",
+					"id": "link_label",
+					"label": "Link label"
+				},
+				{
+					"type": "url",
+					"id": "link_url",
+					"label": "Link URL"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

@@ -1,0 +1,244 @@
+{% assign login_image = section.settings.login_image %}
+{% assign recover_image = section.settings.recover_image %}
+{% assign recover_image_svg = section.settings.recover_image_svg %}
+{% assign title = section.settings.content_title %}
+{% assign gift_icon = section.settings.gift_icon %}
+{% assign gift_icon_svg = section.settings.gift_icon_svg %}
+{% assign gift_text = section.settings.gift_text %}
+
+<section class="customer-page login_page" data-section-id="{{- section.id -}}">
+	<div id="RecoverPasswordForm" class="hidden customer-page__form-wrapper customer-page__recover-wrapper" tabindex="-1">
+		<div class="customer-page__form-inner">
+			<div class="customer-page__content-wrapper">
+
+					{%- if recover_image_svg != blank -%}
+						<div class="customer-page__image-wrapper customer-page__image-wrapper--svg">
+							{{- recover_image_svg -}}
+						</div>
+					{%- elsif recover_image != blank -%}
+					<div class="customer-page__image-wrapper">
+						<picture>
+							<source srcset="{{ recover_image | img_url: '153x150' }}">
+							<img
+								src="{{ recover_image | img_url:'153x150' }}"
+								alt="{{ recover_image.alt }}"
+								class="customer-page__image"
+							>
+						</picture>
+					</div>
+				{% endif %}
+			</div>
+
+			<div class="customer-page__form-section customer-page__recover-form-section">
+				<h1>
+					{{ 'customer.recover_password.title' | t }}
+				</h1>
+				<p>
+					{{ 'customer.recover_password.subtext' | t }}
+				</p>
+
+				{%- form 'recover_customer_password' -%}
+
+					{% assign recover_success = form.posted_successfully? %}
+
+						<div class="customer-page__field">
+							<input type="email"
+								   value=""
+								   name="email"
+								   id="RecoverEmail"
+								   class="customer-page__field-input"
+								   autocorrect="off"
+								   autocapitalize="off"
+								   autocomplete="email"
+								   required="required"
+								{% if form.errors %}
+									aria-invalid="true"
+									aria-describedby="RecoverEmail-email-error"
+									autofocus
+								{% endif %}
+								   placeholder="{{ 'customer.login_page.email' | t }}"
+							>
+						</div>
+
+						{%- if form.errors -%}
+
+							<small id="RecoverEmail-email-error" class="customer-page__error-message error-message">
+								{{ form.errors.messages['form'] | json }}
+							</small>
+						{%- endif -%}
+						<button class="button button--primary customer-page__form-button">
+							{{ 'customer.login_page.submit' | t }}
+						</button>
+						<a href="#login" id="HideRecoverPasswordLink" class="customer-page__login-link test-link">
+							{{ 'customer.login_page.cancel' | t }}
+						</a>
+				{%- endform -%}
+			</div>
+		</div>
+	</div>
+	<div id="CustomerLoginForm" class="customer-page__form-wrapper customer-page__login-wrapper" tabindex="-1">
+		<div class="customer-page__form-inner">
+			<div class="customer-page__content-wrapper">
+
+				{% if login_image != blank %}
+					<div class="customer-page__image-wrapper">
+						<picture>
+							<img
+								src="{{ login_image | img_url:'857x' }}"
+								srcset="{{ login_image | img_url: '857x' }}"
+								alt="{{ login_image.alt }}"
+								class="customer-page__image"
+							>
+						</picture>
+					</div>
+				{% endif %}
+			</div>
+			<div class="customer-page__form-section customer-page__login-form-section">
+				<h1 class="customer-page__title" tabindex="-1">
+					{{ 'customer.login_page.title' | t }}
+				</h1>
+
+					{%- if recover_success == true -%}
+						<h3 class="customer-page__form-message" tabindex="-1" autofocus>
+							{{ 'customer.recover_password.success' | t }}
+						</h3>
+					{%- endif -%}
+				<p class="customer-page__text customer-page__text--has-account">{{ 'customer.login_page.has_account' | t }}</p>
+
+				{%- form 'customer_login', class: 'customer-page__form' -%}
+
+					{%- if form.errors -%}
+						<div class="customer-page__error-block">
+							<h2 class="error-message" tabindex="-1" autofocus>
+								<span class="visually-hidden">{{ 'accessibility.error' | t }} </span>
+								{{ 'templates.contact.form.error_heading' | t }}
+							</h2>
+						</div>
+						{{ 'shopify.notices.customer.invalid_credentials_html' | t }}
+					{%- endif -%}
+					<div class="customer-page__field">
+						<input
+							type="email"
+							name="customer[email]"
+							id="CustomerEmail"
+							class="customer-page__field-input {% if form.errors contains 'form' %}error{% endif %}"
+							autocomplete="email"
+							autocorrect="off"
+							autocapitalize="off"
+							{% if form.errors contains 'form' %}
+								aria-invalid="true"
+							{% endif %}
+							placeholder="{{ 'customer.login_page.email' | t }}&#42"
+						>
+					</div>
+
+					{%- if form.password_needed -%}
+						<div class="customer-page__field">
+							<input
+								type="password"
+								value=""
+								name="customer[password]"
+								id="CustomerPassword"
+								class="customer-page__field-input {% if form.errors contains 'form' %}error{% endif %}"
+								autocomplete="current-password"
+								{% if form.errors contains 'form' %}
+									aria-invalid="true"
+								{% endif %}
+								placeholder="{{ 'customer.login_page.password' | t }}&#42"
+							>
+						</div>
+
+						<a href="#recover" id="RecoverPassword" class="test-link">
+							{{ 'customer.login_page.forgot_password' | t }}
+						</a>
+					{%- endif -%}
+
+					<button class="button button--primary customer-page__form-button">
+						{{ 'customer.login_page.sign_in' | t }}
+					</button>
+					<p>{{ 'customer.login_page.login_with_social' | t }}</p>
+					<script src='//open-signin.okasconcepts.com/customer/script?shop=cramerco.myshopify.com'></script>
+					<p>{{ 'customer.login_page.create_account_text' | t }}</p>
+					<a href="{{ routes.account_register_url }}" class="button button--secondary customer-page__create-account-link">
+						{{ 'customer.login_page.create_account' | t }}
+					</a>
+
+					{%- if  gift_text != blank -%}
+						<div class="customer-page__gift-block">
+							{%- if gift_icon_svg != blank -%}
+							<div class="customer-page__gift-block-image customer-page__gift-block-image--svg">
+								{{- gift_icon_svg -}}
+							</div>
+							{%- elsif gift_icon != blank -%}
+								<picture>
+									<source srcset="{{ gift_icon | img_url: '61x61' }}">
+									<img class="customer-page__gift-block-image" src="{{ gift_icon | img_url: '61x61' }}" alt="{{ gift_icon.alt }}">
+								</picture>
+							{% endif %}
+
+							<p class="customer-page__gift-block-text">{{- gift_text -}}</p>
+						</div>
+					{% endif %}
+				{%- endform -%}
+			</div>
+		</div>
+	</div>
+
+	{%- if shop.checkout.guest_login -%}
+		<div>
+			<hr>
+			<h2>{{ 'customer.login_page.guest_title' | t }}</h2>
+
+			{%- form 'guest_login' -%}
+				<button class="button button--primary customer-page__form-button">
+					{{ 'customer.login_page.guest_continue' | t }}
+				</button>
+			{%- endform -%}
+		</div>
+	{%- endif -%}
+</section>
+
+{% schema %}
+{
+	"name": "Login content",
+	"settings": [
+		{
+			"type": "image_picker",
+			"id": "login_image",
+			"label": "Login form image"
+		},
+		{
+			"type": "image_picker",
+			"id": "recover_image",
+			"label": "Recover form image"
+		},
+		{
+			"type": "html",
+			"id": "recover_image_svg",
+			"label": "Recover form image SVG",
+			"info": "Overrides form image"
+		},
+		{
+			"type": "text",
+			"id": "content_title",
+			"label": "Content title"
+		},
+		{
+			"type": "image_picker",
+			"id": "gift_icon",
+			"label": "Gift block icon"
+		},
+		{
+			"type": "html",
+			"id": "gift_icon_svg",
+			"label": "Gift icon SVG",
+			"info": "Overrides icon image"
+		},
+		{
+			"type": "text",
+			"id": "gift_text",
+			"label": "Gift block text"
+		}
+	]
+}
+{% endschema %}

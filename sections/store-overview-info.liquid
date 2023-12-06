@@ -1,0 +1,306 @@
+{%- assign heading                 = section.settings.heading -%}
+{%- assign back_link_text          = section.settings.back_link_text -%}
+{%- assign back_url                = section.settings.back_url -%}
+{%- assign small_slides            = section.settings.small_slides -%}
+
+
+{%- capture info -%}
+    <div class="store-overview-info__col">
+        {%- for item in section.blocks -%}
+
+            {%- assign button               = '' -%}
+            {%- assign link_block           = '' -%}
+            {%- assign text_block           = '' -%}
+            {%- assign grey_text            = '' -%}
+
+            {%- case item.type -%}
+                {%- when "button" -%}
+                    {%- assign button_url              = item.settings.button_url -%}
+                    {%- assign button_text             = item.settings.button_text -%}
+
+                    {%- capture button -%}
+                        {%- if button_url != blank and button_text != blank -%}
+                            <a class="button button--secondary store-overview-info__button"
+                                href="{{- button_url -}}"
+                            >
+                                {{- button_text -}}
+                            </a>
+                        {%- endif -%}
+                    {%- endcapture -%}
+                {%- when "link_block" -%}
+                    {%- assign text_block_title        = item.settings.title -%}
+                    {%- assign text_block_text         = item.settings.text | replace: '<p', '<p class="store-overview-info__text-block-text"' -%}
+                    {%- assign link_text               = item.settings.link_text -%}
+
+
+                    {%- capture link_block -%}
+                        <div class="store-overview-info__text-block">
+                            {%- if text_block_title != blank -%}
+                                <h3 class="store-overview-info__text-block-title">
+                                    {{- text_block_title -}}
+                                </h3>
+                            {%- endif -%}
+
+                            {%- if text_block_text != blank -%}
+                                {{- text_block_text -}}
+                            {%- endif -%}
+
+                            {%- if link_text != blank -%}
+                                <a href="#map-container" class="link store-overview-info__text-block-link js-overview-link">
+                                    {{- link_text -}}
+                                </a>
+                            {%- endif -%}
+                        </div>
+                    {%- endcapture -%}
+                {%- when "title_text" -%}
+                    {%- assign text_block_title        = item.settings.title -%}
+                    {%- assign text_block_text         = item.settings.text | replace: '<p', '<p class="store-overview-info__text-block-text"' -%}
+
+                    {%- capture text_block -%}
+                        <div class="store-overview-info__text-block">
+                            {%- if text_block_title != blank -%}
+                                <h3 class="store-overview-info__text-block-title">
+                                    {{- text_block_title -}}
+                                </h3>
+                            {%- endif -%}
+
+                            {%- if text_block_text -%}
+                                {{- text_block_text -}}
+                            {%- endif -%}
+                        </div>
+                    {%- endcapture -%}
+                {%- when "grey_text" -%}
+                    {%- capture grey_text -%}
+                        {%- assign text_block_text         = item.settings.text | replace: '<p', '<p class="store-overview-info__text-block-text store-overview-info__text-block-text--lightgray"' -%}
+
+                        {%- if text_block_text != blank -%}
+                            <div class="store-overview-info__text-block store-overview-info__text-block--top-padding">
+                                {{- text_block_text -}}
+                            </div>
+                        {%- endif -%}
+                    {%- endcapture -%}
+            {%- endcase -%}
+
+            {%- if button != blank -%}
+                {{- button -}}
+            {%- endif -%}
+
+            {%- if link_block != blank -%}
+                {{- link_block -}}
+            {%- endif -%}
+
+            {%- if text_block != blank -%}
+                {{- text_block-}}
+            {%- endif -%}
+
+            {%- if grey_text != blank-%}
+                {{- grey_text -}}
+            {%- endif -%}
+        {%- endfor -%}
+    </div>
+{%- endcapture -%}
+
+{%- capture slides -%}
+    <div class="swiper-wrapper slider__wrapper store-overview-info__slider-wrapper">
+        {%- for slider_item in section.blocks -%}
+            {%- assign image = slider_item.settings.image -%}
+
+            {%- if image == blank -%}
+	            {%- continue -%}
+	        {%- endif -%}
+            <div class="swiper-slide slider__slide store-overview-info__slider-slide {% if small_slides == false %}store-overview-info__slider-slide--big{% endif %}">
+	            <div class="store-overview-info__item">
+                    <div class="store-overview-info__item-image-wrapper ">
+		                <picture>
+                            {% if small_slides == true %}
+                                <img src="{{ image | img_url: '410x' }}"
+                                    srcset="{{ image | img_url: '410x' }} 1x, {{ image | img_url: '820x' }} 2x"
+                                    alt="{{- image.alt -}}"
+                                    class="store-overview-info__item-image"
+                                />
+                            {% else %}
+                                <img src="{{ image | img_url: '845x' }}"
+                                    srcset="{{ image | img_url: '845x' }} 1x, {{ image | img_url: '1690x' }} 2x"
+                                    alt="{{- image.alt -}}"
+                                    class="store-overview-info__item-image"
+                                />
+                            {% endif %}
+		                </picture>
+	                </div>
+                </div>
+            </div>
+        {%- endfor -%}
+    </div>
+{%- endcapture -%}
+
+<section class="store-overview-info"
+        data-section-id="{{- section.id -}}"
+        data-section-type="store-overview-info"
+>
+    <div class="container store-overview-info__container">
+        <div class="store-overview-info__breadcrumbs">
+            {% render 'custom-breadcrumbs',
+                breadcrumbs_link: section.settings.breadcrumbs
+            %}
+        </div>
+
+        <div class="store-overview-info__upper-line">
+
+            {%- if back_url != blank and back_link_text != blank -%}
+                <a href="{{- back_url -}}" class="store-overview-info__back-link">
+                    <span class="store-overview-info__back-link-arrow">
+                        {% render 'icon-search-enter' %}
+                    </span>
+
+                    <span class="store-overview-info__back-link-text">
+                        {{- back_link_text -}}
+                    </span>
+                 </a>
+
+            {%- endif -%}
+
+            {%- if heading != blank -%}
+                <h2 class="store-overview-info__heading">
+                    {{- heading -}}
+                </h2>
+            {%- endif -%}
+        </div>
+
+        <div class="store-overview-info__row">
+            {%- if info != blank -%}
+                {{- info -}}
+            {%- endif -%}
+
+            <div class="store-overview-info__col store-overview-info__col--wide store-overview-info__col--first-mobile">
+                <div class="slider store-overview-info__slider">
+                    <div class="swiper-container slider__container store-overview-info__slider-container" data-store-overview-info-slider>
+                        {%- if slides != blank -%}
+                            {{- slides -}}
+                        {%- endif -%}
+
+                        <button class="slider__arrow slider__arrow--prev store-overview-info__slider-arrow" data-slider-arrow data-slider-arrow-prev>
+			                {%- render 'icon-chevron' -%}
+		                </button>
+
+		                <button class="slider__arrow slider__arrow--next js-slider-arrow-next store-overview-info__slider-arrow" data-slider-arrow data-slider-arrow-next>
+			                {%- render 'icon-chevron' -%}
+		                </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% schema %}
+    {
+        "name": "Store overview",
+        "settings": [
+            {
+                "type": "text",
+                "id": "heading",
+                "label": "Heading",
+                "default": "Heading for store"
+            },
+            {
+                "type": "url",
+                "id": "back_url",
+                "label": "Link url"
+            },
+            {
+                "type": "text",
+                "id": "back_link_text",
+                "label": "Link text",
+                "default": "Back to Credit Card Details"
+            },
+            {
+                "type": "checkbox",
+                "id": "small_slides",
+                "label": "Display two column in slider",
+                "default": true
+            },
+            {
+                "type": "link_list",
+                "id": "breadcrumbs",
+                "label": "Linklist for Breadcrumbs"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "title_text",
+                "name": "Text with title",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Title"
+                    },
+                    {
+                        "type": "richtext",
+                        "id": "text",
+                        "label": "Text"
+                    }
+                ]
+            },
+            {
+                "type": "grey_text",
+                "name": "Grey text",
+                "settings": [
+                    {
+                        "type": "richtext",
+                        "id": "text",
+                        "label": "Grey text"
+                    }
+                ]
+            },
+            {
+                "type": "button",
+                "name": "Button",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "button_text",
+                        "label": "Button text"
+                    },
+                    {
+                        "type": "url",
+                        "id": "button_url",
+                        "label": "Button link"
+                    }
+                ]
+            },
+            {
+                "type": "image",
+                "name": "Image",
+                "settings": [
+                    {
+                        "type": "image_picker",
+                        "id": "image",
+                        "label": "Image"
+                    }
+                ]
+            },
+            {
+                "type": "link_block",
+                "name": "Block with link",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Title"
+                    },
+                    {
+                        "type": "richtext",
+                        "id": "text",
+                        "label": "content"
+                    },
+                    {
+                        "type": "text",
+                        "id": "link_text",
+                        "label": "Text for link"
+                    }
+                ]
+            }
+        ]
+    }
+{% endschema %}

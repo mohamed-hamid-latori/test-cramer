@@ -1,0 +1,548 @@
+<link
+	rel="stylesheet"
+	href="{{ 'component-search.css' | asset_url }}"
+	media="print"
+	onload="this.media='all'"
+/>
+
+<link
+	rel="stylesheet"
+	href="{{ 'component-menu-drawer.css' | asset_url }}"
+	media="print"
+	onload="this.media='all'"
+/>
+
+<noscript>
+	{{- 'component-search.css' | asset_url | stylesheet_tag -}}
+</noscript>
+
+<noscript>
+	{{- 'component-menu-drawer.css' | asset_url | stylesheet_tag -}}
+</noscript>
+
+<script src="{{ 'details-disclosure.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'details-modal.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
+
+<svg xmlns="http://www.w3.org/2000/svg" class="hidden">
+	<symbol id="icon-search" viewbox="0 0 18 19" fill="none">
+		<path
+			fill-rule="evenodd"
+			clip-rule="evenodd"
+			d="M11.03 11.68A5.784 5.784 0 112.85 3.5a5.784 5.784 0 018.18 8.18zm.26 1.12a6.78 6.78 0 11.72-.7l5.4 5.4a.5.5 0 11-.71.7l-5.41-5.4z"
+			fill="currentColor"
+		/>
+	</symbol>
+
+	<symbol id="icon-close" class="icon icon-close" fill="none" viewBox="0 0 18 17">
+		<path
+			d="M.865 15.978a.5.5 0 00.707.707l7.433-7.431 7.579 7.282a.501.501 0 00.846-.37.5.5 0 00-.153-.351L9.712 8.546l7.417-7.416a.5.5 0 10-.707-.708L8.991 7.853 1.413.573a.5.5 0 10-.693.72l7.563 7.268-7.418 7.417z"
+			fill="currentColor"
+		/>
+	</symbol>
+</svg>
+
+{%- capture header_search -%}
+	<div class="header__search">
+		<form action="/search" method="get" role="search" class="search_form">
+			<button class="mobile-search-btn search-btn" type="submit">
+				{% render 'icon-search-enter' %}
+			</button>
+
+			<input type="search"
+				   name="q"
+				   id="search"
+				   value="{{ search.terms | escape }}"
+				   placeholder="{{ 'general.search.search' | t }}">
+
+			<button class="search-btn" type="submit">
+				{% render 'icon-search' %}
+			</button>
+		</form>
+	</div>
+{%- endcapture -%}
+
+{%- render 'side-menu' blocks: section.blocks -%}
+
+{%- assign wishlist_url = section.settings.wishlist_url -%}
+
+{%- assign logo 		= section.settings.logo -%}
+{%- assign logo_svg 	= section.settings.logo_svg -%}
+{%- assign logo_width 	= section.settings.logo_width -%}
+{%- assign logo_width_size 	= section.settings.logo_width | append: 'x' -%}
+
+{%- assign logo_mobile 			= section.settings.logo_mobile -%}
+{%- assign logo_mobile_svg 		= section.settings.logo_mobile_svg -%}
+{%- assign logo_mobile_width 	= section.settings.logo_width_mobile -%}
+{%- assign logo_mobile_width_size 	= section.settings.logo_width_mobile | append: 'x' -%}
+
+{%- capture variables -%}
+	--desktop-logo-width: {{- logo_width -}}px;
+	--mobile-logo-width: {{- logo_mobile_width -}}px;
+{%- endcapture -%}
+
+<sticky-header
+	class="header{% if section.settings.show_line_separator %} header--border-bottom{% endif %}" id="header"
+	style="{{- variables -}}"
+>
+	{% if section.settings.top_link_block %}
+		<div class="header__top-links js-header-top-links">
+			<div class="header__top-inner header__store-links">
+				{% for index in  (1..3) %}
+					{% assign name 		= 'store_link_name_' | append: index %}
+					{% assign link 		= 'store_link_' | append: index %}
+					{% assign is_blank 	= 'store_link_is_blank_' | append: index %}
+
+					{% assign name 		= section.settings[name] %}
+					{% assign link 		= section.settings[link] %}
+					{% assign is_blank 	= section.settings[is_blank] %}
+
+					{%- if name == blank or link == blank -%}
+						{%- continue -%}
+					{%- endif -%}
+
+					<a
+						href="{{ link }}"
+						class="header__top-link store-link link caption-large{% if link contains request.host %} is-active{% endif %}"
+						{% if is_blank %}target="_blank"{% endif %}
+					>
+						{{- name -}}
+					</a>
+				{% endfor %}
+			</div>
+
+			<div class="header__top-inner header__additional-links">
+				{%- for link in section.settings.additional_links.links -%}
+					<a
+						href="{{ link.url }}"
+						class="header__top-link additional-link link caption-large"
+					>
+						{{- link.title | escape -}}
+					</a>
+				{%- endfor -%}
+			</div>
+		</div>
+	{% endif %}
+
+	<header class="header__wrapper container container--full-width{% if section.settings.menu != blank %} header--has-menu{% endif %} js-header-wrapper">
+
+		<div class="header__mobile-items">
+			<div class="menu-drawer-container header__mobile-items-row">
+				<div class="header__icon header__mobile-items-col js-side-menu-open">
+					{% render 'icon-hamburger' %}
+				</div>
+
+				{%- if shop.customer_accounts_enabled -%}
+					<a
+						href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+						class="header__icon header__icon--account-mobile header__mobile-items-col"
+					>
+						{% render 'icon-account' %}
+
+						<span class="visually-hidden">{{- 'sections.header.account' | t -}}</span>
+					</a>
+				{%- endif -%}
+			</div>
+		</div>
+
+		<nav class="header__inline-menu">
+			<ul class="list-menu list-menu--inline" role="list">
+				{% for block in section.blocks %}
+					{% assign title = block.settings.title %}
+                    {%- assign title_downcased 	= title | downcase -%}
+                    {%- assign color 			= '' -%}
+
+                    {%- if title_downcased contains '[color:' -%}
+                    {%- assign color = title_downcased | split: ']' | first | split: '[color:' | last | strip -%}
+                    {%- assign title = title | split: '[' | first -%}
+                    {%- endif -%}
+
+					{% if title == blank %}
+						{% continue %}
+					{% endif %}
+
+					{% assign links 			= block.settings.links %}
+					{% assign link 				= block.settings.link %}
+					{% assign block_id 			= block.id %}
+					{% assign preferred_gender 	= block.settings.preferred_gender %}
+
+					{%- capture preferred_gender_cookie -%}
+						{%- case preferred_gender -%}
+							{%- when 'female' -%}
+								{{- settings.redirect_cookie_value_female | handleize -}}
+							{%- when 'male' -%}
+								{{- settings.redirect_cookie_value_male | handleize -}}
+						{%- endcase -%}
+					{%- endcapture -%}
+
+					<li>
+						{% if link != blank %}
+							<a
+								href="{{ link }}"
+								class="link link--reverse header__menu-item list-menu__item{% if links != blank %} js-side-menu-tab-switcher{% endif %}"
+								{% if links != blank %}
+									data-tab-switch-id="{{ block_id }}"
+								{% endif %}
+								{% if preferred_gender_cookie != blank %}
+									data-preferred-gender="{{- preferred_gender_cookie -}}"
+								{% endif %}
+
+                                {% if color != '' %}
+                                style="color: {{ color }};"
+                                {% endif %}
+							>
+								{{- title -}}
+							</a>
+						{% else %}
+							<span
+								class="link link--reverse header__menu-item list-menu__item{% if links != blank %} js-side-menu-tab-switcher{% endif %}"
+								{% if links != blank %}
+									data-tab-switch-id="{{ block_id }}"
+								{% endif %}
+								{% if preferred_gender_cookie != blank %}
+									data-preferred-gender="{{- preferred_gender_cookie -}}"
+								{% endif %}
+
+                                {% if color != '' %}
+                                style="color: {{ color }};"
+                                {% endif %}
+							>
+								{{- title -}}
+							</span>
+						{% endif %}
+					</li>
+				{% endfor %}
+			</ul>
+		</nav>
+
+		<div class="header__heading">
+			<a href="{{ routes.root_url }}" class="header__heading-link desktop-logo link">
+				{%- if logo_svg != blank -%}
+					<div class="header__heading-logo header__heading-logo--svg">
+						{{- logo_svg -}}
+					</div>
+				{%- elsif logo != blank -%}
+					<img
+						srcset="{{ logo | img_url: logo_width_size }} 1x, {{ logo | img_url: logo_width_size, scale: 2 }} 2x"
+						src="{{ logo | img_url: logo_width_size }}"
+						loading="lazy"
+						class="header__heading-logo"
+						width="{{ logo.width }}"
+						height="{{ logo.height }}"
+						alt="{{ logo.alt | default: shop.name | escape }}"
+					>
+				{%- else -%}
+					<span class="h2 desktop-logo">{{ shop.name }}</span>
+				{%- endif -%}
+			</a>
+
+			<a href="{{ routes.root_url }}" class="header__heading-link mobile-logo link">
+				{%- if logo_mobile_svg != blank -%}
+					<div class="header__heading-logo header__heading-logo--svg">
+						{{- logo_mobile_svg -}}
+					</div>
+				{%- elsif logo_mobile != blank -%}
+					<img
+						srcset="{{ logo_mobile | img_url: logo_mobile_width_size }} 1x, {{ logo_mobile | img_url: logo_mobile_width_size, scale: 2 }} 2x"
+						src="{{ logo_mobile | img_url: logo_mobile_width_size }}"
+						loading="lazy"
+						class="header__heading-logo"
+						width="{{ logo_mobile.width }}"
+						height="{{ logo_mobile.height }}"
+						alt="{{ logo_mobile.alt | default: shop.name | escape }}"
+					>
+				{%- else -%}
+					<span class="h2 mobile-logo">{{ shop.name }}</span>
+				{%- endif -%}
+			</a>
+		</div>
+
+		<div class="header__icons">
+			<div class="header__icon--search">
+				{{ header_search }}
+			</div>
+			{%- if shop.customer_accounts_enabled -%}
+				<div class="account-icon-wrapper">
+					<a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+					   class="header__icon header__icon--account link"
+					>
+						{% render 'icon-account' %}
+						<span class="visually-hidden">{{- 'sections.header.account' | t -}}</span>
+					</a>
+					{%- render 'login-pop-up' -%}
+				</div>
+			{%- endif -%}
+
+			{%- if settings.enable_wishlist and wishlist_url != blank -%}
+				<a href="{{- wishlist_url -}}"
+				   class="header__icon header__icon--wishlist"
+				>
+					{% render 'icon-wishlist' %}
+					<span class="visually-hidden">{{- 'sections.header.wishlist' | t -}}</span>
+					<span class="hidden header__icon header__icon--count"
+						  data-wishlist-count
+					></span>
+				</a>
+			{%- endif -%}
+
+			<a href="{{ routes.cart_url }}"
+				class="header__icon header__icon--cart js-open-minicart"
+			>
+				{%- render 'icon-bag' -%}
+				<span class="visually-hidden">{{- 'sections.header.account' | t -}}</span>
+
+				<span class="header__icon header__icon--count js-cart-count{% if cart.item_count < 1 %} hidden{% endif %}">
+					{%- if cart.item_count > 99 -%}
+						99+
+					{%- else -%}
+						{{- cart.item_count -}}
+					{%- endif -%}
+				</span>
+			</a>
+		</div>
+	</header>
+<div id="qab_placeholder" style="padding-bottom: 40px !important;"></div>
+	<div class="header__icon--search-mobile">
+		{{ header_search }}
+	</div>
+
+	{%-
+		render 'header-announcement-bar',
+		content: section.settings.content
+	-%}
+</sticky-header>
+
+{% schema %}
+{
+	"name": "Header",
+	"settings": [
+		{
+			"type": "header",
+			"content": "Top bar"
+		},
+		{
+			"type": "checkbox",
+			"id": "top_link_block",
+			"label": "Enable top bar",
+			"default": true
+		},
+		{
+			"type": "paragraph",
+			"content": "First link:"
+		},
+		{
+			"type": "text",
+			"id": "store_link_name_1",
+			"label": "Store link title"
+		},
+		{
+			"type": "url",
+			"id": "store_link_1",
+			"label": "Store link URL"
+		},
+		{
+			"type": "checkbox",
+			"id": "store_link_is_blank_1",
+			"label": "Open link in a new window",
+			"default": false
+		},
+		{
+			"type": "paragraph",
+			"content": "Second link:"
+		},
+		{
+			"type": "text",
+			"id": "store_link_name_2",
+			"label": "Store link title"
+		},
+		{
+			"type": "url",
+			"id": "store_link_2",
+			"label": "Store link URL"
+		},
+		{
+			"type": "checkbox",
+			"id": "store_link_is_blank_2",
+			"label": "Open link in a new window",
+			"default": false
+		},
+		{
+			"type": "paragraph",
+			"content": "Third link:"
+		},
+		{
+			"type": "text",
+			"id": "store_link_name_3",
+			"label": "Store link title"
+		},
+		{
+			"type": "url",
+			"id": "store_link_3",
+			"label": "Store link URL"
+		},
+		{
+			"type": "checkbox",
+			"id": "store_link_is_blank_3",
+			"label": "Open link in a new window",
+			"default": false
+		},
+		{
+			"type": "link_list",
+			"id": "additional_links",
+			"label": "Additional links"
+		},
+		{
+			"type": "header",
+			"content": "Header"
+		},
+		{
+			"type": "image_picker",
+			"id": "logo",
+			"label": "Desktop logo image"
+		},
+		{
+			"type": "html",
+			"id": "logo_svg",
+			"label": "Desktop logo SVG",
+			"info": "Overrides logo image"
+		},
+		{
+			"type": "range",
+			"id": "logo_width",
+			"min": 50,
+			"max": 250,
+			"step": 10,
+			"default": 100,
+			"unit": "px",
+			"label": "Custom desktop logo width"
+		},
+		{
+			"type": "image_picker",
+			"id": "logo_mobile",
+			"label": "Mobile logo image"
+		},
+		{
+			"type": "html",
+			"id": "logo_mobile_svg",
+			"label": "Mobile logo SVG",
+			"info": "Overrides logo image"
+		},
+		{
+			"type": "range",
+			"id": "logo_width_mobile",
+			"min": 50,
+			"max": 250,
+			"step": 10,
+			"default": 100,
+			"unit": "px",
+			"label": "Custom mobile logo width"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_line_separator",
+			"default": true,
+			"label": "Show separator line"
+		},
+		{
+			"type": "header",
+			"content": "Announcement bar"
+		},
+		{
+			"type": "richtext",
+			"id": "content",
+			"label": "Content"
+		},
+		{
+			"type": "header",
+			"content": "Wishlist"
+		},
+		{
+			"type": "url",
+			"id": "wishlist_url",
+			"label": "Wishlist link"
+		}
+	],
+	"blocks": [
+		{
+			"type": "default",
+			"name": "Default",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title"
+				},
+				{
+					"type": "url",
+					"id": "link",
+					"label": "Link"
+				},
+				{
+					"type": "link_list",
+					"id": "links",
+					"label": "Links"
+				},
+				{
+					"type": "select",
+					"id": "preferred_gender",
+					"label": "Save preferred gender cookie as...",
+					"options": [
+						{
+							"value": "none",
+							"label": "None"
+						},
+						{
+							"value": "female",
+							"label": "Female"
+						},
+						{
+							"value": "male",
+							"label": "Male"
+						}
+					]
+				}
+			]
+		},
+		{
+			"type": "column",
+			"name": "Column",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title"
+				},
+				{
+					"type": "url",
+					"id": "link",
+					"label": "Link"
+				},
+				{
+					"type": "link_list",
+					"id": "links",
+					"label": "Links"
+				},
+				{
+					"type": "select",
+					"id": "preferred_gender",
+					"label": "Save preferred gender cookie as...",
+					"options": [
+						{
+							"value": "none",
+							"label": "None"
+						},
+						{
+							"value": "female",
+							"label": "Female"
+						},
+						{
+							"value": "male",
+							"label": "Male"
+						}
+					]
+				}
+			]
+		}
+	]
+}
+{% endschema %}

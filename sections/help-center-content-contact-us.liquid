@@ -1,0 +1,317 @@
+{%- assign heading              = section.settings.heading -%}
+{%- assign text                 = section.settings.content -%}
+
+{%- capture custom_form -%}
+    {%- assign full_row                         = false -%}
+    {%- assign select_number                    = 0 -%}
+    {%- assign count_half_blocks                = 0 -%}
+
+    {%- for block in section.blocks -%}
+
+        {%- case block.type -%}
+            {%- when "text_input" -%}
+                {%- assign label                = block.settings.label -%}
+                {%- assign input_name           = block.settings.input_name -%}
+
+                {%- if label != blank -%}
+                    {%- assign count_half_blocks            = count_half_blocks | plus: 1 -%}
+
+                    {%- if count_half_blocks != 2 -%}
+                        <div class="help-center-content-contact-us__form-row">
+                    {%- endif -%}
+
+                    <div class="form__col help-center-content-contact-us__form-col">
+                        <div class="input-group input-group--floating-label form__input-group">
+                            <input class="input input-group__input form__input" 
+                                type="text" 
+                                name="contact[{{- input_name -}}]" 
+                                placeholder="{{- label -}}"
+                                {%- if input_name == "second_name" -%}
+                                    required
+                                {%- endif -%} 
+                            />
+                        </div>
+                    </div>
+
+                    {%- if count_half_blocks == 2 -%}
+                        </div>
+
+                        {%- assign count_half_blocks                = 0 -%}
+                    {%- endif -%}
+                {%- endif -%}
+            {%- when "phone_input" -%}
+                {%- assign label                = block.settings.label -%}
+                {%- assign count_half_blocks            = count_half_blocks | plus: 1 -%}
+
+                {%- if count_half_blocks != 2 -%}
+                    <div class="help-center-content-contact-us__form-row">
+                {%- endif -%}
+
+
+                <div class="form__col help-center-content-contact-us__form-col">
+                    <div class="input-group input-group--floating-label form__input-group">
+                        <input class="input input-group__input form__input"
+                            pattern="[0-9\-]*" 
+                            type="tel" 
+                            name="contact[telefon_number]" 
+                            placeholder="{{- label -}}"
+                        />
+                    </div>
+                </div>
+
+                {%- if count_half_blocks == 2 -%}
+                    </div>
+
+                    {%- assign count_half_blocks                = 0 -%}
+                {%- endif -%}
+            {%- when "textarea" -%}
+                {%- assign label                = block.settings.label -%}
+
+                <div class="help-center-content-contact-us__form-row">
+                    <textarea class="form__textarea"
+                        name="contact[body]" 
+                        placeholder="{{- label -}}"
+                        required
+                    ></textarea>
+                </div>
+            {%- when "email_input" -%}
+                {%- assign count_half_blocks            = count_half_blocks | plus: 1 -%}
+                {%- assign label                        = block.settings.label -%}
+
+                {%- if count_half_blocks != 2 -%}
+                    <div class="help-center-content-contact-us__form-row">
+                {%- endif -%}
+
+                <div class="form__col help-center-content-contact-us__form-col">
+                    <div class="input-group input-group--floating-label form__input-group">
+                        <input class="input input-group__input form__input" 
+                            type="email" 
+                            name="contact[email]" 
+                            placeholder="{{- label -}}"
+                            required
+                        />
+                    </div>
+                </div>
+                
+                {%- if count_half_blocks == 2 -%}
+                    </div>
+
+                    {%- assign count_half_blocks                = 0 -%}
+                {%- endif -%}
+            {%- when "checkbox" -%}
+                {%- assign label                = block.settings.label -%}
+
+                {%- if label != blank -%}
+                    {%- if half_block == true -%}
+                        </div>
+
+                        {%- assign half_block               = false -%}
+                    {%- endif -%}
+
+                    <div class="help-center-content-contact-us__form-row">
+                        <input type="checkbox" 
+                            name="contact[recall]" 
+                            id="checkbox" 
+                            class="checkbox"
+                        />
+
+                        <label for="checkbox">{{- label -}}</label>
+                    </div>
+                {%- endif -%}
+            {%- when "select" -%}
+                {%- assign label                            = block.settings.label -%}
+                {%- assign options                          = block.settings.options | split: '%%%' -%}
+
+                {%- if options != blank -%}
+                    {%- if half_block == true -%}
+                        </div>
+                        
+                        {%- assign half_block               = false -%}
+                    {%- endif -%}
+
+                    <div class="form__select-container help-center-content-contact-us__form-row"> 
+                        <div class="custom-select custom-select--floating-label">
+                            <label class="custom-select__label">{{- label -}}</label>
+
+                            <select name="contact[select_{{- select_number -}}]"
+                                id="select_{{- select_number -}}" 
+                                class="custom-select__select" 
+                                data-custom-select
+                                required
+                            >
+                                <option>Bitte wählen</option>
+
+                                {% for i in options %}
+                                    <option value="option_{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <div class="custom-select__dropdown" data-custom-select-dropdown></div>
+                        </div>
+                    </div>
+                {%- endif -%}
+
+                {%- assign select_number                    = select_number | plus: 1 -%} 
+        {%- endcase -%}
+    {%- endfor -%}
+{%- endcapture -%}
+
+<section class="help-center-content contact-us"
+        data-section-id="{{- section.id -}}"
+        data-section-type="help-center-content-contact-us"
+>
+    <div class="help-center-content__container help-center-content-contact-us">
+        {%- if heading != blank -%}
+            <h1 class="help-center-content-contact-us__heading">
+                {{- heading -}}
+            </h1>
+        {%- endif -%}
+        
+        {%- if text != blank -%}
+            <div class="help-center-content-contact-us__content-container">
+                {{- text -}}
+            </div>
+        {%- endif -%}
+
+        {%- if custom_form != blank -%}
+            <div class="help-center-content-contact-us__contact-form-container">
+                <p class="help-center-content-contact-us__info-text">* Pflichtfelder</p>
+
+                {% form 'contact' %}
+                    {{ form_errors | default_errors }}
+
+                    {{- custom_form -}}
+
+                    <div class="submit form__button-container help-center-content-contact-us__form-button-container">
+                        <input class="form__button help-center-content-contact-us__form-button" type="submit" value="absenden" />
+                    </div>
+                {% endform %}
+            </div>
+        {%- endif -%}
+    </div>
+</section>
+
+{% schema %}
+    {
+        "name": "Help center Contact Us",
+        "settings": [
+            {
+                "type": "text",
+                "id": "heading",
+                "label": "Heading",
+                "default": "Contact Us"
+            },
+            {
+                "type": "richtext",
+                "id": "content",
+                "label": "Description"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "text_input",
+                "name": "Text input",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "label",
+                        "label": "Label for input"
+                    },
+                    {
+                        "type": "select",
+                        "id": "input_name",
+                        "label": "Type of input",
+                        "options": [
+                            {
+                            "value": "first_name",
+                            "label": "First name"
+                            },
+                            {
+                            "value": "second_name",
+                            "label": "Second name"
+                            },
+                            {
+                            "value": "order_nubmer",
+                            "label": "Order number"
+                            },
+                            {
+                            "value": "customer_name",
+                            "label": "Customer number"
+                            }
+                        ],
+                        "info": "For First Name use First name and etc."
+                    }
+                ]
+            },
+            {
+                "type": "phone_input",
+                "name": "Phone input",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "label",
+                        "label": "Label for input",
+                        "default": "Telefon"
+                    }
+                ]
+
+            },
+            {
+                "type": "textarea",
+                "name": "Message input",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "label",
+                        "label": "Label for input",
+                        "default": "Ihre Anfrage*"
+                    }
+                ]
+            },
+            {
+                "type": "checkbox",
+                "name": "Call back checkbox",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "label",
+                        "label": "text for checkbox",
+                        "default": "Bitte um Rückruf"
+                    }
+                ]
+            },
+            {
+                "type": "email_input",
+                "name": "Email input",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "label",
+                        "label": "Label for input",
+                        "default": "E-Mail-Adresse*"
+                    }
+                ]
+            },
+            {
+                "type": "select",
+                "name": "Select",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "label",
+                        "label": "Label for select"
+                    },
+                    {
+                        "type": "textarea",
+                        "id": "options",
+                        "label": "Options",
+                        "info": "Split options by %%%",
+                        "placeholder": "option1%%%option2"
+                    }
+                ]
+            }
+
+        ]
+        
+    }
+{% endschema %}

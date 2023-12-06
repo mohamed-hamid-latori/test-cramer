@@ -1,0 +1,218 @@
+{% assign product_limit = 20 %}
+                                {% assign slider_title= "Related products" %}
+                                {% assign slider_price= 1 %}
+                                {% assign slider_addtocart= 0 %}
+                                {% assign slider_viewmore= 0 %}
+                                {% assign slider_rtl= false %}
+                                {% assign slider_lazyLoad= false %}
+                                {% assign slider_loop= false %}
+                                {% assign slider_rewind= true %}
+                                {% assign slider_autoplayHoverPause= false %}
+                                {% assign slider_slide_auto = true %}
+                                {% assign slider_show_nav = true %}
+                                {% assign slider_show_dots = true %}
+                                {% assign slider_autoplay_timeout = 3000 %}
+                                {% assign slider_smart_speed = 250 %}
+                                {% assign slider_color_success = "FFFFFF" %}
+                                {% assign slider_bg_success = "28A745" %}
+                                {% assign slider_rps_mb = 1 %}
+                                {% assign slider_rps_sm = 2 %}
+                                {% assign slider_rps_md = 4 %}
+                                {% assign slider_rps_ln = 4 %}
+                                {% assign enable_showall = 0 %}
+                                {% assign slide_by = 1 %}
+                                {% assign slider_width_img = 650 %}
+                                {% assign slider_height_img =  %}
+                                {% assign slider_crop_img = 0 %}
+                                {% assign slider_scale_img = 0 %}
+                                {% assign slider_show_variants = 0 %}
+                                {% assign btn_add = "Add To Cart" %}
+                                {% assign btn_view = "View More" %}
+                                {% assign add_success = "was added to the cart!" %}
+                                {% assign slider_enable = 1 %}
+                                      {% assign slider_class_enable = " owl-carousel owl-theme " %}{% assign current_product = product %}
+{% assign current_product_type = current_product.type %}
+{% assign products = collections.all.products | sort: 'price' %}
+<div class="product-slider" id="zify-product-related">
+  <style type="text/css">
+      .zify-modal span.zify-success{
+        background-color:#{{ slider_color_success }} !important;
+        color:#{{ slider_bg_success }} !important;
+      }
+  </style>
+<div class="zify-wapper-slider">
+	 <h3 class="Silder-title">{{ slider_title }}</h3>
+  <div class="zify-products-slider {{ slider_class_enable }} zify-products-slider-related" data-config="type">
+  {% assign count = 0 %}
+  {% for product in products %}
+    {% if count > product_limit %}
+       {% break %}
+    {% endif %}
+    {% unless product.handle == current_product.handle %}
+	     {% if product.type == current_product_type %}
+	         {% assign count = count | plus: 1 %}
+	    <div class="zify-item-product" id = "item-{{ product.id }}">
+	      
+	      <a href="{{ product.url }}" title="{{ product.title }}">
+	      {%- assign featured_image = product.featured_image -%}
+	      <img src="{{ featured_image | img_url: '650x'}}" alt="{{ featured_image.alt | escape }}">
+	      
+	      <div class="product-title">{{ product.title }}</div>
+	        </a>
+	        {% if slider_price == 1 %}
+	        <span class="zify-price">
+	              
+	            {%- assign variant = product  -%} 
+	         <!-- snippet/product-price.liquid -->
+	            {% if variant.title %}
+	              {%- assign compare_at_price = variant.compare_at_price -%}
+	              {%- assign price = variant.price -%}
+	              {%- assign available = variant.available -%}
+	            {% else %}
+	              {%- assign compare_at_price = 1999 -%}
+	              {%- assign price = 1999 -%}
+	              {%- assign available = true -%}
+	            {% endif %}
+
+	            {%- assign money_price = price | money -%}
+
+	            <dl class="price{% if available and compare_at_price > price %} price--on-sale{% endif %}" data-price>
+
+	              {% if section.settings.show_vendor %}
+	                <div class="price__vendor">
+	                  <dt>
+	                    <span class="visually-hidden">{{ 'products.product.vendor' | t }}</span>
+	                  </dt>
+	                  <dd>
+	                    {{ product.vendor }}	                  </dd>
+	                </div>
+	              {% endif %}
+
+	              <div class="price__regular">
+	                <dt>
+	                  <span class="visually-hidden visually-hidden--inline">{{ 'products.product.regular_price' | t }}</span>
+	                </dt>
+	                <dd>
+	                  <span class="price-item price-item--regular" data-regular-price>
+	                    {% if available %}
+	                      {% if compare_at_price > price %}
+	                        {{ compare_at_price | money }}	                      {% else %}
+	                        {{ money_price }}	                      {% endif %}
+	                    {% else %}
+	                      <span class="price__badge price__badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+	                    {% endif %}
+	                  </span>
+	                </dd>
+	              </div>
+	              {% if available and compare_at_price > price %}
+		              <div class="price__sale">
+		                <dt>
+		                  <span class="visually-hidden visually-hidden--inline">{{ 'products.product.sale_price' | t }}</span>
+		                </dt>
+		                <dd>
+		                  <span class="price-item price-item--sale" data-sale-price>
+		                    {{ money_price }}		                  </span>
+		                  <span class="price-item__label" aria-hidden="true">{{ 'products.product.on_sale' | t }}</span>
+		                </dd>
+		              </div>
+		            {% endif %}
+	            </dl>
+
+	      	</span>
+	      	{% endif %}
+
+	   
+		      {% form 'product', product, class: 'product-form zify-addtocart-form' %}
+		      	<div class="product-select-group zify-product-select" {% if product.variants.size < 2 or slider_show_variants == 0  %} style="display:none" {% endif %}>
+			      <select name="id" class="product-select" data-target = "{{ product.id }}">
+			        {%- for variant in product.variants -%}
+			          <option  value="{{ variant.id }}" data-compare="{{ variant.compare_at_price | money }}" data-price="{{ variant.price | money }}" data-image="{{ variant.featured_image | img_url: '650x'}}">{{ variant.title }}</option>
+			        {%- endfor -%}
+			      </select>
+			  	</div>
+		      {% if slider_addtocart == 1 %}
+		      <button type="submit" {% unless product.available %} disabled="disabled"{% endunless %} class="btn btn btn-default zify-addtocart-submit">
+		        {%- if product.available -%}
+		          {{ btn_add }}		        {%- else -%}
+		          <span class="price__badge price__badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+		        {%- endif -%}
+		      </button>
+		      {% endif %}
+		      {% endform %}
+	       
+	    </div>
+	     {% endif %}
+    {% endunless %}
+    {% endfor %}
+    
+  </div>
+</div>
+</div>
+<div class="zify-modal zify-hidden" id="download-modal"></div>
+<div class="zify-modal--overlay zify-hidden"></div>
+
+<script type="text/javascript" charset="utf-8">
+//<![CDATA[
+	{% if slider_enable == 1 %}
+	var zify_config_slider_type ={
+	    margin:10,
+	    rtl: {{ slider_rtl }},
+	    lazyLoad: {{ slider_lazyLoad }},
+		loop:{{ slider_loop }},
+		rewind: {{ slider_rewind }},
+		autoplayHoverPause: {{ slider_autoplayHoverPause }},
+	    autoplay:{{ slider_slide_auto }},
+	    autoplayTimeout:{{ slider_autoplay_timeout }},
+	    smartSpeed:{{ slider_smart_speed }},
+	    navClass: ['zify-nav zify-navleft','zify-nav zify-navright'],
+      	navText:zify_nav_product_type,
+	    nav:{{ slider_show_nav }},
+	    dots:{{ slider_show_dots }},
+	    slideBy:{{ slide_by }},
+	    responsive:{
+	        0:{
+	            items:{{ slider_rps_mb }},
+	            autoplay:{{ slider_slide_auto }},
+	            //dots:false,
+	          
+	        },
+	        480:{
+	        	items:{{ slider_rps_sm }},
+	        	autoplay:{{ slider_slide_auto }},
+	            //dots:false,
+	        },
+	        720:{
+	            items:{{ slider_rps_md }},
+	            autoplay:{{ slider_slide_auto }},
+	           
+	        },
+	        1024:{
+	            items:{{ slider_rps_ln }},
+	            autoplay:{{ slider_slide_auto }},
+	           
+	        }
+	    }
+	};
+	
+	jQuery(".zify-products-slider-related").each(function(index) {
+			if(jQuery(this).data('config') == 'vendor'){
+				config_slider = zify_config_slider_vendor;
+			}
+			if(jQuery(this).data('config') == 'type'){
+				config_slider = zify_config_slider_type;
+			}
+			if(jQuery(this).data('config') == 'tag'){
+				config_slider = zify_config_slider_tag;
+			}
+			if(jQuery(this).data('config') == 'collection'){
+				config_slider = zify_config_slider_collection;
+			}
+			jQuery(this).owlCarousel(config_slider); 
+	});
+   {% else %}
+		jQuery(function($) {
+			$('.zify-grid-product.zify-products-slider-related .zify-item-product').responsiveEqualHeightGrid();	
+		});
+   {% endif %}
+//]]>
+</script>

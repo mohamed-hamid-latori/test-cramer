@@ -1,0 +1,143 @@
+{% comment %}
+	@params
+	product 				     - {product object} *required
+	current_variant 		     - {variant object}
+	info_text:                   - {string}
+	info_image:                  - {image}
+	request:                     - {bool}
+
+{%- assign pick_up_availabilities = product_variant.store_availabilities | where: 'pick_up_enabled', true -%}
+{% endcomment %}
+
+{%- assign product_variant = current_variant | default: product.selected_or_first_available_variant -%}
+
+{%- capture header -%}
+	<h2 class="product-availability__title">
+		{{- 'products.product.pickup_availability.title' | t -}}
+	</h2>
+
+
+	<div class="product-availability__key">
+		<div class="product-availability__key-title">
+           Key:
+		</div>
+		<div class="product-availability__key-item product-availability__key--stock">
+              <span class="product-availability__key-circle"></span>
+			<span class="product-availability__key-item-title">In stock</span>
+		</div>
+
+		<div class="product-availability__key-item product-availability__key--out">
+			<span class="product-availability__key-circle"></span>
+			<span class="product-availability__key-item-title">Sold out</span>
+		</div>
+	</div>
+{%- endcapture -%}
+
+{% capture info %}
+	{%- if info_image != blank or info_text != blank -%}
+		<div class="product-availability__info">
+			<div class="product-availability__info-content">
+				{%- if info_image != blank -%}
+					<div class="product-availability__info-image">
+						<picture>
+							<img
+                width="300"
+                height="300"
+								src="{{ info_image | img_url: '440x' }}"
+								srcset="{{ info_image | img_url: '440x' }} 1x, {{ info_image | img_url: '880x' }} 2x"
+								alt="{{ info_image.alt }}"
+								class="product-availability__info-img"
+								loading="lazy"
+							/>
+						</picture>
+					</div>
+				{%- endif -%}
+
+				{%- if info_text != blank -%}
+					<p class="product-availability__info-text">
+						{{- info_text -}}
+					</p>
+				{%- endif -%}
+			</div>
+		</div>
+	{%- endif -%}
+{% endcapture %}
+
+{%- capture content -%}
+	{%- assign pick_up_availabilities = product_variant.store_availabilities | where: 'pick_up_enabled', true -%}
+
+	{%- if pick_up_availabilities.size > 0 -%}
+		<ul class="product-availability__list">
+			{%- for availability in pick_up_availabilities -%}
+				{%- assign location 		= availability.location -%}
+				{%- assign location_id 		= '' | append: location.id -%}
+				{%- assign location_name 	= location.name -%}
+				{%- assign location_address = location.address -%}
+				{%- assign location_phone 	= location_address.phone -%}
+				{%- assign location_time 	= shop.metafields.locations.opening_times[location_id] | default: availability.pick_up_time -%}
+
+				<li class="product-availability__list-item">
+					<div class="product-availability__list-content">
+
+						<h4 class="product-availability__list-item-title">
+							{{- location_name -}}
+						</h4>
+
+						<div class="product-availability__list-item-address">
+							{{- location_address | format_address -}}
+						</div>
+
+						{%- if location_phone != blank -%}
+							<p class="product-availability__list-item-phone">
+								{{- location_phone -}}
+							</p>
+						{%- endif -%}
+
+						{%- if location_time != blank -%}
+							<div class="product-availability__list-item-time">
+								{{- location_time -}}
+							</div>
+						{%- endif -%}
+					</div>
+					<div class="product-availability__mark">
+						{%- if availability.available -%}
+							<div class="product-availability__mark--stock">
+								<span class="product-availability__mark-circle"></span>
+							</div>
+						{%- endif -%}
+						{%- unless availability.available -%}
+							<div class="product-availability__mark--out">
+								<span class="product-availability__mark-circle"></span>
+							</div>
+						{%- endunless -%}
+					</div>
+				</li>
+			{%- endfor -%}
+		</ul>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- if request or product != blank -%}
+	<div class="side-menu product-availability" data-availability-drawer>
+		<div class="side-menu__overlay product-availability__overlay" data-availability-drawer-close></div>
+
+		<div class="side-menu__wrapper product-availability__wrapper">
+			<button type="button" class="product-availability__close-button" data-availability-drawer-close>
+				{%- render 'icon-close' -%}
+			</button>
+
+			<div class="side-menu__content product-availability__content">
+				<div class="product-availability__header">
+					{{- header -}}
+				</div>
+
+				<div class="side-menu__scroll-wrapper product-availability__scroll-wrapper" data-availability-drawer-scroll-wrapper>
+					<div data-store-availability-container>
+					{{- content -}}
+					</div>
+					{{- info -}}
+				</div>
+			</div>
+		</div>
+	</div>
+{%- endif -%}

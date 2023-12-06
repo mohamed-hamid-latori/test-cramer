@@ -1,0 +1,144 @@
+{%- assign help_button_text = section.settings.help_button_text -%}
+{%- assign help_button_link = section.settings.help_button_link -%}
+
+{%- assign nosto_section_id = section.settings.nosto_section_id -%}
+
+{%- assign advisor_image 	= product.metafields.product_advice.advisor_image | first -%}
+{%- assign advisor_role 	= product.metafields.product_advice.advisor_role -%}
+{%- assign advisor_name 	= product.metafields.product_advice.advisor_name -%}
+{%- assign advisor_quote 	= product.metafields.product_advice.advisor_quote -%}
+
+{%- assign complementary_product_handle = product.metafields.product_advice.complementary_product -%}
+{%- assign complementary_product 		= all_products[complementary_product_handle] -%}
+
+{%- capture advisor_info_html -%}
+	{%- if advisor_image != blank -%}
+		<div class="complementary-products__advisor-image-wrapper">
+			<picture>
+				<source srcset="{{ advisor_image.cloudinary_src | append: 'w_360' }} 1x, {{ advisor_image.cloudinary_src | append: 'w_720' }} 2x" media="(max-width: 991px)">
+
+				<img
+					src="{{ advisor_image.cloudinary_src | append: 'w_352' }}"
+					alt="{{ advisor_name }}"
+					class="complementary-products__advisor-image"
+				/>
+			</picture>
+		</div>
+	{%- endif -%}
+
+	{%- if advisor_role != blank -%}
+		<p class="complementary-products__advisor-role">
+			{{- advisor_role -}}
+		</p>
+	{%- endif -%}
+
+	{%- if advisor_name != blank -%}
+		<p class="complementary-products__advisor-name">
+			{{- advisor_name -}}
+		</p>
+	{%- endif -%}
+
+	{%- if advisor_quote != blank -%}
+		<p class="complementary-products__advisor-quote">
+			{{- advisor_quote -}}
+		</p>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture advisor_html -%}
+	{%- if advisor_info_html != blank -%}
+		{{- advisor_info_html -}}
+
+		{%- if help_button_text != blank and help_button_link != blank -%}
+			<div class="complementary-products__help">
+				<p class="complementary-products__help-label">
+					{{- 'products.complementary_products.help_button_label' | t -}}
+				</p>
+
+				<a href="{{- help_button_link -}}" class="link complementary-products__help-button">
+					{{- help_button_text -}}
+				</a>
+			</div>
+		{%- endif -%}
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture product_html -%}
+	{%- if complementary_product != blank or nosto_section_id != blank -%}
+		<div class="complementary-products__recommendation">
+			{%- if complementary_product != blank -%}
+				<div class="complementary-products__recommendation-product">
+					{%-
+						render 'complementary-product',
+						product: complementary_product
+					-%}
+				</div>
+			{%- elsif nosto_section_id != blank -%}
+				{% comment %}
+					<div class="nosto_element hidden" id="{{- nosto_section_id -}}"></div>
+				{% endcomment %}
+
+				<div class="complementary-products__recommendation-product" data-complementary-product data-nosto-section-id="{{- nosto_section_id -}}"></div>
+			{%- endif -%}
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- if advisor_html != blank or product_html != blank -%}
+	<section
+		class="complementary-products"
+		data-section-id="{{- section.id -}}"
+		data-section-type="complementary-products"
+	>
+		<div class="container container--full-width complementary-products__container">
+			<div class="complementary-products__row">
+				{%- if advisor_html != blank -%}
+					<div class="complementary-products__col complementary-products__col--advisor">
+						<div class="complementary-products__advisor">
+							{{- advisor_html -}}
+						</div>
+					</div>
+				{%- endif -%}
+
+				{%- if product_html -%}
+					<div class="complementary-products__col complementary-products__col--product">
+						{{- product_html -}}
+					</div>
+				{%- endif -%}
+			</div>
+		</div>
+	</section>
+{%- endif -%}
+
+{% schema %}
+{
+	"name": "Complementary products",
+	"settings": [
+		{
+			"type": "header",
+			"content": "Help button"
+		},
+		{
+			"type": "text",
+			"id": "help_button_text",
+			"label": "Help button text",
+			"default": "Contact us"
+		},
+		{
+			"type": "url",
+			"id": "help_button_link",
+			"label": "Help button link"
+		},
+		{
+			"type": "header",
+			"content": "Recommended product"
+		},
+		{
+			"type": "text",
+			"id": "nosto_section_id",
+			"label": "Nosto section ID",
+			"default": "productpage-nosto-6"
+		}
+	]
+}
+{% endschema %}

@@ -1,0 +1,138 @@
+{%- capture info -%}
+    {%- for block in section.blocks -%}
+        <div class="career-vacancy-info__block">
+            {%- assign title                = block.settings.title -%}
+            {%- assign text                 = block.settings.text -%}
+            {%- assign image_text           = block.settings.image_text -%}
+
+            {%- if title != blank -%}
+                <h3 class="career-vacancy-info__block-title">
+                    {{- title -}}
+                </h3>
+            {%- endif -%}
+
+            {%- if text != blank-%}
+                {{- text -}}
+            {%- endif -%}
+
+            {%- if image_text != blank -%}
+                <div class="career-vacancy-info__list-text-container">
+                    {{- image_text -}}
+                </div>
+            {%- endif -%}
+            </div>
+    {%- endfor -%}
+
+
+{%- endcapture -%}
+
+{%- assign heading                  = section.settings.heading -%}
+{%- assign back_url                 = section.settings.back_url -%}
+{%- assign back_link_text           = section.settings.back_link_text -%}
+
+<section class="career-vacancy-info"
+        data-section-id="{{section.id}}"
+        data-section-type="career-vacancy-info"
+>
+    <div class="container career-vacancy-info__container">
+        <div class="career-vacancy-info__breadcrumbs-wrapper">
+            {% render 'custom-breadcrumbs',
+                breadcrumbs_link: section.settings.breadcrumbs 
+            %}
+        </div>
+
+        <div class="career-vacancy-info__top-row">
+            {%- if back_url != blank and back_link_text != blank-%}
+                <a href="{{- back_url -}}" class="career-vacancy-info__back-link">
+                    <span class="career-vacancy-info__back-link-arrow">
+                        {% render 'icon-search-enter' %} 
+                    </span>
+
+                    <span class="career-vacancy-info__back-link-text">
+                        {{- back_link_text -}}
+                    </span>
+                </a>
+            {%- endif -%}
+
+            {%- if heading != blank -%}
+                <h1 class="career-vacancy-info__heading">
+                    {{- heading -}}
+                </h1>
+            {%- endif -%}
+        </div>
+
+        {%- if info != blank -%}
+            <div class="career-vacancy-info__block-container">
+                {{- info -}}
+            </div> 
+        {%- endif -%}
+    </div>
+</section>
+
+{% schema %}
+    {
+        "name": "Vacancy description info",
+        "settings": [
+            {
+                "type": "text",
+                "id": "heading",
+                "label": "Heading"
+            },
+            {
+                "type": "text",
+                "id": "back_link_text",
+                "label": "Back link text"
+            },
+            {
+                "type": "url",
+                "id": "back_url",
+                "label": "Back url"
+            },
+            {
+                "type": "link_list",
+                "id": "breadcrumbs",
+                "label": "Breadcrumbs for navigation"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "text_block",
+                "name": "Text block",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Title"
+                    },
+                    {
+                        "type": "richtext",
+                        "id": "text",
+                        "label": "Text"
+                    }
+                ]
+            },
+            {
+                "type": "image_text_block",
+                "name": "Text block with image",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Title"
+                    },
+                    {
+                        "type": "text",
+                        "id": "text",
+                        "label": "Text"
+                    },
+                    {
+                        "type": "html",
+                        "id": "image_text",
+                        "label": "Text with image",
+                        "default": "<ul><li><svg></svg><p></p></li></ul>"
+                    }              
+                ]
+            }
+        ]
+    }
+{% endschema %}

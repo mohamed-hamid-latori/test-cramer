@@ -1,0 +1,103 @@
+{% comment %} Please don’t update this content {% endcomment %}
+
+{% layout none %}
+{% paginate collection.products by 50 %}
+  {
+    "products":
+      [
+        {% for product in collection.products %}
+          {
+            "id":{{ product.id }},
+            
+            "metafields":[
+              
+              {% comment %}
+                Variant Metafield
+              {% endcomment %}
+              {% assign l_variants = product.variants %}
+              {% for v_variant in l_variants %}
+                {
+                  "namespace": {{ v_variant.id }},
+                  "key": "colorgroup",
+                  "value": {{ v_variant.metafields.accentuate["colorgroup"] | json }}
+                },
+              {% endfor %}
+        
+              {% comment %}
+                Variant Metafield
+              {% endcomment %}
+              {% assign l_variants = product.variants %}
+              {% for v_variant in l_variants %}
+                {
+                  "namespace": {{ v_variant.id }},
+                  "key": "issale",
+                  "value": {{ v_variant.metafields.accentuate["issale"] | json }}
+                },
+              {% endfor %}
+        
+              {% comment %}
+                Single Metafield
+              {% endcomment %}
+              {% assign v_product_subtitle = product.metafields.product["product_subtitle"] %}
+              {% if v_product_subtitle != blank %}
+                {
+                  "namespace": "product",
+                  "key": "product_subtitle",
+                  "value": {{ v_product_subtitle | json }}
+                },
+              {% endif %}
+        
+              {% comment %}
+                Variant Metafield
+              {% endcomment %}
+              {% assign l_variants = product.variants %}
+              {% for v_variant in l_variants %}
+                {
+                  "namespace": {{ v_variant.id }},
+                  "key": "neuheit",
+                  "value": {{ v_variant.metafields.accentuate["neuheit"] | json }}
+                },
+              {% endfor %}
+        
+              {% comment %}
+                Single Metafield
+              {% endcomment %}
+              {% assign v_custom_size_order = product.metafields.options["custom_size_order"] %}
+              {% if v_custom_size_order != blank %}
+                {
+                  "namespace": "options",
+                  "key": "custom_size_order",
+                  "value": {{ v_custom_size_order | json }}
+                },
+              {% endif %}
+        
+              {% comment %}
+                Single Metafield
+              {% endcomment %}
+              {% assign v_ColourGroup = product.metafields.product["ColourGroup"] %}
+              {% if v_ColourGroup != blank %}
+                {
+                  "namespace": "product",
+                  "key": "ColourGroup",
+                  "value": {{ v_ColourGroup | json }}
+                },
+              {% endif %}
+        
+              {% comment %}
+                Variant Metafield
+              {% endcomment %}
+              {% assign l_variants = product.variants %}
+              {% for v_variant in l_variants %}
+                {
+                  "namespace": {{ v_variant.id }},
+                  "key": "nachhaltigkeit",
+                  "value": {{ v_variant.metafields.accentuate["nachhaltigkeit"] | json }}
+                },
+              {% endfor %}
+        
+            ]
+          },
+        {% endfor %}
+      ]
+  }
+{% endpaginate %}

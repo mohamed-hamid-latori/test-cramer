@@ -1,0 +1,88 @@
+{%- assign product_vendor 			= product.vendor -%}
+{%- assign product_title 			= product.title -%}
+{%- assign product_url 				= product.url -%}
+{%- assign product_image		 	= product.featured_image -%}
+{%- assign custom_product_image 	= product.metafields.advised_product.complementary_product_image | first -%}
+{%- assign section_title 			= product.metafields.advised_product.complementary_section_title -%}
+{%- assign first_variant 			= product.variants | first -%}
+{%- assign current_variant 			= product.first_available_variant | default: first_variant -%}
+
+{%- if current_variant.compare_at_price > current_variant.price -%}
+	{%- assign has_sale = true -%}
+{%- endif -%}
+
+{%- capture image_html -%}
+	{%- if custom_product_image != blank -%}
+		<div class="complementary-product__image-wrapper">
+			<picture>
+				<img src="{{ custom_product_image.cloudinary_src | append: 'w_826' }}"
+					 alt="{{ product_title }}"
+					 class="complementary-product__image"
+				/>
+			</picture>
+		</div>
+	{%- elsif product_image != blank -%}
+		<div class="complementary-product__image-wrapper">
+			<picture>
+				<img src="{{ product_image | img_url: '826x' }}"
+					 alt="{{ product_image.alt | default: product.title }}"
+					 class="complementary-product__image"
+				/>
+			</picture>
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+
+<div class="complementary-product">
+	<div class="complementary-product__row">
+		{%- if image_html -%}
+			<div class="complementary-product__col complementary-product__col--image">
+				{{- image_html -}}
+			</div>
+		{%- endif -%}
+
+		<div class="complementary-product__col complementary-product__col--meta">
+			<div class="complementary-product__meta">
+				{%- if section_title != blank -%}
+					<h3 class="complementary-product__heading">
+						{{- section_title -}}
+					</h3>
+				{%- endif -%}
+
+				{%- if product_vendor -%}
+					<p class="complementary-product__vendor">
+						{{- product_vendor -}}
+					</p>
+				{%- endif -%}
+
+				<a href="{{ product_url }}" class="complementary-product__title">
+					{{- product_title -}}
+				</a>
+
+				<div class="complementary-product__price">
+					{%- if product.price_varies -%}
+						{%- assign min_price = product.price_min | money -%}
+
+						<span class="complementary-product__price-value">
+							{{- 'products.product_card.starting_at' | t: price: min_price -}}
+						</span>
+					{%- else -%}
+						<span class="complementary-product__price-value complementary-product__price-value--compare-price{% unless has_sale %} hidden{% endunless %}" data-compare-price>
+							{{- current_variant.compare_at_price | money -}}
+						</span>
+
+						<span class="complementary-product__price-value{% if has_sale %} complementary-product__price-value--sale{% endif %}" data-product-price>
+							{{- current_variant.price | money -}}
+						</span>
+					{%- endif -%}
+				</div>
+
+				<a href="{{ product_url }}"
+				   class="button button--secondary complementary-product__button"
+				>
+					{{- 'products.complementary_products.view_product' | t -}}
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

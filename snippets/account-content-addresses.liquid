@@ -1,0 +1,108 @@
+{% comment %}
+	@params
+	customer 		- {customer object} *required
+{% endcomment %}
+
+{%- capture default_address -%}
+		{% if customer.default_address != blank %}
+			<div class="account-addresses__col">
+				<div class="account-addresses__field">
+					{{ customer.default_address | format_address }}
+				</div>
+
+				<div class="account-addresses__links-container">
+					<a class="link account-info__link account-addresses__link account-addresses__link--padding" href="/account/addresses?view=edit&customer_address={{- customer.default_address.id -}}">{{ 'customer.account.addresses.edit' | t }}</a>
+
+					<form class="address-delete-form account-addresses__link account-addresses__link--padding"
+						method="post"
+						action="/account/addresses/{{ customer.default_address.id }}"
+					>
+						<input type="hidden" name="_method" value="delete">
+						<button type="submit" class="link account-info__link account-addresses__link account-addresses__link--padding">{{ 'customer.addresses.delete' | t }}</button>
+					</form>
+				</div>
+			</div>
+		{% endif %}
+{%- endcapture -%}
+
+{%- capture other_addresses -%}
+	{%- for address in customer.addresses -%}
+		{%- if address != customer.default_address -%}
+			<div class="account-addresses__col">
+				<div class="account-addresses__field">
+					{{ address | format_address}}
+				</div>
+
+				<div class="account-addresses__links-container">
+					<a class="link account-info__link account-addresses__link account-addresses__link--padding" href="/account/addresses?view=edit&customer_address={{- address.id -}}">{{ 'customer.account.addresses.edit' | t }}</a>
+
+					<form class="address-delete-form account-addresses__link account-addresses__link--padding"
+						method="post"
+						action="/account/addresses/{{ address.id }}"
+					>
+						<input type="hidden" name="_method" value="delete">
+						<button type="submit" class="link account-info__link account-addresses__link account-addresses__link--padding">{{ 'customer.addresses.delete' | t }}</button>
+					</form>
+
+					<a class="link account-info__link account-addresses__link account-addresses__link--padding" href="/account/addresses?view=edit&customer_address={{- address.id -}}">{{ 'customer.addresses.set_default' | t }}</a>
+				</div>
+			</div>
+		{%- endif -%}
+	{%- endfor -%}
+{%- endcapture -%}
+
+<section class="account-content account-addresses">
+	<div class="account-content__container">
+		<div class="account-content__header">
+			<div class="account-content__header-wrapper">
+				<h1 class="account-content__header-title">
+					{{ 'customer.addresses.title' | t }}
+				</h1>
+
+				<div class="account-content__header-icon account-addresses__header-icon">
+					{%- render 'icon-account-triangle' -%}
+				</div>
+			</div>
+		</div>
+
+		<div class="account-content__content-container">
+			{%- if default_address != blank -%}
+				<div class="account-addresses__row">
+					<h2 class="account-addresses__row-title">
+						{{'customer.addresses.default_address' | t }}
+					</h2>
+
+					<div class="account-addresses__content">					
+						{{ default_address }}
+					</div>
+				</div>
+			{%- endif -%}
+
+			{%- if other_addresses != blank -%}
+				<div class="account-addresses__row">
+					<h2 class="account-addresses__row-title">
+						{{'customer.addresses.other_addresses' | t }}
+					</h2>
+
+					<div class="account-addresses__content">
+						{{- other_addresses -}}
+					</div>
+				</div>
+			{%- endif -%}
+			
+			{%- if default_address == blank and other_addresses == blank -%}
+				<div class="account-addresses__row">
+					<h2 class="account-addresses__row-title">
+						{{'customer.addresses.default_address' | t }}
+					</h2>
+
+					<p class="account-addresses__field account-addresses__field--empty">{{'customer.account.addresses.empty_address' | t }}</p>
+				</div>
+			{%- endif -%}
+
+			<div class="account-addresses__add-button-container">
+				<a href="/account/addresses?view=add" class="button button--secondary button--main account-addresses__button account-addresses__button--small">{{ 'customer.addresses.add' | t }}</a>
+			</div>
+		</div>
+	</div>
+</section>

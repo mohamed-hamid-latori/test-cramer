@@ -1,0 +1,292 @@
+{%- assign image_placeholder    = settings.placeholder -%}
+{%- assign current_variant 		= product.selected_or_first_available_variant -%}
+{%- assign featured_image  		= current_variant.featured_image | default: product.featured_image -%}
+{%- assign description     		= product.description | strip -%}
+{%- assign slider_bg       		= product.metafields.accentuate.background | first -%}
+{%- assign title           		= product.title -%}
+
+{%- capture product_accordions -%}
+	{%- include 'product-accordions' -%}
+{%- endcapture -%}
+
+{%- capture product_tags_html -%}
+	{%- for tag in product.tags limit: 8 -%}
+		<div class="product-section__tags-tag">
+			{% capture url %}/collections/all/{{ tag | handle }}{% endcapture %}
+			{{ tag | link_to: url }}
+		</div>
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- capture slider_background -%}
+{%- assign image_src = slider_bg.cloudinary_src -%}
+	{%- if image_src != blank -%}
+		<div class="product-section__slider-background-wrapper">
+			<div class="product-section__slider-background-image-wrapper">
+				<img
+					class="product-section__slider-background"
+					src="{{- image_src | append: 'w_500,h_500' -}}"
+					alt=""
+				/>
+			</div>
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+
+<section
+	class="product-section"
+	data-section-id="{{- section.id -}}"
+	data-section-type="product"
+	itemscope
+	itemtype="http://schema.org/Product"
+>
+	<meta itemprop="name" content="{{ title }}{% unless product.has_only_default_variant %} - {{ current_variant.title }}{% endunless %}">
+	<meta itemprop="url" content="{{ shop.url }}{{ current_variant.url }}">
+	<div itemprop="brand" itemtype="https://schema.org/Brand" itemscope>
+        <meta itemprop="name" content="{{ product.vendor }}">
+	</div>
+	{% for image in product.images %}
+		<meta itemprop="image" content="{{ image | img_url: '600x' }}">
+	{% endfor %}
+	<meta itemprop="description" content="{{ description | strip_html | escape }}">
+	<div itemprop="offers" itemtype="https://schema.org/Offer" itemscope>
+        <link itemprop="url" href="{{ shop.url }}{{ current_variant.url }}">
+        <meta itemprop="availability" content="https://schema.org/InStock">
+        <meta itemprop="priceCurrency" content="{{ shop.currency }}">
+        <meta itemprop="itemCondition" content="https://schema.org/NewCondition">
+        <meta itemprop="price" content="{{ current_variant.price | money_without_currency | replace: '.', '' | replace: ',', '.' }}">
+        <meta itemprop="priceValidUntil" content="2025-11-16">
+	</div>
+
+	<div class="product-section__container">
+		<div class="product-section__row">
+			<div class="product-section__col product-section__col--media">
+				{%- if slider_background != blank -%}
+					{{- slider_background -}}
+				{%- endif -%}
+
+				<div class="product-section__content-breadcrumbs product-section__content-breadcrumbs--mobile">
+					{%- include 'breadcrumbs' -%}
+				</div>
+
+				{%- assign slider_images    = '' -%}
+				{%- assign thumbnail_images = '' -%}
+
+				{%- for media in product.media -%}
+					{%- assign index = forloop.index0 -%}
+
+					{%- capture wrapper_class -%}
+						product-section__slider-slide {% unless featured_image == media.preview_image %}hide {% endunless %} {% if media.media_type == 'video' %}product-section__slider-slide--video{%- endif -%}
+					{%- endcapture -%}
+
+					{%- capture product_slide -%}
+						<div
+							class="product-section__slider-product-slide js-product-slide"
+							data-product-slide
+							data-slick-index="{{- index -}}"
+							data-image-id="{{- media.id -}}"
+						>
+							<div
+								class="{{- wrapper_class -}}"
+							>
+								{%- case media.media_type -%}
+								{%- when 'image' -%}
+									<img
+										src="{{ media.preview_image | img_url: '500x' }}"
+										class="product-section__slider-slide-image"
+										data-srcset="{{ media.preview_image | img_url: '500x' }} 1x, {{ media.preview_image | img_url: '1000x' }} 2x"
+										srcset="{{ media.preview_image | img_url: '500x' }} 1x, {{ media.preview_image | img_url: '1000x' }} 2x"
+										alt="{{- media.alt | default: title -}}"
+									/>
+								{%- when 'video' -%}
+									<div class="product-section__slider-slide-video-wrapper"
+										 data-video-type="shopify"
+									>
+										{{ media | video_tag: controls: false, muted: true, loop: true, class: 'product-section__slider-slide-image js-slide-video', image_size: '500x500' }}
+									</div>
+
+									<button class="product-section__slider-slide-play-button" type="button" data-video-play>
+										{%- include 'icon-play' -%}
+									</button>
+								{%- endcase -%}
+							</div>
+						</div>
+					{%- endcapture -%}
+
+					{%- capture product_thumbnail -%}
+						<div
+							class="product-section__thumbnails-item"
+							data-product-thumbnail
+							data-thumbnail-id="{{- media.id -}}"
+							data-slick-index="{{- index -}}"
+							data-product-single-thumbnail
+							{% if featured_image == media.preview_image %}aria-current="true"{% endif %}
+						>
+							<div class="product-section__thumbnails-image-wrapper">
+								<picture>
+									<img
+										class="product-section__thumbnails-image"
+										srcset="{{ media.preview_image | img_url: '95x' }} 1x, {{ media.preview_image | img_url: '190x' }} 2x"
+										src="{{- media.preview_image | img_url: '95x' -}}"
+										alt="{{- media.alt | default: title -}}"
+									>
+								</picture>
+
+								{%- if media.media_type == 'video' -%}
+									<div class="product-section__thumbnails-play-icon-wrapper">
+										{%- include 'icon-play' -%}
+									</div>
+								{%- endif -%}
+							</div>
+						</div>
+					{%- endcapture -%}
+
+					{%- assign slider_images    = slider_images | append: product_slide -%}
+					{%- assign thumbnail_images = thumbnail_images | append: product_thumbnail -%}
+				{%- endfor -%}
+
+				<div class="product-section__slider-wrapper">
+					{%- if slider_images != blank -%}
+						<div class="product-section__slider product-section__slider--not-init js-product-slider-featured-image" data-product-slider>
+							{{- slider_images -}}
+						</div>
+
+						{%- if product.media.size > 1 -%}
+							<div class="product-section__thumbnails-wrapper" data-product-thumbnails-wrapper>
+								<div
+									class="product-section__thumbnails product-section__thumbnails--not-init js-product-slider-thumbnails"
+									data-product-thumbnails
+								>
+									{{- thumbnail_images -}}
+								</div>
+							</div>
+						{%- endif -%}
+					{%- else -%}
+						<div class="product-section__no-image-wrapper">
+							<picture>
+								<source
+									srcset="{{ image_placeholder | img_url: '500x' }} 1x, {{ image_placeholder | img_url: '1000x' }} 2x, {{ image_placeholder | img_url: '1500x' }} 3x"
+									media="(min-width: 768px)">
+								<source
+									srcset="{{ image_placeholder | img_url: '400x' }} 1x, {{ image_placeholder | img_url: '800x' }} 2x, {{ image_placeholder | img_url: '1200x' }} 3x"
+									media="(max-width: 380px)">
+								<source
+									srcset="{{ image_placeholder | img_url: '600x' }} 1x, {{ image_placeholder | img_url: '1200x' }} 2x, {{ image_placeholder | img_url: '1800x' }} 3x"
+									media="(max-width: 768px)">
+								<source
+									srcset="{{ image_placeholder | img_url: '760x' }} 1x, {{ image_placeholder | img_url: '1520x' }} 2x, {{ image_placeholder | img_url: '2280x' }} 3x"
+									media="(max-width: 991px)">
+
+								<img
+									class="product-section__no-image"
+									src="{{- image_placeholder | img_url: 'master' -}}"
+									alt="{{- title -}}"
+								/>
+							</picture>
+						</div>
+					{%- endif -%}
+				</div>
+			</div>
+
+			<div class="product-section__col product-section__col--content">
+				<div class="product-section__content">
+					<div class="product-section__content-breadcrumbs">
+						{%- include 'breadcrumbs' -%}
+					</div>
+
+					<div class="product-section__rating">
+						{%- include 'product-star-rating' -%}
+					</div>
+
+					<div class="product-section__meta-information">
+						<div class="product-section__meta-title-price-wrapper">
+							<div class="product-section__meta-title">
+								<h2 class="h2 product-section__title">
+									{{- title -}}
+								</h2>
+							</div>
+
+							<div class="product-section__meta-price" data-price-wrapper>
+								<span class="product-section__price-value" data-product-price>
+									{{- current_variant.price | money -}}
+								</span>
+
+								{% if product.compare_at_price_max > product.price %}
+									<span
+										class="visually-hidden"
+										data-compare-text
+									>
+										{{- 'products.product.regular_price' | t -}}
+									</span>
+
+									<s
+										class="product-section__price-value product-section__price-value--old"
+										data-compare-price
+									>
+										{% if current_variant.compare_at_price > current_variant.price %}
+											{{- current_variant.compare_at_price | money -}}
+										{% endif %}
+									</s>
+								{%- endif -%}
+							</div>
+						</div>
+
+						<div class="product-section__meta-vendor-price-variants-wrapper">
+							<span class="product-section__meta-vendor">
+								{{- product.vendor }}
+							</span>
+
+							<div class="product-section__meta-price-variants">
+								{%- if product.price_min == product.price_max -%}
+									<span class="product-section__meta-price-variants-min">
+										{{- product.price_min | money -}}
+									</span>
+								{%- else -%}
+									<span class="product-section__meta-divider">/</span>
+									<span class="product-section__meta-price-variants-min">
+										{{- product.price_min | money -}}
+									</span>
+
+									<span class="product-section__meta-divider product-section__meta-divider--price">-</span>
+
+									<span class="product-section__meta-price-variants-max">
+										{{- product.price_max | money -}}
+									</span>
+								{%- endif -%}
+							</div>
+						</div>
+					</div>
+
+					<div class="product-section__product-form">
+						{%- include 'product-form', product: product -%}
+					</div>
+
+					{%- if description != blank -%}
+						<div class="product-section__description">
+							{{- description -}}
+						</div>
+					{%- endif -%}
+
+					{%- if product_accordions != blank -%}
+						<div class="product-section__accordions-wrapper">
+							{{- product_accordions -}}
+						</div>
+					{%- endif -%}
+
+					{%- if product_tags_html != blank -%}
+						<div class="product-section__tags">
+							{{- product_tags_html -}}
+						</div>
+					{%- endif -%}
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+{% schema %}
+	{
+	"name": "Product pages",
+	"settings": []
+	}
+{% endschema %}

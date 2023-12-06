@@ -1,0 +1,20 @@
+<section class="help-center-menu-main"
+        data-section-id="{{ section.id }}"
+        data-section-type="help-center-menu-main"
+>
+    {% render 'help-center-menu', menu: section.settings.menu %}
+</section>
+
+
+{% schema %}
+    {
+        "name": "Help center menu",
+        "settings": [
+            {
+                "type": "link_list",
+                "id": "menu",
+                "label": "Navigation menu"
+            }
+        ]
+    }
+{% endschema %}

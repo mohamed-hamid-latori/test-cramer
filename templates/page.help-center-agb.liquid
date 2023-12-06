@@ -1,0 +1,14 @@
+{%- capture menu -%}
+    {%- section 'help-center-menu' -%}
+    {%- section 'help-center-info' -%}
+{%- endcapture -%}
+
+{%- capture content -%}
+    {%- section 'help-center-content-agb' -%}
+    {%- section 'help-center-info' -%}
+{%- endcapture -%}
+
+{%- render 'help-center-template',
+        menu: menu,
+        content: content
+-%}

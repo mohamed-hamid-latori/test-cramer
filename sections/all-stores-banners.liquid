@@ -1,0 +1,100 @@
+{%- capture banners -%}
+	{%- for block in section.blocks -%}
+		{%- assign image 		= block.settings.image -%}
+		{%- assign title 		= block.settings.title -%}
+		{%- assign subtitle 	= block.settings.subtitle -%}
+		{%- assign url 			= block.settings.url -%}
+
+		{%- if image == blank -%} 
+			{%- continue -%}
+		{%- endif -%}
+
+		{%- capture image_html -%}
+			<img
+				class="all-stores-banner__image"
+				src="{{- image | img_url: '676x' -}}"
+				srcset="{{ image | img_url: '676x' }} 1x, {{ image | img_url: '1352x' }} 2x, {{ image | img_url: '2028x' }} 3x"
+				alt="{{- image.alt -}}"
+			>
+		{%- endcapture -%}
+
+		<div class="all-stores-banners__column">
+			<div class="all-stores-banner">
+				{%- if url != blank -%}
+					<a class="all-stores-banner__image-wrapper" href="{{- url -}}">
+						{{- image_html -}}
+					</a>
+				{%- else -%}
+					<div class="all-stores-banner__image-wrapper">
+						{{- image_html -}}
+					</div>
+				{%- endif -%}
+                
+                {%- if title != blank -%}
+					<h2 class="all-stores-banner__title">
+						{{- title -}}
+					</h2>
+				{%- endif -%}
+
+				<h3 class="all-stores-banner__subtitle">
+					{%- if url != blank -%}
+						<a class="all-stores-banner__subtitle-link" href="{{- url -}}">
+							{{- subtitle -}}
+						</a>
+					{%- else -%}
+						{{- subtitle -}}
+					{%- endif -%}
+				</h3>
+			</div>
+		</div>
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- if banners != blank -%}
+	<section
+		class="all-stores-banners"
+		data-section-id="{{- section.id -}}"
+		data-section-type="all-stores-banners"
+	>
+		<div class="container all-stores-banners__container">
+			<div class="row all-stores-banners__row">
+				{{- banners -}}
+			</div>
+		</div>
+	</section>
+{%- endif -%}
+
+{% schema %}
+{
+	"name": "Featured Banners",
+	"max_blocks": 4,
+	"blocks": [
+		{
+			"type": "banner",
+			"name": "Banner",
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image"
+				},
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Heading"
+				},
+				{
+					"type": "text",
+					"id": "subtitle",
+					"label": "Subheading"
+				},
+				{
+					"type": "url",
+					"id": "url",
+					"label": "Link"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

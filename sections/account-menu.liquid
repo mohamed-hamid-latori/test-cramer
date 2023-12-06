@@ -1,0 +1,14 @@
+{%- render 'account-menu', menu: section.settings.menu -%}
+
+{% schema %}
+{
+	"name": "Account navigation",
+	"settings": [
+		{
+			"type": "link_list",
+			"id": "menu",
+			"label": "Menu"
+		}
+	]
+}
+{% endschema %}

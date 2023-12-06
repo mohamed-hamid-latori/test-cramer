@@ -1,0 +1,43 @@
+{% assign html = section.settings.html %}
+{% assign title = section.settings.title %}
+
+{%- if html != blank -%}
+	<section class="instagram-collection" data-section-id="{{- section.id -}}" data-section-type="instashop">
+		<div class="container">
+			<div class="instagram-collection__main">
+				{%- if title != blank -%}
+					<a href="{{ section.settings.url }}" class="instagram-collection__title-url"><h2 class="instagram-collection__title">{{- title -}}</h2></a>
+				{%- endif -%}
+				{{ html }}
+			</div>
+		</div>
+	</section>
+{%- endif -%}
+
+{% schema %}
+	{
+		"name": "Instagram collection",
+		"settings": [
+			{
+				"type": "text",
+				"id": "title",
+				"label": "Instagram collection title"
+			},
+			{
+				"type": "html",
+				"id": "html",
+				"label": "Instagram collection"
+			},
+			{
+				"type": "url",
+				"id": "url",
+				"label": "Title URL"
+			}
+		],
+		"presets": [
+			{
+				"name": "Instagram collection"
+			}
+		]
+	}
+{% endschema %}

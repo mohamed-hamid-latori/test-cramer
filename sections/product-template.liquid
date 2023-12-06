@@ -1,0 +1,262 @@
+{%- assign first_variant 		= product.variants | first -%}
+{%- assign current_variant 		= product.selected_or_first_available_variant | default: first_variant -%}
+
+{%- assign meta_title = '' -%}
+{%- assign collection_meta_description = product.description | strip_html | escape -%}
+
+{%- if shop.permanent_domain contains 'cramerco.myshopify.com' -%}
+	{%- assign collection_handle = product.url | within: collection | split: '/collections/' | last | split: "/products/" | first -%}
+	{%- assign meta_title = '[Product name] | [Brand] | Crämer & Co.' | replace: "[Product name]", product.title | replace: "[Brand]", product.vendor  -%}
+
+	{% for collection in collections %}
+		{%- if collection.handle == collection_handle -%}
+			{%- assign current_collection = collection -%}
+		{%- endif -%}
+	{% endfor %}
+
+	{%- if collection.metafields.custom.meta_description_template != blank -%}
+		{%- assign collection_meta_description = collection.metafields.custom.meta_description_template | replace: "[Product name]", product.title | replace: "[Brand]", product.vendor  -%}
+	{%- endif -%}
+{%- endif -%}
+
+
+<div
+	class="product"
+	data-section-id="{{- section.id -}}"
+	data-section-type="product"
+	data-product-handle="{{- product.handle -}}"
+	data-enable-history-state="true"
+	itemscope itemtype="http://schema.org/Product"
+>
+	<meta itemprop="sku" content="{{ current_variant.sku }}">
+	<meta itemprop="name" content="{%- if meta_title != blank -%}{{meta_title}}{%- else -%}{{ product.title }}{% unless product.has_only_default_variant %} - {{ current_variant.title }}{% endunless %}{%- endif -%} ">
+	<meta itemprop="url" content="{{ shop.url }}{{ current_variant.url }}">
+	<div itemprop="brand" itemtype="https://schema.org/Brand" itemscope>
+        <meta itemprop="name" content="{{ product.vendor }}">
+	</div>
+	{% for image in product.images %}
+		<meta itemprop="image" content="{{ image | img_url: '600x' }}">
+	{% endfor %}
+	<meta itemprop="description" content="{{ collection_meta_description }}">
+
+	<div itemprop="offers" itemtype="https://schema.org/Offer" itemscope>
+        <link itemprop="url" href="{{ shop.url }}{{ current_variant.url }}">
+        <meta itemprop="availability" content="https://schema.org/InStock">
+        <meta itemprop="priceCurrency" content="{{ shop.currency }}">
+        <meta itemprop="itemCondition" content="https://schema.org/NewCondition">
+        <meta itemprop="price" content="{{ current_variant.price | money_without_currency | replace: '.', '' | replace: ',', '.' }}">
+        <meta itemprop="priceValidUntil" content="2025-11-16">
+	</div>
+
+	{%- assign blocks 				= section.blocks -%}
+	{%- assign delivery_description = blocks | where: 'type', 'delivery_description' -%}
+	{%- assign services 			= blocks | where: 'type', 'service' -%}
+
+	<div class="container container--full-width product__container">
+		<div class="product__breadcrumbs">
+			{%- render 'breadcrumbs' -%}
+		</div>
+
+		<div class="product__row">
+			<div class="product__col product__col--media">
+				{%-
+					render 'product-media',
+					current_variant: current_variant
+				-%}
+			</div>
+
+			<div class="product__col product__col--meta">
+				{%-
+					render 'product-meta',
+					footer_text: section.settings.footer_text,
+					enable_rating: section.settings.enable_rating,
+					enable_sharing: section.settings.enable_sharing,
+					enable_size_chart: section.settings.enable_size_chart,
+					size_chart_title: section.settings.size_chart_title,
+					size_chart_icon: section.settings.size_chart_icon,
+					size_chart_icon_svg: section.settings.size_chart_icon_svg,
+					size_chart_text: section.settings.size_chart_text,
+					delivery_description: delivery_description,
+					store_availability_text: section.settings.store_availability_text,
+					store_availability_image: section.settings.store_availability_image,
+					services_heading: section.settings.services_heading,
+					services: services,
+					free_services_svg_men: section.settings.services_men_svg_icon,
+					free_services_svg_women: section.settings.services_women_svg_icon,
+                    excluded_vendors: section.settings.exclude_unavailable_vendor
+				-%}
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="application/json" data-product-variants-tags>
+	{
+		{%- for variant in product.variants  -%}
+			{%- assign tag_new 			= variant.metafields.accentuate["neuheit"] -%}
+			{%- assign tag_sale 		= variant.metafields.accentuate["issale"] -%}
+
+			"{{ variant.id | json }}": [
+				{
+					"new":{{- tag_new | default: null | json -}},
+					"sale":{{- tag_sale | default: null | json -}}
+				}
+			]{%- unless forloop.last -%},{%- endunless -%}
+		{%- endfor -%}
+	}
+</script>
+
+{% schema %}
+{
+	"name": "Product",
+	"settings": [
+		{
+			"type": "checkbox",
+			"id": "enable_rating",
+			"label": "Enable rating",
+			"default": true
+		},
+		{
+			"type": "checkbox",
+			"id": "enable_sharing",
+			"label": "Enable sharing",
+			"default": true
+		},
+		{
+			"type": "header",
+			"content": "Main information footer"
+		},
+		{
+			"type": "richtext",
+			"id": "footer_text",
+			"label": "Footer text",
+			"default": "<p>Didn't find your size? <a href=\"/pages/contact-us\">Contact us!</a></p><p>Our tailors can help to make it fit you perfectly</p>"
+		},
+		{
+			"type": "header",
+			"content": "Size chart"
+		},
+		{
+			"type": "checkbox",
+			"id": "enable_size_chart",
+			"label": "Enable size chart",
+			"default": true
+		},
+		{
+			"type": "text",
+			"id": "size_chart_title",
+			"label": "Size chart heading",
+			"default": "Size Chart"
+		},
+		{
+			"type": "image_picker",
+			"id": "size_chart_icon",
+			"label": "Size chart icon"
+		},
+		{
+			"type": "html",
+			"id": "size_chart_icon_svg",
+			"label": "Size chart icon SVG",
+			"info": "Overrides icon image"
+		},
+		{
+			"type": "textarea",
+			"id": "size_chart_text",
+			"label": "Size chart text",
+			"default": "Need Help? Contact customer support at 0800 2723637 with any size or fit questions. 9:00 - 20:00 Monday-Friday."
+		},
+		{
+			"type": "header",
+			"content": "Store availability"
+		},
+		{
+			"type": "text",
+			"id": "store_availability_text",
+			"label": "Section description",
+			"default": "Die Auswahl des Abholstandortes kannst Du problemlos während des Bestellvorgangs vornehmen."
+		},
+		{
+			"type": "image_picker",
+			"id": "store_availability_image",
+			"label": "Store availability image"
+		},
+		{
+			"type": "header",
+			"content": "Free services"
+		},
+		{
+			"type": "text",
+			"id": "services_heading",
+			"label": "Section title",
+			"default": "Free Services & Benefits for Club Member"
+		},
+		{
+			"type": "paragraph",
+			"content": "Start adding blocks to populate section with content"
+		},
+		{
+			"type": "html",
+			"id": "services_women_svg_icon",
+			"label": "Women icon for free services"
+		},
+		{
+			"type": "html",
+			"id": "services_men_svg_icon",
+			"label": "Men icon for free services"
+		},
+        {
+          "type": "text",
+          "id": "exclude_unavailable_vendor",
+          "label": "List of vendors whose variant should be hidden if not available",
+          "info": "A comma-separated list of vendors. Example vendor1,vendor2,vendor3"
+        }
+	],
+	"blocks": [
+		{
+			"type": "delivery_description",
+			"name": "Delivery & returns",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Text"
+				},
+				{
+					"type": "html",
+					"id": "icon",
+					"label": "SVG icon"
+				},
+				{
+					"type": "text",
+					"id": "tooltip",
+					"label": "Tooltip"
+				}
+			]
+		},
+		{
+			"type": "service",
+			"name": "Services & benefits",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Text"
+				},
+				{
+					"type": "image_picker",
+					"id": "icon",
+					"label": "Icon"
+				},
+				{
+					"type": "html",
+					"id": "svg_icon",
+					"label": "Icon in svg"
+				}
+			]
+		}
+	],
+	"templates": [
+		"product"
+	]
+}
+{% endschema %}

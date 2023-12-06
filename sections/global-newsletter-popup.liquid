@@ -1,0 +1,213 @@
+{%- assign enable_popup 		= section.settings.enable_popup -%}
+{%- assign popup_delay 			= section.settings.popup_delay -%}
+{%- assign logo 				= section.settings.logo -%}
+{%- assign title 				= section.settings.title -%}
+{%- assign description 			= section.settings.description -%}
+{%- assign image 				= section.settings.image -%}
+{%- assign image_mobile 		= section.settings.image_mobile | default: image -%}
+
+{%- assign klaviyo_form_id 		= section.settings.klaviyo_form_id -%}
+
+{%- capture popup_content -%}
+	{%- unless request.path contains "/challenge" -%}
+		{%- if enable_popup and klaviyo_form_id != blank -%}
+			<div class="newsletter-popup__row">
+				{%- if image != blank -%}
+					<div class="newsletter-popup__col newsletter-popup__col--image">
+						<div class="newsletter-popup__image-wrapper">
+							<picture>
+								<source srcset="{{ image_mobile | img_url: '352x' }} 1x, {{ image_mobile | img_url: '704x' }} 2x, {{ image_mobile | img_url: '1056x' }} 3x" media="(max-width: 991px)">
+								<source srcset="{{ image | img_url: '563x' }} 1x, {{ image | img_url: '1126x' }} 2x, {{ image | img_url: '1689x' }} 3x" media="(min-width: 992px)">
+
+								<img
+									class="newsletter-popup__image"
+									src="{{- image | img_url: '352x' -}}"
+									srcset="{{ image | img_url: '352x' }} 1x, {{ image | img_url: '704x' }} 2x, {{ image | img_url: '1056x' }} 3x"
+									alt="{{- image.alt -}}"
+									width="{{- image.width -}}"
+									height="{{- image.height -}}"
+								/>
+							</picture>
+						</div>
+					</div>
+				{%- endif -%}
+
+				<div class="newsletter-popup__col newsletter-popup__col--content">
+					<div class="newsletter-popup__content">
+						{%- if logo != blank -%}
+							<div class="newsletter-popup__logo">
+								<picture class="lazy">
+									<img
+										class="newsletter-popup__logo-image"
+										src="{{- logo | img_url: '20x' -}}"
+										data-srcset="{{ logo | img_url: '52x' }} 1x, {{ logo | img_url: '104x' }} 2x, {{ logo | img_url: '156x' }} 3x"
+										srcset="{{ logo | img_url: '20x' }} 1x, {{ logo | img_url: '20x' }} 2x, {{ logo | img_url: '20x' }} 3x"
+										alt="{{- logo.alt -}}"
+										width="{{- logo.width -}}"
+										height="{{- logo.height -}}"
+										loading="lazy"
+									/>
+								</picture>
+							</div>
+						{%- endif -%}
+
+						{%- if title != blank -%}
+							<h2 class="newsletter-popup__title">
+								{{- title -}}
+							</h2>
+						{%- endif -%}
+
+						{%- if description != blank -%}
+							<div class="newsletter-popup__description">
+								{{- description -}}
+							</div>
+						{%- endif -%}
+
+						<form
+							id="newsletter_popup_form"
+							class="form newsletter-popup__form klaviyo_gdpr_embed_{{- klaviyo_form_id -}}"
+							action="//manage.kmail-lists.com/subscriptions/subscribe"
+							data-ajax-submit="//manage.kmail-lists.com/ajax/subscriptions/subscribe"
+							method="GET"
+							target="_blank"
+							novalidate="novalidate"
+						>
+							<input type="hidden" name="g" value="{{- klaviyo_form_id -}}">
+							<input type="hidden" name="$fields" value="$consent">
+							<input type="hidden" name="$list_fields" value="$consent">
+							<input type="hidden" name="$consent" value="email">
+							{% comment %} 
+							<div class="form__row newsletter-popup__form-row">
+								<div class="form__col newsletter-popup__form-col newsletter-popup__form-col--input">
+									<div class="input-group input-group--floating-label form__input-group newsletter-popup__form-input-group">
+										<input type="email"
+											   name="email"
+											   id="k_id_email"
+											   class="input input-group__input form__input newsletter-popup__form-input"
+											   value="{%- if customer -%}{{- customer.email -}}{%- endif -%}"
+											   placeholder="{{- 'newsletter.popup.email' | t -}}"
+											   autocorrect="off"
+											   autocapitalize="off"
+											   data-validate="email"
+										/>
+
+										<label
+											for="k_id_email"
+											class="input-group__label"
+										>
+											{{- 'newsletter.popup.email' | t -}}
+										</label>
+									</div>
+								</div>
+                              
+								<div class="form__col newsletter-popup__form-col newsletter-popup__form-col--button">
+									<button type="submit" class="klaviyo_submit_button button button--primary button--full-width newsletter-popup__submit">
+										{{- 'newsletter.popup.button' | t -}}
+									</button>
+								</div>{% endcomment %}
+          			<div class="klaviyo-form-{{ section.settings.klaviyo_form_id }}"></div>
+							</div>
+                            
+							<div class="klaviyo_messages newsletter-popup__form-messages">
+								<div class="success_message newsletter-popup__form-success" style="display: none;"></div>
+								<div class="error_message newsletter-popup__form-error" style="display: none;"></div>
+							</div> 
+						</form>
+					</div>
+				</div>
+			</div>
+		{%- endif -%}
+	{%- endunless -%}
+{%- endcapture -%}
+
+{%- if popup_content != blank -%}
+	<section
+		class="newsletter-popup"
+		data-section-id="{{- section.id -}}"
+		data-section-type="newsletter-popup"
+	>
+		<div class="popup newsletter-popup__popup"
+			 data-popup
+			 data-newsletter-popup
+			 data-delay="{{ popup_delay }}"
+		>
+			<div class="popup__overlay" data-popup-close></div>
+
+			<div class="popup__wrapper newsletter-popup__popup-wrapper" data-popup-content>
+				<button type="button" class="newsletter-popup__popup-close" data-popup-close>
+					{%- render 'icon-close' -%}
+				</button>
+
+				<div class="popup__content-wrapper">
+					<div class="popup__content newsletter-popup__popup-content">
+						{{- popup_content -}}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+{%- endif -%}
+
+{%- schema -%}
+{
+	"name": "Newsletter Popup",
+	"settings": [
+		{
+			"type": "checkbox",
+			"id": "enable_popup",
+			"label": "Enable newsletter popup"
+		},
+		{
+			"type": "range",
+			"id": "popup_delay",
+			"label": "Delay before showing popup",
+			"min": 0,
+			"max": 30,
+			"step": 0.5,
+			"unit": "s",
+			"default": 0
+		},
+		{
+			"type": "header",
+			"content": "Content"
+		},
+		{
+			"type": "image_picker",
+			"id": "image",
+			"label": "Desktop image"
+		},
+		{
+			"type": "image_picker",
+			"id": "image_mobile",
+			"label": "Mobile image",
+			"info": "Mobile image"
+		},
+		{
+			"type": "image_picker",
+			"id": "logo",
+			"label": "Logo"
+		},
+		{
+			"type": "text",
+			"id": "title",
+			"label": "Heading",
+			"default": "Subscribe"
+		},
+		{
+			"type": "richtext",
+			"id": "description",
+			"label": "Content",
+			"default": "<p>Sign up to get the latest on sales, new releases and more</p>"
+		},
+		{
+			"type": "header",
+			"content": "Klaviyo"
+		},
+		{
+			"type": "text",
+			"id": "klaviyo_form_id",
+			"label": "Form ID"
+		}
+	]
+}
+{%- endschema -%}

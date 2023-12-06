@@ -1,0 +1,69 @@
+{% comment %}
+	@params
+	product 			- {product object} *required
+	size_chart_title 	- {string}
+	size_chart_icon 	- {image}
+	size_chart_icon_svg 	- {svg_code}
+	size_chart_text 	- {string}
+{% endcomment %}
+
+{%- capture header -%}
+	{%- if size_chart_title != blank -%}
+		<h2 class="size-chart__header-title">
+			{{- size_chart_title -}}
+		</h2>
+	{%- endif -%}
+
+	{%- if size_chart_text != blank -%}
+		<div class="size-chart__header-row">
+			{%- if size_chart_icon_svg != blank -%}
+				<div class="size-chart__header-col size-chart__header-col--svg">
+					{{- size_chart_icon_svg -}}
+				</div>
+			{%- elsif size_chart_icon != blank -%}
+				<div class="size-chart__header-col">
+					<picture>
+						<img
+							src="{{ size_chart_icon | img_url: '55x' }}"
+							srcset="{{ size_chart_icon | img_url: '55x' }} 1x, {{ size_chart_icon | img_url: '110x' }} 2x"
+							alt=""
+							class="size-chart__header-icon"
+						/>
+					</picture>
+				</div>
+			{%- endif -%}
+
+			<div class="size-chart__header-col">
+				<div class="size-chart__header-text">
+					{{- size_chart_text -}}
+				</div>
+			</div>
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- if product != blank -%}
+	<div class="side-menu size-chart" data-size-chart>
+		<div class="side-menu__overlay size-chart__overlay" data-size-chart-close></div>
+
+		<div class="side-menu__wrapper size-chart__wrapper">
+			<button type="button" class="size-chart__close-button" data-size-chart-close>
+				{%- render 'icon-close' -%}
+			</button>
+
+			<div class="side-menu__content size-chart__content">
+				{%- if header != blank -%}
+					<div class="size-chart__header">
+						{{- header -}}
+					</div>
+				{%- endif -%}
+
+				<div class="side-menu__scroll-wrapper size-chart__scroll-wrapper" data-size-chart-scroll-wrapper>
+					<div class="size-chart__table">
+						<div id="KiwiSizingChart"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{%- endif -%}

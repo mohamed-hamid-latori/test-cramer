@@ -1,0 +1,111 @@
+{%- assign form_heading = section.settings.form_heading -%}
+{%- assign newsletter_list_id = section.settings.newsletter_list_id -%}
+{%- assign unsubscribe_link = section.settings.unsubscribe_link -%}
+{%- assign unsubscribe_text = section.settings.unsubscribe_text -%}
+{%- assign submit_text = section.settings.submit_text -%}
+
+{%- if newsletter_list_id != blank -%}
+
+	<form
+		id="subscription_form"
+		class="klaviyo_gdpr_embed_{{ newsletter_list_id }} account-newsletter__form"
+		action="//manage.kmail-lists.com/subscriptions/subscribe"
+		data-ajax-submit="//manage.kmail-lists.com/ajax/subscriptions/subscribe"
+		method="GET"
+		target="_blank"
+		novalidate="novalidate"
+		data-klaviyo-form
+	>
+		<input type="hidden" name="g" value="{{- newsletter_list_id -}}">
+		<input type="hidden" name="$fields" value="$consent">
+		<input type="hidden" name="$list_fields" value="$consent">
+		<input type="hidden" name="$consent" value="email">
+
+		{%- if form_heading != blank -%}
+			<h2 class="account-content__title account-overview__details-title" data-klaviyo-form-element>{{- form_heading -}}</h2>
+		{%- endif -%}
+
+		<div class="form__row" data-klaviyo-form-element>
+			<div class="form__col">
+				<div class="input-group input-group--floating-label form__input-group account-information__input-container">
+					<input
+						class="input input-group__input form__input account-information__input"
+						type="email"
+						id="email"
+						value=""
+						name="email"
+						data-validate="email"
+						placeholder="{{- 'customer.account.newsletter.subscribe_form.email_address' | t -}}"
+					/>
+					<label for="email" class="input-group__label">{{- 'customer.account.newsletter.subscribe_form.email_address' | t -}}</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="form__row" data-klaviyo-form-element>
+			<div class="form__col">
+				<div class="klaviyo_form_actions">
+					<button type="submit" class="button button--primary button--main">
+						{{ submit_text | default: 'Submit' }}
+					</button>
+				</div>
+			</div>
+		</div>
+
+		{%- if unsubscribe_link != blank and unsubscribe_text != blank -%}
+			<div class="form__row" data-klaviyo-form-element>
+				<div class="form__col">
+					<a href="{{- unsubscribe_link | default: "#" -}}" 
+						target="_blank" 
+						class="account-newsletter__unsubscribe-link"
+					>
+						{{- unsubscribe_text -}}
+					</a>
+				</div>
+			</div>
+		{%- endif -%}
+
+		<div class="klaviyo_messages">
+			<div class="success_message account-newsletter__success" data-klaviyo-success style="display: none;"></div>
+			<div class="error_message account-newsletter__error" data-klaviyo-error style="display: none;"></div>
+		</div>
+	</form>
+{%- endif -%}
+{%- if shop.permanent_domain contains 'cramerco.myshopify.com' -%}
+	<div class="klaviyo-form-Wq5fyT"></div>
+{% endif %}
+{% schema %}
+{
+	"name": "Account Newsletter",
+	"settings": [
+		{
+			"type": "text",
+			"id": "newsletter_list_id",
+			"label": "Klaviyo List ID"
+		},
+		{
+			"type": "text",
+			"id": "form_heading",
+			"label": "Heading",
+			"default": "BE THE FIRST TO SEE SALES!"
+		},
+		{
+			"type": "text",
+			"id": "submit_text",
+			"label": "Button Text",
+			"default": "Submit"
+		},
+		{
+			"type": "text",
+			"id": "unsubscribe_link",
+			"label": "Unsubscribe Link"
+		},
+		{
+			"type": "richtext",
+			"id": "unsubscribe_text",
+			"label": "Unsubscribe Link Text",
+			"default": "<p>You can unsubscribe from the newsletter at any time</p>"
+		}
+	]
+}
+{% endschema %}

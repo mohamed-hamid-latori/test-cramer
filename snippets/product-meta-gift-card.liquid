@@ -1,0 +1,225 @@
+{% comment %}
+	@params
+	product 				- {product object} *required
+	footer_text 			- {string}
+	enable_rating 			- {boolean}
+	enable_sharing 			- {boolean}
+	services_button_text 	- {string}
+	services_button_link 	- {url}
+	delivery_description 	- {blocks}
+{% endcomment %}
+
+{%- assign current_variant 		= product.selected_or_first_available_variant -%}
+
+{%- assign product_subtitle 	= product.metafields.product.product_subtitle -%}
+{%- assign delivery_notice 		= current_variant.metafields.product.delivery_notice_text -%}
+{%- assign delivery_status 		= current_variant.metafields.product.delivery_notice_status -%}
+
+{%- assign product_vendor 					= product.vendor -%}
+{%- assign product_vendor_handle 			= product_vendor | handleize -%}
+{%- assign product_vendor_klaviyo_list_id 	= shop.metafields.vendors.klaviyo_list_id[product_vendor_handle] -%}
+
+{%- capture product_rating -%}
+	{%- if enable_rating -%}
+		{%- render 'product-rating', product: product -%}
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture product_description -%}
+	{%-
+		render 'product-description',
+		product: product,
+		delivery_description: delivery_description
+	-%}
+{%- endcapture -%}
+
+{%- capture product_services -%}
+	{%- if services_button_text != blank and services_button_link != blank -%}
+		<a
+			href="{{ services_button_link }}"
+			class="product-meta__services-button"
+		>
+			<span class="link product-meta__services-button-text">
+				{{- services_button_text -}}
+			</span>
+		</a>
+	{%- endif -%}
+{%- endcapture -%}
+
+<div class="product-meta">
+	<div class="product-meta__header">
+		{%- if product_rating != blank -%}
+			<div class="product-meta__rating">
+				{{- product_rating -}}
+			</div>
+		{%- endif -%}
+
+		{%- if product_vendor != blank -%}
+			<div class="product-meta__vendor">
+				<span class="product-meta__vendor-value">
+					{{- product_vendor -}}
+				</span>
+
+				{%- if product_vendor_klaviyo_list_id != blank -%}
+					<button type="button" class="product-meta__vendor-button product-meta__vendor-button--hidden" data-vendor-popup-trigger>
+						{{- 'products.product.vendor.follow' | t -}}
+					</button>
+
+					{%-
+						render 'product-vendor-subscription',
+						vendor: product_vendor,
+						klaviyo_list_id: product_vendor_klaviyo_list_id
+					-%}
+				{%- endif -%}
+			</div>
+		{%- endif -%}
+
+		<div class="product-meta__header-row">
+			<div class="product-meta__header-col product-meta__header-col--title">
+				<h1 class="product-meta__title">
+					{{- product.title -}}
+				</h1>
+			</div>
+
+			<div class="product-meta__header-col product-meta__header-col--price">
+				<div class="product-meta__price" data-product-price-wrapper>
+					{%- if product.compare_at_price_max > product.price -%}
+						{%- assign has_sale = false -%}
+
+						{%- if current_variant.compare_at_price > current_variant.price -%}
+							{%- assign has_sale = true -%}
+						{%- endif -%}
+
+						<div class="product-meta__price-value product-meta__price-value--compare-price{% unless has_sale %} hidden{% endunless %}" data-product-compare-price>
+							{%- if has_sale -%}
+								{{- current_variant.compare_at_price | money -}}
+							{%- endif -%}
+						</div>
+					{%- endif -%}
+
+					<div class="product-meta__price-value{% if has_sale %} product-meta__price-value--sale{% endif %}" data-product-price>
+						{{- current_variant.price | money | replace: '.', '' -}}
+					</div>
+
+					{%- assign has_unit = false -%}
+
+					{%- if current_variant.unit_price_measurement -%}
+						{%- assign has_unit = true -%}
+					{%- endif -%}
+
+					{%- capture unit_price_separator -%}
+						<span aria-hidden="true">/</span>
+					{%- endcapture -%}
+
+					{%- capture unit_price_base_unit -%}
+						<span data-unit-price-base-unit>
+							{%- if current_variant.unit_price_measurement -%}
+								{%- if current_variant.unit_price_measurement.reference_value != 1 -%}
+									{{- current_variant.unit_price_measurement.reference_value -}}
+								{%- endif -%}
+
+								{{- current_variant.unit_price_measurement.reference_unit -}}
+							{%- endif -%}
+						</span>
+					{%- endcapture -%}
+
+					<div class="product-meta__price-value product-meta__price-value--unit{% unless has_unit %} hidden{% endunless %}">
+						<span data-unit-price>{{- current_variant.unit_price | money -}}</span>{{- unit_price_separator -}}{{- unit_price_base_unit -}}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="product-meta__header-row">
+			<div class="product-meta__header-col product-meta__header-col--title">
+				{%- if product_subtitle != blank -%}
+					<h2 class="product-meta__subtitle">
+						{{- product_subtitle -}}
+					</h2>
+				{%- endif -%}
+			</div>
+
+			<div class="product-meta__header-col product-meta__header-col--price">
+				<p class="product-meta__price-note" data-product-price-note>
+					{{- 'products.product.price.note' | t -}}
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="product-meta__form">
+		{%-
+			render 'product-form-gift-card',
+			product: product
+		-%}
+	</div>
+
+	<div class="product-meta__delivery{% unless current_variant.inventory_quantity <= 0 and current_variant.inventory_policy != "continue" %} hidden{% endunless %}" data-notice-out-of-stock data-delivery-notice>
+		<p
+			class="product-meta__delivery-notice"
+			data-delivery-notice-text
+			data-delivery-status="{% if delivery_status %}{{- delivery_status | handleize -}}{% endif %}"
+		>
+			{{- 'products.delivery_notice.out_of_stock' | t -}}
+		</p>
+	</div>
+	<div class="product-meta__delivery{% unless current_variant.inventory_quantity > 2 %} hidden{% endunless %}" data-notice-more-then-two data-delivery-notice>
+		<p
+			class="product-meta__delivery-notice"
+			data-delivery-notice-text
+			data-delivery-status="{% if delivery_status %}{{- delivery_status | handleize -}}{% endif %}"
+		>
+			{{- 'products.delivery_notice.in_stock' | t -}}
+		</p>
+	</div>
+	<div class="product-meta__delivery{% unless current_variant.inventory_quantity <= 2 and current_variant.inventory_quantity > 0 %} hidden{% endunless %}" data-notice-less-then-two data-delivery-notice>
+		<p
+			class="product-meta__delivery-notice"
+			data-delivery-notice-text
+			data-delivery-status="{% if delivery_status %}{{- delivery_status | handleize -}}{% endif %}"
+		>
+			{{- 'products.delivery_notice.low_stock' | t -}}
+		</p>
+	</div>
+
+	{%- if product_services != blank -%}
+		<div class="product-meta__services">
+			{{- product_services -}}
+		</div>
+	{%- endif -%}
+
+	{%- if product_description != blank -%}
+		<div class="product-meta__description">
+			{{- product_description -}}
+		</div>
+	{%- endif -%}
+
+	{%- if footer_text != blank or enable_sharing == true -%}
+		<div class="product-meta__footer">
+			{%- if footer_text != blank -%}
+				<div class="product-meta__footer-contact">
+					{{- footer_text -}}
+				</div>
+			{%- endif -%}
+
+			{%- if enable_sharing == true -%}
+				{%- assign share_link = product.url | prepend: shop.url -%}
+
+				<div class="product-meta__footer-share">
+					<a
+						href="whatsapp://send?text={{- 'products.product.share_message' | t: link: share_link | url_encode -}}"
+						class="share-button share-button--whatsapp"
+					>
+						<span class="share-button__icon">
+							{%- render 'icon-whatsapp' -%}
+						</span>
+
+						<span class="link share-button__text">
+							{{- 'products.product.share_whatsapp' | t -}}
+						</span>
+					</a>
+				</div>
+			{%- endif -%}
+		</div>
+	{%- endif -%}
+</div>

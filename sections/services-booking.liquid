@@ -1,0 +1,61 @@
+{%- assign text 			= section.settings.text -%}
+{%- assign enable_booking 	= section.settings.enable_booking -%}
+{%- assign button_text 		= section.settings.button_text -%}
+
+{%- capture booking_button -%}
+	{%- if enable_booking == true and button_text != blank -%}
+		<a
+			href="https://app.squarespacescheduling.com/schedule.php?owner=23669311" target="_blank"
+			class="acuity-embed-button button services-booking__button"
+			data-acuity-embed-button
+		>
+			{{- button_text -}}
+		</a>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- if text != blank or booking_button != blank -%}
+	<section
+		class="services-booking"
+		data-section-id="{{- section.id -}}"
+		data-section-type="services-booking"
+	>
+		<div class="container services-booking__container">
+			<div class="services-booking__content">
+				{%- if text != blank -%}
+					<p class="services-booking__text">
+						{{- text -}}
+					</p>
+				{%- endif -%}
+
+				{{- booking_button -}}
+			</div>
+		</div>
+	</section>
+{%- endif -%}
+
+{% schema %}
+{
+	"name": "Services booking",
+	"settings": [
+		{
+			"type": "text",
+			"id": "text",
+			"label": "Text",
+			"default": "You can book a meeting for receiving professional denim consultation, having virtual shopping or for discussing any other questions you might have"
+		},
+		{
+			"type": "checkbox",
+			"id": "enable_booking",
+			"label": "Enable booking",
+			"default": true
+		},
+		{
+			"type": "text",
+			"id": "button_text",
+			"label": "Booking button text",
+			"default": "Book termin"
+		}
+	]
+}
+{% endschema %}

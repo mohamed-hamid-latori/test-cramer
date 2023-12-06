@@ -1,0 +1,61 @@
+{%- layout none -%}
+
+{%- capture steps_content -%}
+	{%- assign step_title = page.metafields.service-wash.step_title -%}
+	{%- assign step_text = page.metafields.service-wash.step_text -%}
+
+	<div class="denim-steps">
+		{%- for title in step_title -%}
+			{%- assign index      = forloop.index0 -%}
+			{%- assign step_title = page.metafields.service-wash.step_title -%}
+			{%- assign step_text  = page.metafields.service-wash.step_text -%}
+
+			{%- if title == blank or step_text[index] == blank -%}
+				{%- continue -%}
+			{%- endif -%}
+
+			{% assign splited_array = {{ step_title | split: '' }} %}
+
+			<div class="denim-steps-item-wrapper" style="order: {{ index | plus: 1 }}">
+				<div class="denim-steps-item">
+					<h4 class="denim-steps-item__title">
+						{{- step_title[index] -}}
+					</h4>
+
+					{{- step_text[index] -}}
+				</div>
+			</div>
+		{%- endfor -%}
+	</div>
+{%- endcapture -%}
+
+{%- if steps_content != blank -%}
+	{{- steps_content -}}
+{%- endif -%}
+
+{%- capture denim_content -%}
+{%- assign content_title    = page.metafields.denim-content-wash.page_content_title -%}
+{%- assign content_textarea = page.metafields.denim-content-wash.page_content_textarea -%}
+
+	<div class="denim-content">
+		{%- for title in content_title -%}
+			{%- assign index = forloop.index0 -%}
+
+			<div class="denim-content-row page-custom-container">
+				<div class="denim-content-title denim-content-column ">
+					<div class="denim-content-title__field">
+						{{- title -}}
+					</div>
+				</div>
+
+				<div class="denim-content-textarea denim-content-column ">
+					<div class="denim-content-textarea__field">
+						{{- content_textarea[index] -}}
+					</div>
+				</div>
+			</div>
+		{%- endfor -%}
+	</div>
+{%- endcapture -%}
+
+{{- denim_content -}}

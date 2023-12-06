@@ -1,0 +1,66 @@
+/****** 
+    This file has been created for external styles that
+    could be added by an external entity or by shop owner  
+*******/
+
+/* you can add your style changes here */
+.product-meta__vendor-value a {font-size:22px;text-decoration:none}
+.product-meta__vendor-value a:hover {font-size:22px;text-decoration:underline}
+
+.featured-categories__container {
+    margin-right: auto !important;
+}
+.event-booking__container {
+    margin-right: auto !important;
+}
+
+.collection-header__title {
+  text-decoration:underline !important;
+  text-decoration-thickness:from-font !important;
+  text-underline-offset:5px !important
+}
+
+@media (min-width: 992px) {
+	.product-recommendations__slider-slide {
+		width: 16% !important;
+	}
+}
+@media (min-width: 1200px) {
+	.product-recommendations__slider-slide {
+		width: 14% !important;
+	}
+
+	.product-recommendations {
+		padding-top: 72px;
+		padding-bottom: 43px;
+        margin: 0px auto !important;
+        max-width: 1440px !important;
+	}
+}
+@media (min-width: 1400px) {
+	.product-recommendations__slider-slide {
+		max-width: initial;
+		width: 14% !important;
+	}
+}
+@media (min-width: 2048px) {
+	.product-recommendations__slider-slide {
+		width: 13% !important;
+	}
+    .product-recommendations{
+        padding-bottom:50px;
+        margin: 0px auto !important; 
+        max-width: 1944px !important}
+}
+@media (min-width: 2560px) {
+	.product-recommendations {
+		padding-bottom: 50px;
+        margin: 0px auto !important;
+        max-width: 1944px !important;
+	}
+
+	.product-recommendations__title {
+		margin-bottom: 40px !important;
+	}
+
+}

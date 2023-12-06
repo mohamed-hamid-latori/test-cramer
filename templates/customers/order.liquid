@@ -1,0 +1,14 @@
+{%- capture menu -%}
+	{%- section 'account-menu' -%}
+{%- endcapture -%}
+
+{%- capture content -%}
+	{%- render 'account-content-order-details' -%}
+	{%- section 'account-order-details-return'-%}
+{%- endcapture -%}
+
+{%-
+	render 'account-template',
+	menu: menu,
+	content: content
+-%}

@@ -1,0 +1,210 @@
+{%- assign heading                              = section.settings.heading -%}
+{%- assign back_link                            = section.settings.back_link -%}
+{%- assign back_link_text                       = section.settings.back_link_text -%}
+{%- assign product_count                        = 0 -%}
+{%- assign array_block_image                    = page.metafields.outfit_one_person.item_image -%}
+{%- assign size_label                           = "size,größe" | split: ','-%}
+{%- assign option_number                        = '' -%}
+{%- assign sections_count                       = page.metafields.outfit_one_person.item_image.size -%}
+
+{%- capture rows -%}
+    {%- for block_image in array_block_image -%}
+		{%- assign index    = forloop.index | minus: 1 -%}
+        {%- assign description                  = page.metafields.outfit_one_person.item_description[index] -%}
+        {% assign image = block_image | first %}
+        <div class="outfit-one-person-list__row{% if forloop.index > 3 %} outfit-one-person-list__row--hidden{% endif %}" data-outfit-row>
+            {%- if block_image != blank or description != blank -%}
+                <div class="outfit-one-person-list__col outfit-one-person-list__col--left">
+                    {%- if block_image != blank -%}
+                        <div class="outfit-one-person-list__image-wrapper">
+                            <picture>
+                                <img
+                                    src="{{ image.cloudinary_src | append: 'w_532' }}"
+                                    srcset="{{ image.cloudinary_src | append: 'w_532' }} 1x, {{ image.cloudinary_src | append: 'w_1064'}} 2x"
+                                    alt="{{- image.alt -}}"
+                                    class="outfit-one-person-list__image"
+                                />
+                            </picture>
+                        </div>
+                    {%- endif -%}
+
+                    {%- if description != blank -%}
+                        <h2 class="outfit-one-person-list__description">
+                            {{- description -}}
+                        </h2>
+                    {%- endif -%}
+                </div>
+            {%- endif -%}
+
+            <div class="outfit-one-person-list__col outfit-one-person-list__col--wide" data-outfit-products-index="{{- index -}}">
+                {% if forloop.index > 3 %}
+                        </div>
+                    </div>
+                    {%- continue -%}
+                {% endif %}
+
+                {% for i in (1..6) %}
+                    {%- assign name             	= 'item_product_variant_' | append: i -%}
+                    {%- assign product_handle 		= page.metafields.outfit_one_person[name][index] | split: ':' | first | replace: '["', '' -%}
+                    {%- assign referenced_product 	= '' -%}
+                    {%- assign referenced_variant 	= '' -%}
+
+                    {%- if product_handle == blank -%}
+                        {% break %}
+                    {%- endif -%}
+
+                    {%- assign variant_id 			= page.metafields.outfit_one_person[name][index] | split: ':' | last | plus: 0 -%}
+                    {%- assign referenced_product 	= all_products[product_handle] -%}
+                    {%- assign referenced_variant 	= referenced_product.variants | where: "id", variant_id | first -%}
+
+                    {%- if referenced_product != blank -%}
+                        {%- for option in referenced_product.options_with_values -%}
+                            {%- assign downcased_option_name = option.name | downcase -%}
+
+                            {%- if size_label contains downcased_option_name -%}
+                                {%- assign option_number = option.position | minus: 1 -%}
+
+                                {%- break -%}
+                            {%- endif -%}
+                        {%- endfor -%}
+
+                        {%- assign sizes_counter = referenced_product.options_with_values[option_number].values | size -%}
+
+                        
+                        <div class="outfit-one-person-list__product js-outfit-one-person-list-product{% if sizes_counter > 21 %} outfit-one-person-list__product--scrollable{% endif %}">
+                           
+                            {% if referenced_product.available %}
+                                {%
+								    include 'product-card',
+                                    product: referenced_product,
+                                    current_variant: referenced_variant,
+								    include_json: false
+                                %}
+                            {%- endif -%}
+                            
+                            {%- assign product_count = product_count | plus: 1 -%}
+                        </div>
+                    {%- else -%}
+                        {% break %}
+                    {%- endif -%}
+                {% endfor %}
+            </div>
+        </div>
+    {%- endfor -%}
+{%- endcapture -%}
+
+<section
+	class="outfit-one-person-list"
+	data-section-id="{{- section.id -}}"
+	data-section-type="outfit-one-person-list"
+	data-sections-count="{{- sections_count -}}"
+>
+    <div class="container outfit-one-person-list__container" data-outfit-container>
+        <div class="outfit-one-person-list__breadcrumbs-container">
+            {% render 'custom-breadcrumbs',
+                breadcrumbs_link: section.settings.breadcrumbs
+            %}
+        </div>
+
+        <div class="outfit-one-person-list__top-row">
+            {%- if back_link != blank and back_link_text != blank -%}
+                <div class="outfit-one-person-list__back-link-container">
+                    <div class="outfit-one-person-list__back-link-icon">
+                        {%- render 'icon-search-enter' -%}
+                    </div>
+
+                    <a href="{{- back_link -}}"
+                        class="outfit-one-person-list__back-link"
+                    >
+                        {{- back_link_text -}}
+                    </a>
+                </div>
+            {%- endif -%}
+
+            {%- if heading != blank -%}
+                <div class="outfit-one-person-list__heading-container">
+                    <h1 class="outfit-one-person-list__heading">
+                        {{- heading -}}
+                    </h1>
+                </div>
+            {%- endif -%}
+        </div>
+
+        <p class="outfit-one-person-list__product-count">
+            <span class="outfit-one-person-list__product-count" data-outfit-product-counter>{{ product_count }}</span> {{ 'outfit.products_count' | t }}
+        </p>
+
+        {{ rows }}
+
+        <div class="outfit-one-person-list__load-button-wrapper {% if sections_count < 4 %}outfit-one-person-list__button--hidden{% endif %}">
+            <button class="button button--primary button--main outfit-one-person-list__load-button" data-outfit-load-more>{{'outfit.load_more' | t }}</button>
+        </div>
+    </div>
+
+	<script type="application/json" data-outfit-products>
+		{
+			{%- for block_image in array_block_image -%}
+				{%- assign index    = forloop.index | minus: 1 -%}
+				{%- assign products_counter = 6 -%}
+                {%- if forloop.index < 4 -%}
+                    {%- continue -%}
+                {%- endif -%}
+				"section_{{ index }}": [
+					{%- for i in (1..6) -%}
+						{%- assign products_counter = products_counter | minus: 1-%}
+						{%- assign name             = 'item_product_variant_' | append: i -%}
+						{%- assign next_number      = i | plus: 1 -%}
+						{%- assign next_name        = 'item_product_variant_' | append: next_number -%}
+						{%- assign product_handle   = page.metafields.outfit_one_person[name][index] | split: ':' | first | replace: '["', '' -%}
+						{%- assign variant_id = page.metafields.outfit_one_person[name][index] | split: ':' | last | plus: 0 -%}
+						{%- assign next_product_handle  = page.metafields.outfit_one_person[next_name][index] | split: ':' | first | replace: '["', '' -%}
+						{%- if product_handle != blank -%}
+						{
+							"product_handle": "{{ product_handle }}",
+							"variant_id": "{{variant_id}}"
+						}
+						{%- else -%}
+							{%- break -%}
+						{%- endif -%}
+						{%- if next_product_handle != blank -%}
+							{%- unless products_counter == 0 -%},{%- endunless %}
+						{%- endif -%}
+					{% endfor -%}
+				]{%- unless forloop.last -%},{%- endunless %}
+			{%- endfor -%}
+		}
+	</script>
+</section>
+
+{% schema %}
+    {
+        "name": "Outfit One person",
+        "settings": [
+            {
+                "type": "text",
+                "id": "heading",
+                "label": "Heading",
+                "default": "Season must haves by our staff michi"
+            },
+            {
+                "type": "header",
+                "content": "Back link to Outfit All"
+            },
+            {
+                "type": "url",
+                "id": "back_link",
+                "label": "Back link url"
+            },
+            {
+                "type": "text",
+                "id": "back_link_text",
+                "label": "Back link text"
+            },
+            {
+                "type": "link_list",
+                "id": "breadcrumbs",
+                "label": "Breadcrumbs for navigation"
+            }
+        ]
+    }
+{% endschema %}

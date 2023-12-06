@@ -1,0 +1,75 @@
+{%- capture slider -%}
+	{%- for block in section.blocks -%}
+		{%- assign title = block.settings.title -%}
+		{%- assign image = block.settings.image -%}
+
+		{%- if image == blank -%}
+			{%- continue -%}
+		{%- endif -%}
+
+		<div class="swiper-slide slider__slide services-list__slider-slide">
+			<div class="services-list__item">
+				{%- if title != blank -%}
+					<h2 class="services-list__item-title">
+						{{- title -}}
+					</h2>
+				{%- endif -%}
+
+				<div class="services-list__item-image-wrapper">
+					<picture>
+						<img
+							src="{{ image | img_url: '441x' }}"
+							srcset="{{ image | img_url: '441x' }} 1x, {{ image | img_url: '882x' }} 2x"
+							alt="{{- image.alt -}}"
+							class="services-list__item-image"
+						/>
+					</picture>
+				</div>
+			</div>
+		</div>
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- if slider != blank -%}
+	<section
+		class="services-list"
+		data-section-id="{{- section.id -}}"
+		data-section-type="services-list"
+	>
+		<div class="container container--no-padding services-list__container">
+			<div class="slider services-list__slider">
+				<div class="swiper-container slider__container services-list__slider-container" data-services-list-slider>
+					<div class="swiper-wrapper slider__wrapper services-list__slider-wrapper">
+						{{- slider -}}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+{%- endif -%}
+
+{% schema %}
+{
+	"name": "Services list",
+	"settings": [],
+	"max_blocks": 3,
+	"blocks": [
+		{
+			"type": "service",
+			"name": "Service",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title"
+				},
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

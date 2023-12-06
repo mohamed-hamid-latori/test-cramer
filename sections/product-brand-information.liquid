@@ -1,0 +1,46 @@
+{%- capture vendor -%}
+	{%- assign vendor = product.vendor | handleize -%}
+	{%- assign description = shop.metafields.vendors.description[vendor] -%}
+
+	{%- if section.settings.section_show == true -%}
+		<section
+			class="product-brand-wrapper"
+			data-section-id="{{- section.id -}}"
+			data-section-type="product-brand-information"
+		>
+			<div class="accordion js-toggle-container" data-accordion-mode="single">
+				<div class="accordion__item js-toggle-item product-brand">
+					<button class="accordion__item-toggler js-toggle-button product-brand__title">
+						<span class="product-brand__info">{{- 'products.product.product_brand_information' | t -}}</span>
+						<span class="product-brand__vendor"> {{- vendor -}}</span>
+					</button>
+
+					<div class="accordion__item-content js-toggle-content product-brand__description">
+						{{- description -}}
+					</div>
+				</div>
+			</div>
+		</section>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- if description != blank -%}
+	{{- vendor -}}
+{%- endif %}
+
+{%- schema -%}
+	{
+		"name": "Brand information",
+		"settings": [
+			{
+				"type": "checkbox",
+				"id": "section_show",
+				"label": "Show section",
+				"default": true
+			}
+		],
+		"templates": [
+			"product"
+		]
+	}
+{%- endschema -%}

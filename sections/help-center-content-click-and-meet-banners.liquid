@@ -1,0 +1,54 @@
+{%- assign left_image               = section.settings.left_image -%}
+{%- assign right_image              = section.settings.right_image -%}
+
+<section class="help-center-content"
+        data-section-id="{{- section.id -}}"
+        data-section-type="help-center-content-click-and-meet-banners"
+>
+
+    <div class="help-center-content-click-and-meet-banners__row">
+        <div class="help-center-content-click-and-meet__bottom-images">
+            {%- if left_image != blank -%}
+                <div class="help-center-content-click-and-meet-banners__col">
+                    <div class="help-center-content-click-and-meet__image-wrapper">
+                        <img class="help-center-content-click-and-meet__image"
+                            src="{{- left_image | img_url: '611x' -}}"
+                            srcset="{{ left_image | img_url: '611x' }} 1x, {{ left_image | img_url: '1222x' }} 2x, {{ left_image | img_url: '1833x' }} 3x"
+                            alt="{{- left_image.alt -}}"
+                        >
+                    </div>
+                </div> 
+            {%- endif -%}
+            
+            {%- if right_image != blank -%}
+                <div class="help-center-content-click-and-meet-banners__col">
+                    <div class="help-center-content-click-and-meet__image-wrapper">
+                        <img class="help-center-content-click-and-meet__image"
+                        src="{{- right_image | img_url: '611x' -}}"
+                        srcset="{{ right_image | img_url: '611x' }} 1x, {{ right_image | img_url: '1222x' }} 2x, {{ right_image | img_url: '1833x' }} 3x"
+                        alt="{{- right_image.alt -}}"
+                        >
+                    </div>  
+                </div>
+            {%- endif -%}
+        </div>
+    </div>
+</section>
+
+{% schema %}
+    {
+        "name":"Help center Gallery",
+        "settings":[
+            {
+                "type": "image_picker",
+                "id": "left_image",
+                "label": "Left image"
+            },
+            {
+                "type": "image_picker",
+                "id": "right_image",
+                "label": "Right image"
+            }
+        ]
+    }
+{% endschema %}

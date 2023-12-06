@@ -1,0 +1,199 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+	<head>
+{% include "load-metafields" %}
+
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<meta name="theme-color" content="">
+		<link rel="canonical" href="{{ canonical_url }}">
+		<link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+		{%- if settings.favicon != blank -%}
+			<link rel="icon" type="image/png" href="{{ settings.favicon | img_url: '32x32' }}">
+		{%- endif -%}
+
+		<title>
+			{{- page_title -}}
+		</title>
+
+		{% if page_description %}
+			<meta name="description" content="{{ page_description | escape }}">
+		{% endif %}
+
+		{% render 'meta-tags' %}
+
+		<script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
+
+		{{ content_for_header }}
+
+		{{ 'base.css' | asset_url | stylesheet_tag: preload: true }}
+		{{ 'custom.css' | asset_url | stylesheet_tag: preload: true }}
+
+		{%- include 'apps-head' -%}
+
+		{%- capture template_name -%}
+			{%- if template.directory != blank -%}{{- template.directory -}}/{%- endif -%}{{- template.name -}}{%- if template.suffix != blank -%}.{{- template.suffix -}}{%- endif -%}
+		{%- endcapture -%}
+
+		<meta property="theme:template" content="{{- template_name -}}">
+
+		{%- if settings.disable_pinch_to_zoom == true -%}
+			<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		{%- endif -%}
+
+		<script>
+			document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+		</script>
+
+		<link rel="preload stylesheet" as="style" href="{{- 'main.build.css' | asset_url -}}">
+
+		{% if template contains 'customers' %}
+			{{ "shopify_common.js" | shopify_asset_url | script_tag }}
+			{{ "customer_area.js"  | shopify_asset_url | script_tag }}
+		{% endif %}
+
+		{% comment %}
+			@TODO:
+			Minify redirect by cookie script before deploying to production
+		{% endcomment %}
+
+		<script>
+			const redirect_cookie_value_female = "{{ settings.redirect_cookie_value_female }}";
+			const redirect_cookie_value_male = "{{ settings.redirect_cookie_value_male }}";
+
+			const redirect_link_female = "{{ settings.redirect_link_female }}";
+			const redirect_link_male = "{{ settings.redirect_link_male }}";
+
+			initRedirectByCookie();
+
+			function initRedirectByCookie() {
+				if (!redirect_link_female || !redirect_link_male) {
+					return null;
+				}
+
+				redirectByCookie();
+			}
+
+			function redirectByCookie() {
+				let currentUrl = window.location.pathname;
+
+				if (currentUrl !== "/") {
+					return null;
+				}
+
+				let cookie = getCookie("preferredGender");
+
+				if (!cookie) {
+					return false;
+				}
+
+				let url = null;
+
+				switch (cookie) {
+					case redirect_cookie_value_female:
+						url = redirect_link_female;
+						break;
+					case redirect_cookie_value_male:
+						url = redirect_link_male;
+						break;
+					default:
+						return null;
+				}
+
+				if (!url) {
+					return null;
+				}
+
+				window.location = url;
+			}
+
+			function getCookie(name) {
+				let matches = document.cookie.match(new RegExp(
+					"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+				));
+				return matches ? decodeURIComponent(matches[1]) : undefined;
+			}
+		</script>
+
+	{%- if shop.permanent_domain contains 'hose-mit-herz.myshopify.com' -%}
+		{% render 'shogun-head' %}
+	{%- endif -%}
+
+	{%- if shop.permanent_domain contains 'cramerco.myshopify.com' -%}
+		{% render 'trengo-head' %}
+	{%- endif -%}
+</head>
+
+	{%- capture money_format_output -%}
+		{%- if settings.currency_format == 'money_with_currency_format' -%}
+			{{- shop.money_with_currency_format | strip_html -}}
+		{%- else -%}
+			{{- shop.money_format | strip_html -}}
+		{%- endif -%}
+	{%- endcapture -%}
+
+	{%- assign body_classes = "" -%}
+
+	{%- capture template_class -%}
+		template-{{ template.name | handle }} {% if template.suffix != blank %}template-{{ template.suffix | handle }}{% endif %}
+	{%- endcapture- %}
+
+	{%- assign body_classes = body_classes | append: template_class -%}
+
+	{%- if template == '404' -%}
+		{%- assign body_classes = body_classes | append: " error-404-template" -%}
+	{% else -%}
+		{%- capture template_class -%}
+			{{- template.name | handle -}}
+		{%- endcapture -%}
+
+		{%- assign body_classes = body_classes | append: " " | append: "template_class" -%}
+	{%- endif -%}
+
+	<body
+		class="{{- body_classes -}}"
+		data-money-format="{{- money_format_output -}}"
+		data-shop-url="{{- shop.url -}}"
+		data-current-lang="{{- request.locale.iso_code -}}"
+	>
+		{%- include 'apps-body-start' -%}
+
+		{%- section 'header' -%}
+
+		<main id="MainContent" class="content" role="main" tabindex="-1">
+			{{ content_for_layout }}
+		</main>
+
+		{%- section 'footer-content-blocks' -%}
+		{%- section 'footer-social-icons' -%}
+		{%- section 'footer' -%}
+		{%- section 'global-newsletter-popup' -%}
+
+		<script>
+			window.routes = {
+				cart_add_url: '{{ routes.cart_add_url }}',
+				cart_change_url: '{{ routes.cart_change_url }}',
+				cart_update_url: '{{ routes.cart_update_url }}'
+			};
+
+			window.cartStrings = {
+				error: `{{ 'sections.cart.cart_error' | t }}`,
+				quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t }}`
+			}
+
+			window.variantStrings = {
+				addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+				soldOut: `{{ 'products.product.sold_out' | t }}`,
+				unavailable: `{{ 'products.product.unavailable' | t }}`,
+			}
+		</script>
+
+		{%- include 'apps-body-end' -%}
+
+		<script src="{{- 'main.build.min.js' | asset_url -}}" defer></script>
+
+{% include "bc_banner" %}
+</body>
+</html>

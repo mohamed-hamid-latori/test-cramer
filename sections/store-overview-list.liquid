@@ -1,0 +1,260 @@
+{%- capture rows -%}
+    {% for block in section.blocks %}
+
+        {%- case block.type -%}
+            {%- when "item_2_col" -%}
+                {%- assign image                        = block.settings.image -%}
+                {%- assign title                         = block.settings.title -%}
+                {%- assign column_1_title                = block.settings.column_1_title %}
+                {%- assign column_1_text                 = block.settings.column_1_text | remove: '</p>' | split: '<p>' -%}
+                {%- assign column_2_title                = block.settings.column_2_title -%}
+                {%- assign column_2_text                 = block.settings.column_2_text | remove: '</p>' | split: '<p>' -%}
+
+                {%- capture image_col -%}
+                    {%- if image != blank -%}
+                        <picture>
+                            <img src="{{ image | img_url: '388x' }}"
+                                srcset="{{ image | img_url: '388x' }} 1x, {{ image | img_url: '776x' }} 2x"
+                                alt="{{- image.alt -}}"
+                                class="store-overview-list__col-image"
+                            />
+                        </picture> 
+                    {%- endif -%}
+                {%- endcapture -%}
+                
+                {% capture column_1 %}
+                    {% if column_1_title != blank or column_1_text != blank %}            
+                        {% if column_1_title != blank %}
+                            <h3 class="store-overview-list__subtitle">
+                                {{ column_1_title }}
+                            </h3>
+                        {% endif %}
+
+                        {% if column_1_text != blank %}
+                            <div class="store-overview-list__content">
+                                {%- for brand in column_1_text -%}
+                                    <p class="store-overview-list__item">{{- brand | remove: '<p>' | remove: '</p>' -}} </p>
+                                {%- endfor -%}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endcapture %}
+
+                {% capture column_2 %}
+                    {% if column_2_title != blank or column_2_text != blank %}
+                        {% if column_2_title != blank %}
+                            <h3 class="store-overview-list__subtitle">
+                                {{ column_2_title }}
+                            </h3>
+                        {% endif %}
+
+                        {% if column_2_text != blank %}
+                            <div class="store-overview-list__content"> 
+                                {%- for brand in column_2_text -%}
+                                    <p class="store-overview-list__item">{{- brand | remove: '<p>' | remove: '</p>' -}} </p>
+                                {%- endfor -%}{{- brand -}}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endcapture %}
+
+                {% if column_1 != blank or column_2 != blank %}
+                    <div class="store-overview-list__row">
+                        <div class="store-overview-list__left-col">
+                            <div class="store-overview-list__image-wrapper">
+                                {{- image_col-}}
+                            </div>
+                        </div>
+
+                        <div class="store-overview-list__content-wrapper store-overview-list__content-wrapper--two-col">
+                            {% if title != blank %}
+                                <h2 class="store-overview-list__title">
+                                    {{ title }}
+                                </h2>
+                            {% endif %}
+
+                            <div class="store-overview-list__content-container">
+                                {% if column_1 != blank %}
+                                    <div class="store-overview-list__col">
+                                        {{ column_1 }}
+                                    </div>
+                                {% endif %}
+
+                                {% if column_2 != blank %}
+                                    <div class="store-overview-list__col">
+                                        {{ column_2 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {%- when "item_1_col" -%}
+                {%- assign image                         = block.settings.image -%}
+                {%- assign title                         = block.settings.title -%}
+                {%- assign subtitle                      = block.settings.subtitle %}
+                {%- assign text                 = block.settings.text | remove: '</p>' | split: '<p>' -%}
+
+                 {%- capture image_col -%}
+                    {%- if image != blank -%}
+                        <picture>
+                            <img src="{{ image | img_url: '388x' }}"
+                                srcset="{{ image | img_url: '388x' }} 1x, {{ image | img_url: '776x' }} 2x"
+                                alt="{{- image.alt -}}"
+                                class="store-overview-list__col-image"
+                            />
+                        </picture> 
+                    {%- endif -%}
+                {%- endcapture -%}
+
+                {% capture column %}
+                    {% if subtitle != blank or text != blank %}            
+                        {% if subtitle != blank %}
+                            <h3 class="store-overview-list__subtitle{% if title == blank %} store-overview-list__subtitle--big{% endif %}">
+                                {{ subtitle }}
+                            </h3>
+                        {% endif %}
+
+                        {% if text != blank %}
+                            <div class="store-overview-list__content store-overview-list__content--full">
+                                {%- for brand in text -%}
+                                    <p class="store-overview-list__item">{{- brand | remove: '<p>' | remove: '</p>' -}} </p>
+                                {%- endfor -%}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endcapture %}
+
+                {% if column != blank %}
+                    <div class="store-overview-list__row">
+                        <div class="store-overview-list__left-col">
+                            <div class="store-overview-list__image-wrapper">
+                                {{- image_col-}}
+                            </div>
+                        </div>
+
+                        <div class="store-overview-list__content-wrapper store-overview-list__content-wrapper--one-col">
+                            {% if title != blank %}
+                                <h2 class="store-overview-list__title">
+                                    {{ title }}
+                                </h2>
+                            {% endif %}
+
+                            <div class="store-overview-list__content-container">
+                                {% if column != blank %}
+                                    <div class="store-overview-list__col store-overview-list__col--wide">
+                                        {{ column }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+        {%- endcase -%}
+    {% endfor %}
+{%- endcapture -%}
+
+<section class="store-overview-list"
+        data-section-id="{{- section.id -}}"
+        data-section-type="store-overview-list"
+>   
+    <div class="container store-overview-list__container">
+        {%- if rows != blank -%}
+            {{- rows -}}
+        {%- endif -%}
+    </div>
+</section>
+
+{% schema %}
+    {
+        "name": "Store overview list",
+        "settings": [
+        ],
+        "max_blocks": 4,
+        "blocks": [
+            {
+                "type": "item_2_col",
+                "name": "2 column content",
+                "settings": [
+                    {
+                        "type": "header",
+                        "content": "Image for row"
+                    },
+                    {
+                        "type": "image_picker",
+                        "id": "image",
+                        "label": "Image"
+                    },
+                    {
+                        "type": "header",
+                        "content": "Column 1"
+                    },
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Heading"
+                    },
+                    {
+                        "type": "text",
+                        "id": "column_1_title",
+                        "label": "First column title"
+                    },
+                    {
+                        "type": "richtext",
+                        "id": "column_1_text",
+                        "label": "Shop naming for man",
+                        "info": "First column links/brands"
+                    },
+                    {
+                        "type": "header",
+                        "content": "Column 2"
+                    },
+                    {
+                        "type": "text",
+                        "id": "column_2_title",
+                        "label": "Second column title"
+                    },
+                    {
+                        "type": "richtext",
+                        "id": "column_2_text",
+                        "label": "Second column links/brands"
+                    }        
+                ]
+            },
+            {
+                "type": "item_1_col",
+                "name": "1 col content",
+                "settings": [
+                    {
+                        "type": "header",
+                        "content": "Image for row"
+                    },
+                    {
+                        "type": "image_picker",
+                        "id": "image",
+                        "label": "Image"
+                    },
+                    {
+                        "type": "header",
+                        "content": "Content column"
+                    },
+                    {
+                        "type": "text",
+                        "id": "title",
+                        "label": "Heading"
+                    },
+                    {
+                        "type": "text",
+                        "id": "subtitle",
+                        "label": "Title"
+                    },
+                    {
+                        "type": "richtext",
+                        "id": "text",
+                        "label": "text"
+                    }
+                ]
+            }
+        ] 
+    }
+{% endschema %}

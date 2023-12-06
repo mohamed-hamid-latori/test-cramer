@@ -1,0 +1,128 @@
+{%- capture banners -%}
+
+    {%- for block in section.blocks -%}
+        {%- assign image            = block.settings.job_image -%}
+        {%- assign job_title            = block.settings.job_title -%}
+        {%- assign url              = block.settings.link -%}
+
+        {%- if image != blank and job_title != blank -%}
+            <div class="career-all-departments-banners__item">
+                {%- if job_title != blank -%}
+                    <h3 class="career-all-departments-banners__item-title">
+                        {{- job_title -}}
+                    </h3>
+                {%- endif -%}
+
+                {%- if image != blank  and url != blank -%}
+                    <a class="career-all-departments-banners__image-wrapper"
+                        href="{{- url -}}"
+                    >
+                        <picture>
+		                    <img src="{{ image | img_url: '384x' }}"
+		                        srcset="{{ image | img_url: '384x' }} 1x, {{ image | img_url: '768x' }} 2x"
+		                        alt="{{- image.alt -}}"
+		                        class="career-all-departments-banners__image"
+		                    />
+	                    </picture>
+                    </a>
+                {%- endif -%}
+            </div>
+        {%- endif -%}
+    {%- endfor -%}
+{%- endcapture -%}
+
+{%- assign title                    = section.settings.title -%}
+{%- assign mobile_title             = section.settings.mobile_title -%}
+{%- assign mobile_text              = section.settings.mobile_text | replace: '<p', '<p class="career-all-departments-banners__mobile-text"'-%}
+
+<section class="career-all-departments-banners"
+        data-section-id="{{- section.id -}}"
+        data-section-type="career-all-departments-banners"
+>
+    <div class="container career-all-departments-banners__container">
+        <h1 class="career-all-departments-banners__title">
+            {{- title -}}
+        </h1>
+
+        {%- if banners != blank -%}
+            <div class="career-all-departments-banners__content-container">
+                <div class="career-all-departments-banners__col">
+                    {{- banners -}}
+                </div>
+            </div>
+        {%- endif -%}
+
+        {%- if mobile_title != blank and mobile_text != blank -%}
+            <div class="career-all-departments-banners__mobile_block">
+                {%- if mobile_title != blank -%}
+                    <h3 class="career-all-departments-banners__mobile-title">
+                        {{- mobile_title -}}
+                    </h3>
+                {%- endif -%}
+
+                {%- if mobile_text != blank -%}
+                    {{- mobile_text -}}
+                {%- endif -%}
+            </div>
+        {%- endif -%}
+    </div>
+</section>
+
+{% schema %}
+    {
+        "name": "All departments banners",
+        "settings": [
+            {
+                "type": "text",
+                "id": "title",
+                "label": "Title",
+                "default": "OFFENE STELLEN"
+            },
+            {
+                "type": "header",
+                "content": "Mobile section"
+            },
+            {
+                "type": "text",
+                "id": "mobile_title",
+                "label": "Title for mobile text"
+            },
+            {
+                "type": "textarea",
+                "id": "mobile_text",
+                "label": "Text for mobile"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "job",
+                "name": "Job",
+                "settings": [
+                    {
+                        "type": "image_picker",
+                        "id": "job_image",
+                        "label": "Job image"
+                    },
+                    {
+                        "type": "text",
+                        "id": "job_title",
+                        "label": "Name of job"
+                    },
+                    {
+                        "type": "url",
+                        "id": "link",
+                        "label": "Link to job"
+                    }
+                ]
+            }
+        ],
+		"templates": [
+			"page"
+		],
+		"presets": [
+			{
+				"name": "All departments banners"
+			}
+		]
+    }
+{% endschema %}

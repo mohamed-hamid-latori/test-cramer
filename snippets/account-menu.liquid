@@ -1,0 +1,102 @@
+{% comment %}
+	@params
+	customer 		- {customer object} *required
+	menu 			- {linklist object}
+{% endcomment %}
+
+{%- assign linklist = linklists[menu] -%}
+
+{%- capture orders_count -%}
+	{%- assign counter = 0 -%}
+
+	{%- for item in customer.orders -%}
+		{%- assign status = item.fulfillment_status | handleize -%}
+
+		{%- if status != 'fulfilled' and status != 'unfulfilled' -%}
+			{%- assign counter = counter | plus: 1 -%}
+		{%- endif -%}
+	{%- endfor -%}
+
+	{%- if counter != 0 -%}
+		<div class="account-menu__order-count">
+			{{- counter -}}
+		</div>
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture wishlist_count -%}
+	<div class="account-menu__order-count hidden" data-wishlist-count></div>
+{%- endcapture -%}
+
+{%- capture menu_items -%}
+	{%- if linklist.links.size > 0 -%}
+		{%- for link in linklist.links -%}
+			{%- assign is_active = link.active -%}
+
+			<li class="account-menu__list-item">
+				<a
+					href="{{- link.url -}}"
+					class="account-menu__list-link{% if link.url contains '/account?view=orders' or link.url contains 'wishlist' %} account-menu__list-link--flex{% endif %}"
+					data-link-href="{{ link.url | downcase }}"
+				>
+					{{- link.title -}}
+
+					{%- if link.url contains '/account?view=orders' and orders_count != blank -%}
+						{{- orders_count -}}
+					{%- endif -%}
+
+					{%- if link.url contains 'wishlist' -%}
+						{{- wishlist_count -}}
+					{%- endif --%}
+				</a>
+			</li>
+		{%- endfor -%}
+	{%- endif -%}
+{%- endcapture -%}
+
+<div class="account-menu" data-linklist="{{ linklist.links }}">
+	{%- if menu_items != blank -%}
+		<div class="account-menu__list--mobile">
+			{%- if linklist.links.size > 0 -%}
+				<div class="account-menu__active-menu-list">
+					{%- for link in linklist.links -%}
+						<div
+							href="{{- link.url -}}"
+							class="account-menu__active-menu-item account-menu__mobile-list-link--hiden js-mobile-link"
+							data-link-href="{{ link.url | downcase }}"
+						>
+							{{- link.title -}}
+
+							<span class="account-menu__active-link-arrow"></span>
+						</div>
+					{%- endfor -%}
+				</div>
+
+				<ul class="account-menu__mobile-list">
+					{%- for link in linklist.links -%}
+						{%- assign is_active = link.active -%}
+							<li class="account-menu__mobile-list-item">
+								<a
+									href="{{- link.url -}}"
+									class="account-menu__mobile-list-link js-hide-link"
+									data-link-href="{{ link.url | downcase }}"
+								>
+									{{- link.title -}}
+								</a>
+							</li>
+					{%- endfor -%}
+				</ul>
+			{%- endif -%}
+		</div>
+
+		<ul class="account-menu__list account-menu__list--desktop">
+			{{- menu_items -}}
+		</ul>
+	{%- endif -%}
+
+	<div class="account-menu__logout">
+		<a href="{{- routes.account_logout_url -}}" class="button button--secondary button--large account-menu__logout-button">
+			{{- 'customer.account.logout' | t -}}
+		</a>
+	</div>
+</div>

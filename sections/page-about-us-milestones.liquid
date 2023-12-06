@@ -1,0 +1,125 @@
+{% capture slides %}
+	{%- for block in section.blocks -%}
+		{%- assign title = block.settings.slide_title -%}
+		{%- assign text = block.settings.slide_text -%}
+
+		{%- if title != blank or text != blank -%}
+			<div class="swiper-slide slider__slide milestones__slide-wrapper">
+				{%- if title != blank -%}
+					<h4 class="milestones__slide-title">
+						{{- title -}}
+					</h4>
+				{%- endif -%}
+
+				{%- if text != blank -%}
+					<div class="milestones__slide-text">
+						{{- text -}}
+					</div>
+				{%- endif -%}
+			</div>
+		{%- endif -%}
+	{%- endfor -%}
+{% endcapture %}
+
+{% capture milestones_slider %}
+	{%- assign slider_link_url = section.settings.slider_link_url -%}
+	{%- assign slider_link_text = section.settings.slider_link_text -%}
+
+	<div class="slider">
+		<div class="swiper-container" data-milestones-slider>
+			<div class="swiper-wrapper">
+				{{ slides }}
+			</div>
+
+			<button
+				class="slider__arrow slider__arrow--prev js-slider-arrow-prev milestones__slider-arrow"
+				data-slider-arrow data-slider-arrow-prev
+			>
+				{%- render 'icon-chevron' -%}
+			</button>
+
+			<button
+				class="slider__arrow slider__arrow--next js-slider-arrow-next milestones__slider-arrow"
+				data-slider-arrow data-slider-arrow-next
+			>
+				{%- render 'icon-chevron' -%}
+			</button>
+		</div>
+
+		{% if slider_link_url and slider_link_text %}
+			<a href="{{- slider_link_url -}}" class="milestones__slider-button-link">
+				{{- slider_link_text -}}
+			</a>
+		{% endif %}
+	</div>
+{% endcapture %}
+
+{% if slides != blank %}
+	{% assign milestones_title = section.settings.slider_section_title %}
+	<section
+		class="milestones"
+		data-section-type="milestones"
+		data-section-id="{{- section.id -}}"
+	>
+		{%- if milestones_title != blank -%}
+			<h2 class="section-title milestones__title">
+				{{- milestones_title -}}
+			</h2>
+		{%- endif -%}
+
+		<div class="milestones__slider-container">
+			{{ milestones_slider }}
+		</div>
+	</section>
+{% endif %}
+
+{% schema %}
+	{
+		"name": "Milestones slider",
+		"settings": [
+			{
+				"type": "text",
+				"id": "slider_section_title",
+				"label": "Slider section title"
+			},
+			{
+				"type": "text",
+				"id": "slider_link_text",
+				"label": "Slider button text"
+			},
+			{
+				"type": "url",
+				"id": "slider_link_url",
+				"label": "Slider button URL"
+			}
+		],
+		"blocks": [
+			{
+				"type": "slider-block",
+				"name": "Slide",
+				"settings": [
+					{
+						"type": "text",
+						"id": "slide_title",
+						"label": "Slide title"
+					},
+					{
+						"type": "richtext",
+						"id": "slide_text",
+						"label": "Slide text"
+					},
+					{
+						"type": "image_picker",
+						"id": "slide_image",
+						"label": "Slide image"
+					}
+				]
+			}
+		],
+		"presets": [
+			{
+				"name": "About us slider"
+			}
+		]
+	}
+{% endschema %}

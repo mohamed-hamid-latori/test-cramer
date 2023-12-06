@@ -1,0 +1,124 @@
+<div
+	id="cart"
+	data-section-id="{{- section.id -}}"
+	data-section-type="cart"
+></div>
+
+<script id="cart-customizer-data" type="application/json">
+	{
+		"customizer": {
+			"banner_image_desktop": {{ section.settings.banner_image_desktop | json }},
+			"banner_image_mobile": {{ section.settings.banner_image_mobile | default: section.settings.banner_image_desktop | json }},
+			"banner_title": {{ section.settings.banner_title | json }},
+			"banner_button_text": {{ section.settings.banner_button_text | json }},
+			"banner_button_link": {{ section.settings.banner_button_link | json }},
+			"empty_title": {{ section.settings.empty_title | json }},
+			"empty_text": {{ section.settings.empty_text | json }},
+			"empty_button_text": {{ section.settings.empty_button_text | json }},
+			"empty_button_link": {{ section.settings.empty_button_link | json }},
+			"continue_shopping_button_text": {{ section.settings.continue_shopping_button_text | json }},
+			"continue_shopping_button_link": {{ section.settings.continue_shopping_button_link | json }},
+			"refund_policy_title": {{ section.settings.refund_policy_title | json }},
+			"refund_policy_text": {{ section.settings.refund_policy_text | json }},
+			"enable_free_shipping_bar": {{- settings.enable_free_shipping_bar | json -}},
+			"free_shipping_threshold": {{- settings.free_shipping_threshold | json -}}
+		}
+	}
+</script>
+
+{% schema %}
+{
+	"name": "Cart",
+	"settings": [
+		{
+			"type": "header",
+			"content": "Promo banner"
+		},
+		{
+			"type": "image_picker",
+			"id": "banner_image_desktop",
+			"label": "Desktop image"
+		},
+		{
+			"type": "image_picker",
+			"id": "banner_image_mobile",
+			"label": "Mobile image"
+		},
+		{
+			"type": "text",
+			"id": "banner_title",
+			"label": "Title",
+			"default": "Spring collection sale!"
+		},
+		{
+			"type": "text",
+			"id": "banner_button_text",
+			"label": "Button text",
+			"default": "View all"
+		},
+		{
+			"type": "url",
+			"id": "banner_button_link",
+			"label": "Button link"
+		},
+		{
+			"type": "header",
+			"content": "Empty cart state"
+		},
+		{
+			"type": "text",
+			"id": "empty_title",
+			"label": "Empty state title",
+			"default": "Your bag is empty"
+		},
+		{
+			"type": "textarea",
+			"id": "empty_text",
+			"label": "Empty state text",
+			"default": "Fill up your Cart by checking out all the awesome things you can buy!"
+		},
+		{
+			"type": "text",
+			"id": "empty_button_text",
+			"label": "Button text",
+			"default": "Continue shopping"
+		},
+		{
+			"type": "url",
+			"id": "empty_button_link",
+			"label": "Button link"
+		},
+		{
+			"type": "header",
+			"content": "Continue shopping"
+		},
+		{
+			"type": "text",
+			"id": "continue_shopping_button_text",
+			"label": "Button text",
+			"default": "Continue shopping"
+		},
+		{
+			"type": "url",
+			"id": "continue_shopping_button_link",
+			"label": "Button link"
+		},
+		{
+			"type": "header",
+			"content": "Refund policy"
+		},
+		{
+			"type": "text",
+			"id": "refund_policy_title",
+			"label": "Refund policy title",
+			"default": "Rückgaberecht"
+		},
+		{
+			"type": "richtext",
+			"id": "refund_policy_text",
+			"label": "Refund policy text",
+			"default": "<p>Crämer&Co bietet dir ein widerrufsrecht von 14tagen, entscheidend ist dabei nicht wann dein paket bei uns eingeht, sondern der poststempel.bei retouren muss dabei zwischen grundleistungen und unseren zusatzleistungen unterschieden werden.</p><p>Grundleistungen:<br/>– rückgabe/widerruf<br/>– reklamation<br/>– falsch gelieferte ware</p><p>Zusatzleistungen:<br/>– free service (kostenlose reparatur und änderungen)</p><p>2.1. Vorgehensweise:<br/>– das rücksendeformular zum ausdrucken findest du hier<br/>– rücksendeformular ausfüllen,<br/>– ware mit dem ausgefüllten rücksendeformular zusammen in ein paket packen<br/>– retourenaufkleber, der deiner bestellung beilag, auf das paket kleben – die kosten der retoure übernehmen wir für dich!<br/>– paket bei der nächsten poststation/ paketshop/ packstation abgeben</p><p>2.2. Was passiert, wenn meine rücksendung eingegangen ist?<br/>sobald die rücksendung bei uns eingegangen ist und geprüft wurde, werden wir den betrag auf dem gleichen weg wie wir ihn erhalten haben zurückerstatten. die dauer der rückerstattung ist je nach zahlungsart unterschiedlich und erfolgt im schnitt innerhalb von 9 tagen.</p>"
+		}
+	]
+}
+{% endschema %}

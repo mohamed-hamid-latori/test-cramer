@@ -1,0 +1,81 @@
+{%- assign nosto_section_id = section.settings.recommendations_nosto_section_id -%}
+
+<div
+	id="minicart"
+	data-section-id="{{- section.id -}}"
+	data-section-type="minicart"
+></div>
+
+{%- if nosto_section_id != blank -%}
+	<div
+		id="minicart-recommendations-placement"
+		data-nosto-section-id="{{- nosto_section_id -}}"
+		class="hidden" aria-hidden="true"
+	></div>
+{%- endif -%}
+
+<script id="minicart-customizer-data" type="application/json">
+	{
+		"customizer": {
+			"empty_title": {{- section.settings.empty_title | json -}},
+			"empty_button_text": {{- section.settings.empty_button_text | json -}},
+			"empty_button_link": {{- section.settings.empty_button_link | json -}},
+			"enable_free_shipping_bar": {{- settings.enable_free_shipping_bar | json -}},
+			"free_shipping_threshold": {{- settings.free_shipping_threshold | json -}},
+			"enable_recommendations": {{- section.settings.enable_recommendations | json -}},
+			"recommendations_nosto_section_id": {{- section.settings.recommendations_nosto_section_id | json -}},
+			"recommendations_title": {{- section.settings.recommendations_title | json -}}
+		}
+	}
+</script>
+
+{%- schema -%}
+{
+	"name": "Minicart",
+	"settings": [
+		{
+			"type": "header",
+			"content": "Empty minicart state"
+		},
+		{
+			"type": "text",
+			"id": "empty_title",
+			"label": "Empty state title",
+			"default": "Your bag is empty"
+		},
+		{
+			"type": "text",
+			"id": "empty_button_text",
+			"label": "Button text",
+			"default": "Continue shopping"
+		},
+		{
+			"type": "url",
+			"id": "empty_button_link",
+			"label": "Button link"
+		},
+		{
+			"type": "header",
+			"content": "Recommendations"
+		},
+		{
+			"type": "checkbox",
+			"id": "enable_recommendations",
+			"label": "Enable Nosto product recommendations",
+			"default": false
+		},
+		{
+			"type": "text",
+			"id": "recommendations_nosto_section_id",
+			"label": "Nosto recommendations section ID",
+			"default": "cartpage-nosto-4"
+		},
+		{
+			"type": "text",
+			"id": "recommendations_title",
+			"label": "Recommendations title",
+			"default": "You may also like"
+		}
+	]
+}
+{%- endschema -%}

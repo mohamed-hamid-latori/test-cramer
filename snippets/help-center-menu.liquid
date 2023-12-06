@@ -1,0 +1,77 @@
+{% comment %}
+
+	@params
+	customer 		- {customer object} *required
+	menu 			- {linklist object}
+
+{% endcomment %}
+
+{%- assign linklist = linklists[menu] -%}
+ 
+{%- capture menu_items -%}
+	{%- if linklist.links.size > 0 -%}
+		{%- for link in linklist.links -%}
+			{%- assign is_active = link.active -%}
+
+			<li class="help-center-menu__list-item{% if is_active %} help-center-menu__list-item--active{% endif %}">
+				<a
+					href="{{- link.url -}}"
+					class="help-center-menu__list-link"
+				>
+					{{- link.title -}}
+				</a>
+			</li>
+		{%- endfor -%}
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture mobile_menu_item -%}
+	{%- if linklist.links.size > 0 -%}
+		{%- for link in linklist.links -%}
+			{%- assign is_active = link.active -%}
+
+			{%- unless is_active -%}
+				<li class="help-center-menu__list-item">
+					<a
+						href="{{- link.url -}}"
+						class="help-center-menu__list-link"
+					>
+						{{- link.title -}}
+					</a>
+				</li>
+			{%- else -%}
+				{%- continue -%}
+			{%- endunless -%}
+		{%- endfor -%}
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- capture active_link -%}
+	{%- for link in linklist.links -%}
+		{%- assign is_active = link.active -%}
+
+		{%- if is_active -%}
+			<span class="help-center-menu__active-link"> {{- link.title -}} </span>
+		{%- else -%}
+			{%- continue -%}
+		{%- endif -%}
+	{%- endfor -%}
+{%- endcapture -%}
+
+<div class="help-center-menu" data-linklist="{{ linklist.links }}">
+	{%- if mobile_menu_item -%}
+		<div class="help-center-menu__active-link-container help-center-menu__active-link-container--mobile">
+			{{- active_link-}} <span class="help-center-menu__active-link-arrow"></span>
+		</div>
+
+		<ul class="help-center-menu__list--mobile">
+			{{- mobile_menu_item -}}
+		</ul>
+	{%- endif -%}
+		
+	{%- if menu_items != blank -%}
+		<ul class="help-center-menu__list help-center-menu__list--desktop">
+			{{- menu_items -}}
+		</ul>
+	{%- endif -%}
+</div>

@@ -1,0 +1,106 @@
+{%- assign button_text = section.settings.button_text -%}
+{%- assign button_link = section.settings.button_link -%}
+
+{%- capture brands_html -%}
+	{%- for block in section.blocks -%}
+		{%- assign image = block.settings.image -%}
+		{%- assign logo_svg = block.settings.logo_svg -%}
+
+		{%- if image == blank -%}
+			{%- continue -%}
+		{%- endif -%}
+
+		{%- assign link = block.settings.link -%}
+
+		<div class="brands__logos-item">
+			<div class="brands__image-wrapper">
+				{%- if logo_svg != blank -%}
+					<div class="swiper-lazy brands__image brands__image--svg">
+						{{- logo_svg -}}
+					</div>
+				{%- elsif image != blank -%}
+					<picture>
+						<img
+							src="{{ image | img_url: '110x' }}"
+							srcset="{{ image | img_url: '110x' }} 1x, {{ image | img_url: '220x' }} 2x"
+							alt="{{ image.alt }}"
+							class="swiper-lazy brands__image"
+							width="{{ image.width }}"
+							height="{{ image.height }}"
+						/>
+					</picture>
+				{%- endif -%}
+
+				{%- if link != blank -%}
+					<a href="{{ link }}" class="brands__link-wrapper"></a>
+				{%- endif -%}
+			</div>
+		</div>
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- if brands_html != blank -%}
+	<div class="brands">
+		<div class="container brands__container">
+			<div class="brands__row">
+				<div class="brands__col brands__col--logos">
+					<div class="brands__logos">
+						{{- brands_html -}}
+					</div>
+				</div>
+
+				{%- if button_text != blank and button_link != blank -%}
+					<div class="brands__col brands__col--button">
+						<a href="{{ button_link }}" class="button button--secondary __button">
+							{{- button_text -}}
+						</a>
+					</div>
+				{%- endif -%}
+			</div>
+		</div>
+	</div>
+{%- endif -%}
+
+{% schema %}
+{
+	"name": "Brands",
+	"settings": [
+		{
+			"type": "text",
+			"id": "button_text",
+			"label": "Button text",
+			"default": "+ I want MORE Brands!"
+		},
+		{
+			"type": "url",
+			"id": "button_link",
+			"label": "Button link"
+		}
+	],
+	"blocks": [
+		{
+			"type": "brand",
+			"name": "Brand",
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image"
+				},
+				{
+					"type": "html",
+					"id": "logo_svg",
+					"label": "Logo in SVG",
+					"info": "Overrides logo image"
+				},
+				{
+					"type": "url",
+					"id": "link",
+					"label": "Link",
+					"info": "Optional"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

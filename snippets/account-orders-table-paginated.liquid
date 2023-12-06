@@ -1,0 +1,92 @@
+{% comment %}
+	@params
+	customer 		- {customer object} *required
+	limit 			- {number}
+    paginate_by     - {number}
+{% endcomment %}
+
+{%- capture no_result -%}
+	<p class="orders-table__no-result-text">
+		{{- 'customer.account.orders.none' | t -}}
+	</p>
+{%- endcapture -%}
+
+{%- capture rows -%}
+	{%- if customer.orders.size > 0 -%}
+        {%- paginate customer.orders by paginate_by -%}
+            {%- for order in customer.orders -%}
+                <tr class="orders-table__row">
+                    <td class="orders-table__cell orders-table__cell--date orders-table__cell-data">
+                        {{- order.created_at | date: '%b %d, %Y' -}}
+                    </td>
+
+                    <td class="orders-table__cell orders-table__cell--number orders-table__cell-data">
+                        {{- order.order_number | link_to: order.customer_url -}}
+                    </td>
+
+                    <td class="orders-table__cell orders-table__cell--total orders-table__cell-data">
+                        {{- order.total_price | money -}}
+                    </td>
+
+                    <td class="orders-table__cell orders-table__cell--address orders-table__cell-data">
+                        {{- order.shipping_address | format_address -}}
+                    </td>
+
+                    <td class="orders-table__cell orders-table__cell--status orders-table__cell-data">
+                        <span class="orders-table__status orders-table__status--{{- order.fulfillment_status | handleize -}}">
+                            {{- order.fulfillment_status_label -}}
+                        </span>
+                    </td>
+                </tr>
+            {%- endfor -%}
+        {%- endpaginate -%}
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- paginate customer.orders by paginate_by -%}
+    <div class="orders">
+        {%- if rows != blank -%}
+            <div class="orders-table__wrapper">
+                <table class="orders-table__table">
+                    <thead>
+                        <tr class="orders-table__row orders-table__row--head">
+                            <th class="orders-table__cell orders-table__cell--date orders-table__cell--head">
+                                {{- 'customer.account.orders.date' | t -}}
+                            </th>
+
+                            <th class="orders-table__cell orders-table__cell--number orders-table__cell--head">
+                                {{- 'customer.account.orders.number' | t -}}
+                            </th>
+
+                            <th class="orders-table__cell orders-table__cell--total orders-table__cell--head">
+                                {{- 'customer.account.orders.total' | t -}}
+                            </th>
+
+                            <th class="orders-table__cell orders-table__cell--address orders-table__cell--head">
+                                {{- 'customer.account.orders.address' | t -}}
+                            </th>
+
+                            <th class="orders-table__cell orders-table__cell--status orders-table__cell--head">
+                                {{- 'customer.account.orders.status' | t -}}
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {{- rows -}}
+                    </tbody>
+                </table>
+            </div>
+        {%- else -%}
+            <div class="orders__no-result">
+                {{- no_result -}}
+            </div>
+        {%- endif -%}
+    </div>
+    
+    {%- if rows != blank and paginate.parts.size > 0 -%}
+        <div class="account-orders__pagination-wrapper">
+            {%- render 'pagination', paginate: paginate -%}
+        </div>
+    {%- endif -%}
+{%- endpaginate -%}

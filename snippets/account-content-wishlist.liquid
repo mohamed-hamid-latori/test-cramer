@@ -1,0 +1,23 @@
+<div class="account-content account-content-wishlist">
+	<div class="account-content__container">
+		<div class="account-content__header">
+			<div class="account-content__header-wrapper">
+				<h1 class="account-content__header-title">
+					{{- 'customer.account.wishlist.title' | t -}}
+				</h1>
+
+				<div class="account-content__header-icon account-content-wishlist__header-icon">
+					{%- render 'icon-account-wishlist' -%}
+				</div>
+			</div>
+		</div>
+
+		<div class="account-content-wishlist__content">
+			<div
+				id="wishlist"
+				data-section-id="{{- section.id -}}"
+				data-section-type="wishlist"
+			></div>
+		</div>
+	</div>
+</div>

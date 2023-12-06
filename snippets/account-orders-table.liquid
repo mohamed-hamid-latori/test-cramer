@@ -1,0 +1,130 @@
+{% comment %}
+	@params
+	customer 		- {customer object} *required
+	limit 			- {number}
+{% endcomment %}
+
+{%- assign orders = customer.orders -%}
+{%- assign rows_counter = 0 -%}
+
+
+{%- capture no_result -%}
+	<p class="orders-table__no-result-text">
+		{{- 'customer.account.orders.none' | t -}}
+	</p>
+{%- endcapture -%}
+
+{%- capture rows -%}
+	{%- if orders.size > 0 -%}
+		{%- if limit != blank -%}
+			{%- for order in orders limit: limit -%}
+				{%- assign rows_counter = rows_counter | plus: 1 -%}
+
+				<tr class="orders-table__row">
+					<td class="orders-table__cell orders-table__cell-data orders-table__cell--date">
+						{{- order.created_at | date: '%b %d, %Y' -}}
+					</td>
+
+					<td class="orders-table__cell orders-table__cell-data orders-table__cell--number">
+						{{- order.order_number | link_to: order.customer_url -}}
+					</td>
+
+					<td class="orders-table__cell orders-table__cell-data orders-table__cell--total">
+						{{- order.total_price | money -}}
+					</td>
+
+					<td class="orders-table__cell orders-table__cell-data orders-table__cell--address">
+						{{- order.shipping_address | format_address -}}
+					</td>
+
+					<td class="orders-table__cell orders-table__cell-data orders-table__cell--status">
+						<span class="orders-table__status orders-table__status--{{- order.fulfillment_status | handleize -}}">
+							{{- order.fulfillment_status_label -}}
+						</span>
+					</td>
+				</tr>
+			{%- endfor -%}
+		{%- else -%}
+			{%- for order in orders -%}
+				{%- assign rows_counter = rows_counter | plus: 1 -%}
+
+				<tr class="orders-table__row">
+					<td class="orders-table__cell orders-table__cell-data orders-table__cell--date">
+						{{- order.created_at | date: '%b %d, %Y' -}}
+					</td>
+
+					<td class="orders-table__cell orders-table__cell-data orders-table__cell--number">
+						{{- order.order_number | link_to: order.customer_url -}}
+					</td>
+
+					<td class="orders-table__cell orders-table__cell-data orders-table__cell--total">
+						{{- order.total_price | money -}}
+					</td>
+
+					<td class="orders-table__cell orders-table__cell-data orders-table__cell--address">
+						{{- order.shipping_address | format_address -}}
+					</td>
+
+					<td class="orders-table__cell orders-table__cell-data orders-table__cell--status">
+						<span class="orders-table__status orders-table__status--{{- order.fulfillment_status | handleize -}}">
+							{{- order.fulfillment_status_label -}}
+						</span>
+					</td>
+				</tr>
+			{%- endfor -%}
+		{%- endif -%}		
+	{%- endif -%}
+{%- endcapture -%}
+
+<div class="orders">
+	{%- if rows != blank -%}
+		<div class="account-content__table-heading">
+			<h3 class="account-content__title account-overview__orders-title">
+				{{- 'customer.account.orders.recent' | t -}}
+			</h3>
+
+			{%- if orders.size > limit -%}
+				<a href="/account?view=orders" class="account-content__out-link">
+					{{ 'customer.orders.view_all' | t }}
+				</a>
+			{%- endif -%}
+			
+		</div>
+
+		<div class="orders-table__wrapper">
+			<table class="orders-table__table">
+				<thead>
+					<tr class="orders-table__row orders-table__row--head">
+						<th class="orders-table__cell orders-table__cell--date orders-table__cell--head">
+							{{- 'customer.account.orders.date' | t -}}
+						</th>
+
+						<th class="orders-table__cell orders-table__cell--number orders-table__cell--head">
+							{{- 'customer.account.orders.number' | t -}}
+						</th>
+
+						<th class="orders-table__cell orders-table__cell--total orders-table__cell--head">
+							{{- 'customer.account.orders.total' | t -}}
+						</th>
+
+						<th class="orders-table__cell orders-table__cell--address orders-table__cell--head">
+							{{- 'customer.account.orders.address' | t -}}
+						</th>
+
+						<th class="orders-table__cell orders-table__cell--status orders-table__cell--head">
+							{{- 'customer.account.orders.status' | t -}}
+						</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{{- rows -}}
+				</tbody>
+			</table>
+		</div>
+	{%- else -%}
+		<div class="orders__no-result">
+			{{- no_result -}}
+		</div>
+	{%- endif -%}
+</div>

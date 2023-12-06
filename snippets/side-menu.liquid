@@ -1,0 +1,435 @@
+<div class="side-menu" id="side-menu">
+	<div class="side-menu__overlay js-side-menu-close"></div>
+	<div class="side-menu__wrapper">
+		<span class="side-menu__close-button js-side-menu-close">
+			{% render 'icon-close-side-menu' %}
+		</span>
+		<div class="side-menu__content js-side-menu-tabs">
+			{% if section.settings.top_link_block %}
+				<div class="header__top-links side-menu-desktop-header js-header-top-links">
+					<div class="header__top-inner header__store-links">
+						{% for index in  (1..3) %}
+							{% assign name = 'store_link_name_' | append: index %}
+							{% assign link = 'store_link_' | append: index %}
+
+							{% assign name = section.settings[name] %}
+							{% assign link = section.settings[link] %}
+
+							{% if name != blank and link != blank %}
+								<a
+									href="{{ link }}"
+									class="header__top-link store-link link link--text focus-inset caption-large{% if link contains request.host %} is-active{% endif %}"
+								>
+									{{- name -}}
+								</a>
+							{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+			{% endif %}
+
+			{% assign initialized_block_id = false %}
+
+			<div class="side-menu__tab-switchers side-menu-desktop-header">
+				{% for block in blocks %}
+					{% assign title = block.settings.title %}
+                    {%- assign title_downcased 	= title | downcase -%}
+                    {%- assign color 			= '' -%}
+
+                    {%- if title_downcased contains '[color:' -%}
+                    {%- assign color = title_downcased | split: ']' | first | split: '[color:' | last | strip -%}
+                    {%- assign title = title | split: '[' | first -%}
+                    {%- endif -%}
+
+					{% if title == blank %}
+						{% continue %}
+					{% endif %}
+
+					{% assign links 	= block.settings.links %}
+					{% assign link 		= block.settings.link %}
+					{% assign block_id 	= block.id %}
+
+					{% if links != blank %}
+						<button type="button"
+								data-tab-switch-id="{{ block.id }}"
+								class="js-side-menu-tab-switcher side-menu__tab-switcher{% unless is_first_initialized %} is-active{% endunless %}"
+                          {% if color != '' %}
+                                style="color: {{ color }};"
+                                {% endif %}>
+							{{- title -}}
+						</button>
+
+						{% assign is_first_initialized = true %}
+					{% elsif link != blank %}
+						<a class="side-menu__tab-switcher no-switcher" href="{{ link }}"
+                          {% if color != '' %}
+                                style="color: {{ color }};"
+                                {% endif %}>
+							{{- title -}}
+						</a>
+					{% endif %}
+				{% endfor %}
+			</div>
+
+			<div class="header__wrapper side-menu__mobile-header side-menu__mobile-top">
+				<div class="header__mobile-items">
+					<div class="menu-drawer-container">
+						<div class="header__icon--menu header__icon--summary" aria-label="{{ 'sections.header.menu' | t }}">
+							<span class="header__icon link link--text focus-inset js-side-menu-close">
+								{% render 'icon-close' %}
+							</span>
+
+							{%- if shop.customer_accounts_enabled -%}
+								<a
+									href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+									class="header__icon header__icon--account-mobile link link--text focus-inset js-header__icon--account-mobile"
+								>
+									{% render 'icon-account' %}
+
+									<span class="visually-hidden"></span>
+								</a>
+							{%- endif -%}
+						</div>
+					</div>
+				</div>
+
+				<div class="header__heading">
+					<a href="{{ routes.root_url }}" class="header__heading-link mobile-logo link link--text focus-inset">
+						{%- if section.settings.logo_mobile_svg != blank -%}
+							<div class="header__heading-logo header__heading-logo--svg">
+								{{- section.settings.logo_mobile_svg -}}
+							</div>
+						{%- elsif section.settings.logo_mobile != blank -%}
+							{%- assign image_size_mobile = section.settings.logo_width_mobile | append: 'x' -%}
+							<img
+								srcset="{{ section.settings.logo_mobile | img_url: image_size_mobile }} 1x, {{ section.settings.logo_mobile | img_url: image_size_mobile, scale: 2 }} 2x"
+								src="{{ section.settings.logo_mobile | img_url: image_size_mobile }}"
+								loading="lazy"
+								class="header__heading-logo"
+								width="{{ section.settings.logo_mobile.width }}"
+								height="{{ section.settings.logo_mobile.height }}"
+								alt="{{ section.settings.logo_mobile.alt | default: shop.name | escape }}"
+							>
+						{%- else -%}
+							<span class="h2 mobile-logo">{{ shop.name }}</span>
+						{%- endif -%}
+					</a>
+				</div>
+
+				<div class="header__icons">
+					{%- if shop.customer_accounts_enabled -%}
+						<a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+						   class="header__icon header__icon--account link link--text focus-inset"
+						>
+							{%- render 'icon-account' -%}
+							<span class="visually-hidden"></span>
+						</a>
+					{%- endif -%}
+
+					{%- if settings.enable_wishlist -%}
+						<a href="#"
+						   class="header__icon header__icon--wishlist link link--text focus-inset"
+						>
+							{% render 'icon-wishlist' %}
+							<span class="visually-hidden"></span>
+						</a>
+					{%- endif -%}
+
+					<a href="{{ routes.cart_url }}"
+					   class="header__icon header__icon--cart link link--text focus-inset js-open-minicart"
+					>
+						{%- render 'icon-bag' -%}
+						<span class="visually-hidden">{{- 'templates.cart.cart' | t -}}</span>
+					</a>
+				</div>
+			</div>
+
+			<div class="header__icon--search-mobile">
+				<div class="header__search">
+					<form action="/search" method="get" role="search" class="search_form">
+						<button class="mobile-search-btn search-btn" type="submit">
+							{% render 'icon-search-enter' %}
+						</button>
+
+						<input type="search"
+							   name="q"
+							   id="search"
+							   value="{{ search.terms | escape }}"
+							   placeholder="{{ 'general.search.search' | t }}">
+
+						<button class="search-btn" type="submit">
+							{% render 'icon-search' %}
+						</button>
+					</form>
+				</div>
+			</div>
+
+			<div class="side-menu__scroll-wrapper js-side-drawer-scroll-wrapper js-toggle-container">
+				{% assign is_first_initialized = false %}
+
+				{% for block in blocks %}
+					{% assign title = block.settings.title %}
+                    {%- assign title_downcased 	= title | downcase -%}
+                    {%- assign color 			= '' -%}
+
+                    {%- if title_downcased contains '[color:' -%}
+                    {%- assign color = title_downcased | split: ']' | first | split: '[color:' | last | strip -%}
+                    {%- assign title = title | split: '[' | first -%}
+                    {%- endif -%}
+
+					{% if title == blank %}
+						{% continue %}
+					{% endif %}
+                    {% assign link 		= block.settings.link %}
+					{% assign links 			= linklists[block.settings.links].links %}
+					{% assign block_id 			= block.id %}
+					{% assign preferred_gender 	= block.settings.preferred_gender %}
+
+					{%- capture preferred_gender_cookie -%}
+						{%- case preferred_gender -%}
+							{%- when 'female' -%}
+								{{- settings.redirect_cookie_value_female | handleize -}}
+							{%- when 'male' -%}
+								{{- settings.redirect_cookie_value_male | handleize -}}
+						{%- endcase -%}
+					{%- endcapture -%}
+
+					{% capture mobile_item %}
+						{% if links != blank %}
+							<button type="button" class="side-menu__top-level-link js-toggle-button side-menu__item-toggle accordion__item-toggler" {% if color != '' %}
+                                style="color: {{ color }};"
+                                {% endif %}>
+								{{- title -}}
+							</button>
+						{% elsif link != blank %}
+							<a class="side-menu__top-level-link side-menu__item-toggle" href="{{ link }}" {% if color != '' %}
+                                style="color: {{ color }};"
+                                {% endif %}>
+								{{- title -}}
+							</a>
+						{% endif %}
+					{% endcapture %}
+
+					<div class="side-menu__tab-content js-side-menu-tab-content js-toggle-item{% unless is_first_initialized %} is-active{% endunless %}" data-tab-id="{{ block_id }}">
+						{{- mobile_item -}}
+
+						{% if links.size > 0 %}
+							<div class="side-menu__mobile-toggle-content js-toggle-content">
+								{% case block.type %}
+								{% when 'column' %}
+									<ul class="side-menu__links">
+										{% for link in links %}
+											{%- assign title 			= link.title -%}
+											{%- assign title_downcased 	= title | downcase -%}
+											{%- assign color 			= '' -%}
+											{%- assign has_columns 		= false -%}
+
+											{%- if title_downcased contains '[color:' -%}
+												{%- assign color = title_downcased | split: ']' | first | split: '[color:' | last | strip -%}
+												{%- assign title = title | split: '[' | first -%}
+											{%- endif -%}
+
+											{%- if title_downcased contains '[columns]' -%}
+												{%- assign has_columns 	= true -%}
+												{%- assign title 		= title | split: '[' | first -%}
+											{%- endif -%}
+
+											<li class="side-menu__link-item">
+												<a
+													class="side-menu__link"
+													href="{{ link.url }}"
+													{% if color != '' %}
+														style="--link-color: {{ color }};"
+													{% endif %}
+												>
+													{{- title -}}
+												</a>
+
+												{% if link.links.size > 0 %}
+													<div class="side-menu__child-links-content">
+														<ul class="side-menu__child-links{% if has_columns == true %} side-menu__child-links--columns{% endif %}">
+															{% for childlink in link.links %}
+																{%- assign childlink_title 				= childlink.title -%}
+																{%- assign childlink_title_downcased 	= childlink_title | downcase -%}
+																{%- assign childlink_color 				= '' -%}
+
+																{%- if childlink_title_downcased contains '[color:' -%}
+																	{%- assign childlink_color = childlink_title_downcased | split: ']' | first | split: '[color:' | last | strip -%}
+																	{%- assign childlink_title = childlink_title | split: '[' | first -%}
+																{%- endif -%}
+
+																<li class="side-menu__child-link-item">
+																	<a href="{{ childlink.url }}"
+																	   class="side-menu__child-link"
+																		{% if preferred_gender_cookie != blank %}
+																			data-preferred-gender="{{- preferred_gender_cookie -}}"
+																		{% endif %}
+																		{% if childlink_color != '' %}
+																			style="--link-color: {{ childlink_color }};"
+																		{% endif %}
+																	>
+																		{{- childlink_title -}}
+																	</a>
+																</li>
+															{% endfor %}
+														</ul>
+													</div>
+												{% endif %}
+											</li>
+										{% endfor %}
+									</ul>
+								{% else %}
+									<ul class="side-menu__links">
+										{% for link in links %}
+											{%- assign title 			= link.title -%}
+											{%- assign title_downcased 	= title | downcase -%}
+											{%- assign color 			= '' -%}
+
+											{%- if title_downcased contains '[color:' -%}
+												{%- assign color = title_downcased | split: ']' | first | split: '[color:' | last | strip -%}
+												{%- assign title = title | split: '[' | first -%}
+											{%- endif -%}
+
+											<li class="side-menu__link-item{% if link.links.size > 0 %} js-toggle-item{% endif %}">
+												{% if link.links.size > 0 %}
+													<button
+														class="side-menu__link side-menu__link--button js-toggle-button"
+														{% if color != '' %}
+															style="--link-color: {{ color }};"
+														{% endif %}
+													>
+														{{- title -}}
+													</button>
+
+													<div class="side-menu__child-links-content side-menu__child-links-content--accordion js-toggle-content side-menu__child-links-wrapper">
+														<ul class="side-menu__child-links">
+															{% for childlink in link.links %}
+																{%- assign childlink_title 				= childlink.title -%}
+																{%- assign childlink_title_downcased 	= childlink_title | downcase -%}
+																{%- assign childlink_color 				= '' -%}
+
+																{%- if childlink_title_downcased contains '[color:' -%}
+																	{%- assign childlink_color = childlink_title_downcased | split: ']' | first | split: '[color:' | last | strip -%}
+																	{%- assign childlink_title = childlink_title | split: '[' | first -%}
+																{%- endif -%}
+
+																<li class="side-menu__child-link-item{% if childlink.links.size > 0 %} js-toggle-item{% endif %}">
+																	{% if childlink.links.size > 0 %}
+																	<button
+																		class="side-menu__child-link side-menu__child-link--button js-toggle-button"
+																		{% if color != '' %}
+																			style="--link-color: {{ color }};"
+																		{% endif %}
+																	>
+																		{{- childlink_title -}}
+																	</button>
+				
+																	<div class="side-menu__childchild-links-content side-menu__mobile-toggle-content side-menu__childchild-links-content--accordion js-toggle-content side-menu__grandchild-links-wrapper">
+																		<ul class="side-menu__childchild-links">
+																			{% for childchildlink in childlink.links %}
+																				{%- assign childchildlink_title 				= childchildlink.title -%}
+																				{%- assign childchildlink_title_downcased 	= childchildlink_title | downcase -%}
+																				{%- assign childchildlink_color 				= '' -%}
+				
+																				{%- if childchildlink_title_downcased contains '[color:' -%}
+																					{%- assign cchildchildlink_color = childchildlink_title_downcased | split: ']' | first | split: '[color:' | last | strip -%}
+																					{%- assign childchildlink_title = childchildlink_title | split: '[' | first -%}
+																				{%- endif -%}
+				
+																				<li class="side-menu__childchild-link-item">
+																					<a href="{{ childchildlink.url }}"
+																						 class="side-menu__childchild-link"
+																						{% if preferred_gender_cookie != blank %}
+																							data-preferred-gender="{{- preferred_gender_cookie -}}"
+																						{% endif %}
+																						{% if childchildlink_color != '' %}
+																							style="--link-color: {{ childchildlink_color }};"
+																						{% endif %}
+																					>
+																						{{- childchildlink_title -}}
+																					</a>
+																				</li>
+																			{% endfor %}
+																		</ul>
+																	</div>
+																{% else %}
+																	<a href="{{ childlink.url }}"
+																	   class="side-menu__child-link"
+																		{% if preferred_gender_cookie != blank %}
+																			data-preferred-gender="{{- preferred_gender_cookie -}}"
+																		{% endif %}
+																		{% if childlink_color != '' %}
+																			style="--link-color: {{ childlink_color }};"
+																		{% endif %}
+																	>
+																		{{- childlink_title -}}
+																	</a>
+																{% endif %}
+																</li>
+															{% endfor %}
+														</ul>
+													</div>
+												{% else %}
+													<a
+														class="side-menu__link"
+														href="{{ link.url }}"
+														{% if color != '' %}
+															style="--link-color: {{ color }};"
+														{% endif %}
+														{% if preferred_gender_cookie != blank %}
+															data-preferred-gender="{{- preferred_gender_cookie -}}"
+														{% endif %}
+													>
+														{{- title -}}
+													</a>
+												{% endif %}
+											</li>
+										{% endfor %}
+									</ul>
+								{% endcase %}
+							</div>
+
+							{% assign is_first_initialized = true %}
+						{% endif %}
+					</div>
+				{% endfor %}
+
+				{% if section.settings.top_link_block %}
+					<div class="side-menu__mobile-header side-menu__mobile-bottom">
+						<div class="side-menu__mobile-links header__additional-links-mobile">
+							{%- for link in section.settings.additional_links.links -%}
+								<a
+									href="{{ link.url }}"
+									class="side-menu__top-level-link"
+								>
+									{{- link.title | escape -}}
+								</a>
+							{%- endfor -%}
+						</div>
+
+						<div class="side-menu__mobile-links header__store-links-mobile">
+							{% for index in  (1..3) %}
+								{% assign name = 'store_link_name_' | append: index %}
+								{% assign link = 'store_link_' | append: index %}
+
+								{% assign name = section.settings[name] %}
+								{% assign link = section.settings[link] %}
+
+								{% if name != blank and link != blank %}
+									<a
+										href="{{ link }}"
+										class="side-menu__top-level-link"
+									>
+										{{- name -}}
+									</a>
+								{% endif %}
+							{% endfor %}
+						</div>
+					</div>
+				{% endif %}
+			</div>
+
+		</div>
+		{% render 'login-mobile-popup' %}
+	</div>
+</div>

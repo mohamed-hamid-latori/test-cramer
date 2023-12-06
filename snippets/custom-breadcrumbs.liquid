@@ -1,0 +1,42 @@
+{%- unless template == 'index' or template == 'cart' or template == 'list-collections' -%}
+	{%- capture separator --%}
+		<span class="breadcrumbs__separator" aria-hidden="true">/</span>
+	{%- endcapture --%}
+    
+    <nav data-color="{{ color }}" class="breadcrumbs breadcrumbs--customized {% if color == 'subcolor' %}breadcrumbs--subcolor{% endif %}" role="navigation" aria-label="breadcrumbs">
+        {%- if breadcrumbs_link != blank -%}
+            <div class="breadcrumbs__container">
+                <a href="{{ routes.root_url }}" title="Home">
+                    {{- 'general.breadcrumbs.home' | t -}}
+                </a>
+
+                {% for link in linklists[breadcrumbs_link].links %}
+                    {{- separator -}}
+
+                    {%- if link.child_active -%}
+                        <a href="{{ link.url }}">{{ link.title }}</a>
+                    {%- endif -%}
+
+                    {%- for grandlink in link.links -%}
+                        {%- if grandlink.active -%}
+                            {{- separator -}}
+
+                            <span>{{ grandlink.title }}</span>
+                        {%- elsif grandlink.child_active -%}
+                            {{- separator -}}
+
+                            <a href="{{ grandlink.url }}">{{ grandlink.title }}</a>
+                        {%- endif -%}
+                            {%- for grandgrandlink  in grandlink.links -%}
+                                {%- if grandgrandlink.active -%}
+                                    {{- separator -}}
+
+                                    <span>{{ grandgrandlink.title }}</span>  
+                                {%- endif -%}
+                            {%- endfor -%}
+                    {%- endfor -%}
+                {% endfor %}
+            </div>
+        {%- endif -%}
+    </nav>
+{%- endunless -%}

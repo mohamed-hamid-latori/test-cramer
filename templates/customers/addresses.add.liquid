@@ -1,0 +1,13 @@
+{%- capture menu -%}
+	{%- section 'account-menu' -%}
+{%- endcapture -%}
+
+{%- capture content -%}
+	{%- render 'account-content-add-addresses' -%}
+{%- endcapture -%}
+
+{%-
+	render 'account-template',
+	menu: menu,
+	content: content
+-%}

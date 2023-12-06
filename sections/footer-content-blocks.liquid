@@ -1,0 +1,84 @@
+{%- capture blocks_html -%}
+	{%- for block in section.blocks -%}
+		{%- assign icon 	= block.settings.icon -%}
+		{%- assign title 	= block.settings.title -%}
+		{%- assign content 	= block.settings.content -%}
+
+		{%- if title == blank -%}
+			{%- continue -%}
+		{%- endif -%}
+
+		<div class="footer-content-blocks__column">
+			<div class="footer-content-blocks__block">
+				{%- if icon != blank -%}
+					<div class="footer-content-blocks__image-wrapper">
+						<img
+							class="footer-content-blocks__image"
+							src="{{- icon.src | img_url: 'x80' -}}"
+							srcset="{{ icon.src | img_url: 'x80' }} 1x, {{ icon.src | img_url: 'x160' }} 2x, {{ icon.src | img_url: 'x240' }} 3x"
+							alt="{{- icon.alt -}}"
+							width="{{- icon.width -}}"
+							height="{{- icon.height -}}"
+							loading="lazy"
+						>
+					</div>
+				{%- endif -%}
+
+				<h3 class="footer-content-blocks__title">
+					{{- title -}}
+				</h3>
+
+				{%- if content != blank -%}
+					<div class="footer-content-blocks__content">
+						{{- content -}}
+					</div>
+				{%- endif -%}
+			</div>
+		</div>
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- if blocks_html != blank -%}
+	<section
+		class="footer-content-blocks"
+		data-section-id="{{- section.id -}}"
+		data-section-type="footer-content-blocks"
+	>
+		<div class="container footer-content-blocks__container">
+			<div class="row footer-content-blocks__row">
+				{{- blocks_html -}}
+			</div>
+		</div>
+	</section>
+{%- endif -%}
+
+{% schema %}
+{
+	"name": "Footer Content Blocks",
+	"max_blocks": 3,
+	"blocks": [
+		{
+			"name": "Footer block",
+			"type": "footer_block",
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "icon",
+					"label": "icon"
+				},
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title"
+				},
+				{
+					"type": "richtext",
+					"id": "content",
+					"label": "Content"
+				}
+			]
+		}
+	],
+	"settings": []
+}
+{% endschema %}

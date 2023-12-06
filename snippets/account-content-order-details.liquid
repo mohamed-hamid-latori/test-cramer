@@ -1,0 +1,358 @@
+{%- capture order_content -%}
+    <div class="account-order-details__top-table">
+        <table role="table" class="account-order-details__table account-order-details__table--margin-bottom account-order-details__table--mobile-hiden">
+            <thead role="rowgroup">
+                <tr role="row" class="account-order-details__table-row">
+                    <th id="ColumnDate" 
+                        scope="col" 
+                        role="columnheader" 
+                        class="account-order-details__table-title account-order-details__table-title--order-date"
+                    >
+                        {{- 'customer.account.orders.date' | t -}}
+                    </th>
+
+                    <th id="ColumnStatus" 
+                        scope="col" role="columnheader" 
+                        class="account-order-details__table-title account-order-details__table-title--fulfillment account-order-details__table-title--no-padding"
+                    >
+                        {{- 'customer.order.fulfillment_status' | t -}}
+                    </th>
+                </tr>
+            </thead>
+            
+            <tbody role="rowgroup" class="account-order-details__table-row account-order-details__table-row--unborder">
+                <tr role="row">
+                    <td
+                        headers="ColumnDate"
+                        role="rowheader"
+                        scope="row"
+                        data-label="{{- 'customer.account.orders.date' | t -}}"
+                    >
+                        <div class="account-order-details__table-item account-order-details__table-item--date">
+                            {{- order.created_at | date: format: 'abbreviated_date' -}}
+                        </div>
+                    </td>
+
+                    <td
+                        headers="ColumnStatus"
+                        role="cell"
+                        data-label="{{- 'customer.order.fulfillment_status' | t -}}"
+                    >
+                        <div class="account-order-details__table-item account-order-details__table-item--fulfillment">
+                            <span class="account-order-details__fulfillment-status account-order-details__fulfillment-status--{{- order.fulfillment_status | handleize -}}">
+                                {{- order.fulfillment_status_label -}}
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+
+    {%- if order.shipping_address != blank or order.billing_address != blank -%}
+        <div class="account-order-details__addresses-container">
+            {%- if order.shipping_address != blank -%}
+                <div class="account-order-details__addresses-item">
+                    <h5 class="account-order-details__addresses-item-title">{{ 'customer.order.shipping_address' | t }}</h5>
+
+                    <div class="account-order-details__addresses-item-text">
+                        {{- order.shipping_address | format_address -}}
+                    </div>
+                </div> 
+            {%- endif -%}
+
+            {%- if order.billing_address != blank -%}
+                <div class="account-order-details__addresses-item">
+                    <h5 class="account-order-details__addresses-item-title">{{ 'customer.order.billing_address' | t }}</h5>
+
+                    <div class="account-order-details__addresses-item-text">
+                        {{- order.billing_address | format_address -}}
+                    </div>
+                </div> 
+            {%- endif -%} 
+        </div>
+    {%- endif -%}
+
+    <table role="table" class="account-order-details__table account-order-details__table--bottom account-order-details__table--mobile-hiden">
+        <thead role="rowgroup" class="account-order-details__table-row">
+            <tr role="row" >
+                <th id="ColumnProduct" 
+                    scope="col" 
+                    role="columnheader" 
+                    class="account-order-details__table-title account-order-details__table-title--product"
+                >
+                    {{ 'customer.order.product' | t }}
+                </th>
+
+                <th id="ColumnFulfillmentDate"
+                    scope="col"
+                    role="columnheader"
+                    class="account-order-details__table-title account-order-details__table-title--fulfillment-date"
+                >
+                    {{ 'customer.order.fulfillment_date' | t }}
+                </th>
+                
+                <th id="ColumnQuantity" 
+                    scope="col" 
+                    role="columnheader" 
+                    class="account-order-details__table-title account-order-details__table-title--quantity"
+                >
+                    {{ 'customer.order.quantity' | t }}
+                </th>
+                
+                <th id="ColumnSubtotal" 
+                    scope="col" role="columnheader" 
+                    class="account-order-details__table-title account-order-details__table-title--subtotal"
+                >
+                    {{ 'customer.order.subtotal' | t }}
+                </th>
+            </tr>
+        </thead>
+
+        <tbody class="account-order-details__table-row">
+            {%- for line_item in order.line_items -%}
+                <tr>
+                    <td
+                        headers="ColumnProduct"
+                        role="rowheader"
+                        scope="row"
+                        data-label="{{- 'customer.account.orders.date' | t -}}"
+                        class="account-order-details__table-item account-order-details__table-item--product"
+                    >
+                        <div class="account-order-details__table-item-image">
+                            {{- line_item.image | img_url: '108x144' | img_tag -}}
+                        </div>
+
+                        <div class="account-order-details__table-item-fields">
+                            <div class="account-order-details__table-item-vendor">
+                                {{- line_item.vendor -}}
+                            </div>
+
+                            <div class="account-order-details__table-item-name">
+                                {{- line_item.product.title -}}
+                            </div>
+
+                            <div class="account-order-details__table-item-options">
+                                {%- for option in line_item.variant.options -%}
+                                    {%- if line_item.variant.option1 != blank and option == line_item.variant.option1 -%}
+                                        <div class="account-order-details__table-item-option">
+                                            {{- line_item.product.options_with_values[0].name -}}: {{- line_item.variant.option1 -}}
+                                        </div>
+                                    {%- endif -%}
+                                    
+                                    {%- if line_item.variant.option2 != blank and option == line_item.variant.option2 -%}
+                                        <div class="account-order-details__table-item-option">
+                                            {{- line_item.product.options_with_values[1].name -}}: {{- line_item.variant.option2 -}}
+                                        </div>
+                                    {%- endif -%}
+                                    
+                                    {%- if line_item.variant.option3 != blank and option == line_item.variant.option3 -%}
+                                        <div class="account-order-details__table-item-option">
+                                            {{- line_item.product.options_with_values[2].name -}}: {{- line_item.variant.option3 -}}
+                                        </div>
+                                    {%- endif -%}
+                                {%- endfor -%}
+                            </div>
+                        </div>
+                    </td>
+
+                    <td headers="ColumnFulfillmentDate"
+                        role="cell"
+                        class="account-order-details__table-item account-order-details__table-item--fulfillment-date"
+                    >
+                        {{ line_item.fulfillment.created_at | date: '%b %d, %Y' }}
+                    </td>
+
+                    <td
+                        headers="ColumnQuantity"
+                        role="cell"
+                        data-label="{{- 'products.product.quantity.label' | t -}}"
+                        class="account-order-details__table-item account-order-details__table-item--quantity"
+                    >
+                        {{ line_item.quantity }} Ordered
+                    </td>
+                    
+                    <td
+                        headers="ColumnSubtotal"
+                        role="cell"
+                        data-label="{{- 'customer.order.price' | t -}}"
+                        class="account-order-details__table-item account-order-details__table-item--subtotal"
+                    >
+                        {{- line_item.final_price | money  -}}
+                    </td>
+                </tr>
+            {%- endfor -%}
+        </tbody>
+        
+    </table>
+
+    <div class="account-order-details__mobile-table">
+        {%- for line_item in order.line_items -%}
+            <div class="account-order-details__mobile-table-row">
+                <div class="account-order-details__mobile-table-item">
+                    <div class="account-order-details__mobile-table-image">
+                        {{- line_item.image | img_url: '128x172' | img_tag -}}
+                    </div>
+                </div>
+
+                <div class="account-order-details__mobile-table-fields">
+                    <div class="account-order-details__mobile-item-top">
+                        <div class="account-order-details__mobile-table-vendor">
+                            {{- line_item.vendor -}}
+                        </div>
+
+                        <div class="account-order-details__mobile-table-product-title">
+                            {{- line_item.product.title -}}
+                        </div>
+                    </div>
+                    
+                    <div class="account-order-details__mobile-item-bottom">
+                        <div class="account-order-details__mobile-item-options">
+                            {%- for option in line_item.variant.options -%}
+                                {%- if line_item.variant.option1 != blank and option == line_item.variant.option1 -%}
+                                    <div class="account-order-details__mobile-item-option">
+                                        {{- line_item.product.options_with_values[0].name -}}: {{- line_item.variant.option1 -}}
+                                    </div>
+                                {%- endif -%}
+                                
+                                {%- if line_item.variant.option2 != blank and option == line_item.variant.option2 -%}
+                                    <div class="account-order-details__mobile-item-option">
+                                        {{- line_item.product.options_with_values[1].name -}}: {{- line_item.variant.option2 -}}
+                                    </div>
+                                {%- endif -%}
+                                
+                                {%- if line_item.variant.option3 != blank and option == line_item.variant.option3 -%}
+                                    <div class="account-order-details__mobile-item-option">
+                                        {{- line_item.product.options_with_values[2].name -}}: {{- line_item.variant.option3 -}}
+                                    </div>
+                                {%- endif -%}
+                            {%- endfor -%}
+                        </div>
+                    </div>
+                    {%- if line_item.fulfillment.created_at != blank -%}
+                        <div class="account-order-details__mobile-item-fulfillment">
+                            {%- assign date_for_field = line_item.fulfillment.created_at | date: '%b %d, %Y' -%}
+                            
+                            {{ 'customer.order.fulfilled_at' | t: date: date_for_field }}
+                        </div>
+                    {%- endif  -%}
+
+                    <div class="account-order-details__mobile-item-quantity">
+                       {{'customer.order.order_products_quantity' | t: quantity: line_item.quantity }}
+                    </div>
+
+                    <div class="account-order-details__mobile-item-subtotal">
+                        {{- line_item.final_price | money  -}}
+                    </div>
+                </div>
+            </div>
+        {%- endfor -%}
+    </div>
+
+    <div class="account-order-details__totals">
+        <div class="account-order-details__totals-row">
+            <div class="account-order-details__totals-col">
+                <p class="account-order-details__totals-text account-order-details__totals-text--secondaty">
+                    {{ 'customer.order.total_subtotal' | t }}
+                </p>
+            </div>
+
+            <div class="account-order-details__totals-col">
+                <p class="account-order-details__totals-text account-order-details__totals-text--secondaty">
+                    {{- order.line_items_subtotal_price | money -}}
+                </p>
+            </div>
+        </div>
+
+        {%- if order.shipping_price != 0 -%}
+            <div class="account-order-details__totals-row account-order-details__totals-row--shipping-price">
+                <div class="account-order-details__totals-col">
+                    <p class="account-order-details__totals-text account-order-details__totals-text--secondaty">
+                        {{ 'customer.order.total_shipping' | t }}
+                    </p>
+                </div>
+
+                <div class="account-order-details__totals-col">
+                    <p class="account-order-details__totals-text account-order-details__totals-text--secondaty">
+                        {{- order.shipping_price | money -}}
+                    </p>
+                </div>
+            </div>
+        {%- endif -%}
+
+        <div class="account-order-details__totals-row account-order-details__totals-row--total">
+            <div class="account-order-details__totals-col">
+                <p class="account-order-details__totals-text">
+                    {{'customer.order.total' | t }}
+                </p>
+            </div>
+
+            <div class="account-order-details__totals-col">
+                <p class="account-order-details__totals-text">
+                    {{- order.total_price | money -}}
+                </p>
+            </div>
+        </div>
+    </div>
+{%- endcapture -%} 
+
+{%- capture mobile_table_content -%}
+    <div class="account-order-details__mobile-order">
+        <div class="account-order-details__mobile-order-item account-order-details__mobile-order-item--wide">
+            <div class="account-order-details__mobile-order-title">
+                {{- 'customer.account.orders.date' | t -}}
+            </div>
+
+            <div class="account-order-details__mobile-order-field">
+                {{- order.created_at | date: format: 'abbreviated_date' -}}
+            </div>
+        </div>
+
+        <div class="account-order-details__mobile-order-item">
+            <div class="account-order-details__mobile-order-title">
+                {{- 'customer.order.fulfillment_status' | t -}}
+            </div>
+
+            <div class="account-order-details__mobile-order-field">
+                <span class="account-order-details__fulfillment-status account-order-details__fulfillment-status--{{- order.fulfillment_status | handleize -}}">
+                    {{- order.fulfillment_status_label -}}
+                </span>
+            </div>
+        </div>
+    </div>
+{%- endcapture -%}
+
+<section class="account-content account-order-details">
+	<div class="account-content__container">
+        <div class="account-content__back-link-container">
+             <a href="/account?view=orders"
+                class="account-content__back-link"
+            >
+                <div class="account-content__back-link-icon">
+                    {%- render 'icon-search-enter' -%}
+                </div>
+                            
+                {{ 'customer.order.back_to_all' | t }}
+            </a>
+        </div>
+
+		<div class="account-content__header">        
+			<h1 class="account-content__header-title">
+                {{ 'customer.orders.order_number' | t }} {{ order.order_number }}
+                
+                <div class="account-content__header-icon">
+                    {%- render 'icon-account-cart' -%}
+                </div>
+			</h1>
+		</div>
+
+        {%- if order_content != blank and mobile_table_content != blank-%}
+            <div class="account-order-details__content">
+                {{- mobile_table_content -}}
+
+                {{- order_content -}}
+            </div>
+        {%- endif -%}  
+	</div>
+</section>

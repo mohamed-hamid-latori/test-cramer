@@ -1,0 +1,100 @@
+{% comment %}
+	@params
+	customer 		- {customer object} *required
+{% endcomment %}
+
+{%- assign name 	= customer.name -%}
+{%- assign email 	= customer.email -%}
+
+<section class="account-content account-overview">
+	<div class="account-content__container">
+		<div class="account-content__header">
+			<div class="account-content__header-wrapper">
+				<h1 class="account-content__header-title">
+					{{- 'customer.account.overview.title' | t: name: name -}}
+				</h1>
+
+				<div class="account-content__header-icon">
+					{%- render 'icon-account-greeting' -%}
+				</div>
+			</div>
+
+			<p class="account-content__header-subtitle">
+				{{- 'customer.account.overview.subtitle' | t: email: email -}}
+			</p>
+		</div>
+
+		<div class="account-overview__orders">
+			<div class="account-overview__orders-table">
+				{%- render 'account-orders-table', customer: customer, limit: 5 -%}
+			</div>
+		</div>
+
+		<div class="account-overview__details">
+			<div class="account-overview__details-row">
+				<div class="account-overview__details-col">
+					<h2 class="account-content__title account-overview__details-title">
+						{{- 'customer.account.overview.shipping_address' | t -}}
+					</h2>
+
+					<div class="account-info">
+						{%- if customer.default_address == blank -%}
+							<div class="account-info__field">
+								{{ 'customer.account.overview.empty_addresses' | t}}
+							</div>
+
+							<a class="link account-info__link" href="/account/addresses?view=edit">{{ 'customer.account.overview.manage_addresses' | t}}</a>
+						{%- else -%}
+							<div class="account-info__field account-info__field-address">
+								{{ customer.default_address | format_address }}
+							</div>
+
+							<a class="link account-info__link" href="/account/addresses?view=edit&customer_address={{- customer.default_address.id -}}">{{ 'customer.account.overview.manage_addresses' | t}}</a>
+						{%- endif -%}
+					</div>
+
+				</div>
+
+				<div class="account-overview__details-col">
+					<h2 class="account-content__title account-overview__details-title">
+						{{- 'customer.account.overview.personal_information' | t -}}
+					</h2>
+
+					<div class="account-info">
+						<div class="account-info__field">
+							{{ customer.name }}
+						</div>
+						<div class="account-info__field">
+							{{ customer.email }}
+						</div>
+						<a href="/account?view=personal-information" class="link account-info__link">
+							{{ 'customer.account.overview.manage_info' | t }}
+						</a>
+					</div>
+				</div>
+
+				<div class="account-overview__details-col account-overview__details-col--width">
+
+					<h2 class="account-content__title account-overview__details-title">
+						{{- 'customer.account.overview.shipping_type' | t -}}
+					</h2>
+
+					<div class="custom-select account-select__stores">
+						<select name="select_store-available" id="select_store-available" class="custom-select__select" data-custom-select-stores data-custom-select data-custom-select-placeholder="Make a selection">
+							<option></option>
+							<option value="regular">{{- 'customer.account.overview.regular_shipping_option' | t -}}</option>
+						</select>
+
+						<div class="custom-select__dropdown" data-custom-select-dropdown></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="account-menu__logout account-menu__logout--mobile">
+			<a href="{{- routes.account_logout_url -}}" class="button button--secondary button--large account-menu__logout-button">
+				{{- 'customer.account.logout' | t -}}
+			</a>
+		</div>
+	</div>
+</section>

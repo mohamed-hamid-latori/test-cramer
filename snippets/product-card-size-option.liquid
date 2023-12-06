@@ -1,0 +1,107 @@
+{% comment %}
+	@params
+	product 			- {product object} *required
+	option 				- {product option object} *required
+{% endcomment %}
+
+{%- assign option_index = 'option' | append: option.position -%}
+
+{%- assign separator = '%%%' -%}
+{%- assign enable_custom_size_order = settings.enable_custom_size_order -%}
+
+{%- if shop.permanent_domain contains 'cc-newseum.myshopify.com' -%}
+	{%- assign size_order_type = product.metafields.product.custom_size_order.references | first -%}
+{%- else -%}
+	{%- assign size_order_type = product.metafields.options.custom_size_order.references | first -%}
+{%- endif -%}
+
+{%- if size_order_type == blank -%}
+	{%- assign size_order_type = shop.metafields.globals.default_custom_size_order.references | first -%}
+{%- endif -%}
+
+{%- if size_order_type != blank -%}
+	{%- assign size_order = shop.metafields.globals['size_order_values'][size_order_type.index] | split: separator -%}
+{%- endif -%}
+{%- capture values -%}
+	{%- if enable_custom_size_order and size_order != blank -%}
+		{%- assign available_values = option.values | join: separator | downcase -%}
+		{%- assign available_values = available_values | append: separator | prepend: separator -%}
+
+		{%- for value in size_order -%}
+			{%- assign prepared_value 	= value | downcase -%}
+			{%- assign search_value 	= prepared_value | prepend: separator | append: separator -%}
+
+			{%- assign option_available = false -%}
+
+			{%- if available_values contains search_value -%}
+				{%- assign option_available = true -%}
+			{%- endif -%}
+
+			{%- unless option_available -%}
+				{%- continue -%}
+			{%- endunless -%}
+
+			{%- assign url = product.url -%}
+
+			{%- assign matching_variant = '' -%}
+
+			{%- for variant in product.variants -%}
+				{%- assign variant_option_value = variant[option_index] -%}
+
+				{%- if variant_option_value == value -%}
+					{%- assign matching_variant = variant -%}
+
+					{%- break -%}
+				{%- endif -%}
+			{%- endfor -%}
+
+			{%- if matching_variant != '' -%}
+				{%- assign url = matching_variant.url -%}
+			{%- endif -%}
+
+			<li class="product-card-options__item" data-matching-variant="{{ matching_variant.id }}">
+				<a href="{{ url }}" class="product-card-options__item-link" data-product-link>
+					{{- value -}}
+				</a>
+			</li>
+		{%- endfor -%}
+	{%- else -%}
+		{%- for value in option.values -%}
+			{%- assign url = product.url -%}
+
+			{%- assign matching_variant = '' -%}
+
+			{%- for variant in product.variants -%}
+				{%- assign variant_option_value = variant[option_index] -%}
+
+				{%- if variant_option_value == value -%}
+					{%- assign matching_variant = variant -%}
+
+					{%- break -%}
+				{%- endif -%}
+			{%- endfor -%}
+
+			{%- if matching_variant != '' -%}
+				{%- assign url = matching_variant.url -%}
+			{%- endif -%}
+
+			<li class="product-card-options__item">
+				<a href="{{ url }}" class="product-card-options__item-link" data-product-link>
+					{{- value -}}
+				</a>
+			</li>
+		{%- endfor -%}
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- if option != blank and values != blank -%}
+	<div class="product-card-options">
+		<p class="product-card-options__title">
+			{{- 'products.product_card.select_size' | t -}}
+		</p>
+
+		<ul class="product-card-options__list">
+			{{- values -}}
+		</ul>
+	</div>
+{%- endif -%}

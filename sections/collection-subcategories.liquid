@@ -1,0 +1,132 @@
+{%- assign enable_section 		= collection.metafields.subcategories.enable_section -%}
+{%- assign section_title 		= collection.metafields.subcategories.title -%}
+{%- assign center_subcategories = collection.metafields.subcategories.center_subcategories -%}
+{%- assign slides_counter 		= "less" -%}
+
+{%- if enable_section -%}
+  {%- assign section_title 		= collection.metafields.subcategories.title -%}
+  {%- assign center_subcategories = collection.metafields.subcategories.center_subcategories -%}
+  {%- assign slides_counter 		= "less" -%}
+  {%- capture slides -%}
+  {%- assign block_titles = collection.metafields.subcategory.title -%}
+
+    {%- for block_title in block_titles -%}
+      {%- assign index 			= forloop.index0 -%}
+
+      {%- if index > 4 -%}
+        {%- assign slides_counter = "more" -%}
+      {%- endif -%}
+
+      {%- assign block_subtitle 	= collection.metafields.subcategory.subtitle[index] -%}
+      {%- assign block_link 		= collection.metafields.subcategory.link[index] -%}
+      {%- assign block_image 		= collection.metafields.subcategory.image[index] | first -%}
+
+      {%- if block_title == blank and block_subtitle == blank and block_image == blank -%}
+        {%- continue -%}
+      {%- endif -%}
+
+      {%- capture image -%}
+        {%- if block_image != blank -%}
+          <div class="collection-subcategories__card-image-wrapper" data-card-image-wrapper>
+            <picture>
+              <source srcset="{{ block_image.cloudinary_src | append: 'w_300' }} 1x, {{ block_image.cloudinary_src | append: 'w_600' }} 2x" media="(max-width: 480px)">
+              <source srcset="{{ block_image.cloudinary_src | append: 'w_400' }} 1x, {{ block_image.cloudinary_src | append: 'w_800' }} 2x" media="(max-width: 767px)">
+
+              <img srcset="{{ block_image.cloudinary_src | append: 'w_300' }} 1x, {{ block_image.cloudinary_src | append: 'w_600' }} 2x"
+                src="{{ block_image.cloudinary_src | append: 'w_300' }}"
+                class="swiper-lazy collection-subcategories__card-image"
+                alt="{{ block_title }}"
+              >
+            </picture>
+          </div>
+        {%- endif -%}
+      {%- endcapture -%}
+
+      {%- capture description -%}
+        {%- if block_title != blank or block_subtitle != blank -%}
+          <div class="collection-subcategories__card-description">
+            {%- if block_title != blank -%}
+              <h3 class="collection-subcategories__card-title">
+                {{- block_title -}}
+              </h3>
+            {%- endif -%}
+
+            {%- if block_subtitle != blank -%}
+              <p class="collection-subcategories__card-subtitle">
+                {{- block_subtitle -}}
+              </p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endcapture -%}
+
+      {%- if image != blank or description != blank -%}
+        <div class="swiper-slide slider__slide collection-subcategories__slide">
+          <div class="collection-subcategories__card">
+            {{- image -}}
+
+            {{- description -}}
+
+            {%- if block_link != blank -%}
+              <a href="{{ block_link }}" class="collection-subcategories__card-link-wrapper"></a>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+
+  {%- capture slider -%}
+    {%- if slides != blank -%}
+      <div class="slider collection-subcategories__slider">
+        <div class="swiper-container slider__container collection-subcategories__slider-container"
+          data-collection-subcategories-slider
+          data-centered-slides="{{ center_subcategories }}"
+          data-slider-counter="{{- slides_counter -}}"
+        >
+          <div class="swiper-wrapper slider__wrapper collection-subcategories__slider-wrapper">
+            {{- slides -}}
+          </div>
+
+          <button class="slider__arrow slider__arrow--prev" data-slider-arrow data-slider-arrow-prev>
+            {%- render 'icon-chevron' -%}
+          </button>
+
+          <button class="slider__arrow slider__arrow--next js-slider-arrow-next" data-slider-arrow data-slider-arrow-next>
+            {%- render 'icon-chevron' -%}
+          </button>
+
+          <div class="slider__pagination collection-subcategories__slider-pagination" data-slider-pagination></div>
+        </div>
+      </div>
+    {%- endif -%}
+  {%- endcapture -%}
+  
+  {%- if slider != blank -%}
+    <section
+      class="collection collection-subcategories"
+      data-section-id="{{- section.id -}}"
+      data-section-type="collection-subcategories"
+    >
+      {%- if section_title != blank -%}
+        <div class="container container--full-width collection__container">
+          <h2 class="collection-subcategories__title">
+            {{- section_title -}}
+          </h2>
+        </div>
+      {%- endif -%}
+
+      <div class="collection-subcategories__container">
+        {{- slider -}}
+      </div>
+    </section>
+  {%- endif -%}
+{% endif %}
+
+
+{% schema %}
+{
+	"name": "Collection subcategories",
+	"settings": []
+}
+{% endschema %}

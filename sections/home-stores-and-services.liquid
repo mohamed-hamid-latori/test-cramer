@@ -1,0 +1,192 @@
+{%- capture columns_html -%}
+	{%- for block in section.blocks -%}
+		{%- assign column_type 			= block.settings.column_type -%}
+		{%- assign main_image_desktop 	= block.settings.main_image_desktop -%}
+		{%- assign main_image_mobile 	= block.settings.main_image_mobile | default: main_image_desktop -%}
+		{%- assign title 				= block.settings.title -%}
+		{%- assign text 				= block.settings.text -%}
+
+		{%- if main_image == blank and title == blank and text == blank -%}
+			{%- continue -%}
+		{%- endif -%}
+
+		{%- assign subtitle 		= block.settings.subtitle -%}
+		{%- assign is_list 			= block.settings.is_list -%}
+		{%- assign button_text 		= block.settings.button_text -%}
+		{%- assign button_link 		= block.settings.button_link -%}
+		{%- assign mascot_image 	= block.settings.mascot_image -%}
+		{%- assign mascot_svg_image = block.settings.mascot_svg_image -%}
+
+		<div class="stores-and-services__col stores-and-services__col--{{- column_type -}}">
+			{%- if title != blank -%}
+				<h2 class="section-title stores-and-services__title">
+					{{- title -}}
+				</h2>
+			{%- endif -%}
+
+			<div class="stores-and-services__content stores-and-services__content--{{- column_type -}}">
+				{%- if main_image_desktop != blank -%}
+					<div class="stores-and-services__content-col stores-and-services__content-col--image">
+						<div class="stores-and-services__image-wrapper stores-and-services__image-wrapper--{{- column_type -}}">
+							<picture class="lazy">
+								<source data-srcset="{{ main_image_mobile | img_url: '480x' }} 1x, {{ main_image_mobile | img_url: '960x' }} 2x" media="(max-width: 480px)">
+								<source data-srcset="{{ main_image_mobile | img_url: '575x' }} 1x, {{ main_image_mobile | img_url: '1150x' }} 2x" media="(max-width: 575px)">
+								<source data-srcset="{{ main_image_mobile | img_url: '767x' }} 1x, {{ main_image_mobile | img_url: '1534x' }} 2x" media="(max-width: 767px)">
+
+								<img
+									src="{{ main_image_desktop | img_url: '40x' }}"
+									srcset="{{ main_image_desktop | img_url: '40x' }} 1x, {{ main_image_desktop | img_url: '80x' }} 2x"
+									data-srcset="{{ main_image_desktop | img_url: '395x' }} 1x, {{ main_image_desktop | img_url: '790x' }} 2x"
+									alt="{{ main_image_desktop.alt | default: title }}"
+									class="stores-and-services__image"
+									width="{{ main_image_desktop.width }}"
+									height="{{ main_image_desktop.height }}"
+									loading="lazy"
+								/>
+							</picture>
+
+							{%- if button_link != blank -%}
+								<a href="{{ button_link }}" class="stores-and-services__link-wrapper"></a>
+							{%- endif -%}
+						</div>
+					</div>
+				{%- endif -%}
+
+				{%- if text != blank -%}
+					<div class="stores-and-services__content-col stores-and-services__content-col--text{% if mascot_svg_image != blank%} stores-and-services__content-col--no-padding{% endif %}">
+						{%- if subtitle != blank -%}
+							<h3 class="stores-and-services__subtitle">
+								{{- subtitle -}}
+							</h3>
+						{%- endif -%}
+
+						<div class="stores-and-services__text{% if is_list %} stores-and-services__text--list{% endif %}">
+							{{- text -}}
+						</div>
+
+						{%- if button_text != blank and button_link != blank -%}
+							<a href="{{ button_link }}" class="link stores-and-services__link">
+								{{- button_text -}}
+							</a>
+						{%- endif -%}
+
+						{%- if mascot_svg_image != blank -%}
+							<div class="stores-and-services__mascot-svg-wrapper stores-and-services__mascot-svg-wrapper--{{- column_type -}}">
+								{{- mascot_svg_image -}}
+							</div>
+						{%- elsif mascot_image != blank-%}
+							<div class="stores-and-services__mascot-wrapper stores-and-services__mascot-wrapper--{{- column_type -}}">
+								<picture>
+									<img
+										src="{{ mascot_image | img_url: 'master' }}"
+										alt="{{ mascot_image.alt | default: title }}"
+										class="stores-and-services__mascot"
+										width="{{ mascot_image.width }}"
+										height="{{ mascot_image.height }}"
+										loading="lazy"
+									/>
+								</picture>
+							</div>
+						{%- endif -%}
+					</div>
+				{%- endif -%}
+			</div>
+		</div>
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- if columns_html != blank -%}
+	<section class="stores-and-services">
+		<div class="container stores-and-services__container">
+			<div class="stores-and-services__row">
+				{{- columns_html -}}
+			</div>
+		</div>
+	</section>
+{%- endif -%}
+
+{% schema %}
+{
+	"name": "Stores and Services",
+	"max_blocks": 2,
+	"blocks": [
+		{
+			"type": "column",
+			"name": "Column",
+			"settings": [
+				{
+					"type": "select",
+					"id": "column_type",
+					"label": "Type",
+					"options": [
+						{
+							"value": "stores",
+							"label": "Stores"
+						},
+						{
+							"value": "services",
+							"label": "Services"
+						}
+					],
+					"default": "stores"
+				},
+				{
+					"type": "image_picker",
+					"id": "main_image_desktop",
+					"label": "Desktop main image"
+				},
+				{
+					"type": "image_picker",
+					"id": "main_image_mobile",
+					"label": "Mobile main image"
+				},
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Heading",
+					"default": "Stores"
+				},
+				{
+					"type": "text",
+					"id": "subtitle",
+					"label": "Subheading",
+					"default": "Flagship Store"
+				},
+				{
+					"type": "richtext",
+					"id": "text",
+					"label": "Text",
+					"default": "<p>Breite Gasse 18 / Brunnengasse 3-9<br/>90402 Nürnberg<br/>Tel 0911 2055570 · Fax 0911 2055577</p><p>Entdecke unsere preiskronten Stores mit uber 100 Brands auf 3500 qm min Kafee, Schneiderei</p>"
+				},
+				{
+					"type": "checkbox",
+					"id": "is_list",
+					"label": "Display text as a list",
+					"default": false
+				},
+				{
+					"type": "text",
+					"id": "button_text",
+					"label": "Button text",
+					"default": "View all stores"
+				},
+				{
+					"type": "url",
+					"id": "button_link",
+					"label": "Button link"
+				},
+				{
+					"type": "image_picker",
+					"id": "mascot_image",
+					"label": "Mascot image"
+				},
+				{
+					"type": "html",
+					"id": "mascot_svg_image",
+					"label": "Mascot SVG image"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

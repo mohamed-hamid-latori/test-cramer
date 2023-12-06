@@ -1,0 +1,43 @@
+{% assign account = linklists.account %}
+{% assign login_popup = linklists.login-popup %}
+
+{%- assign orders_count = 0 -%}
+
+{% if account.links.size > 0 and login_popup.size > 0 %}
+	<div class="customer-mobile-popup js-mobile-popup">
+		{%- if customer.id -%}
+			<h3 class="customer-mobile-popup__customer-name">{{- 'customer.pop_up.hi' | t -}} {{ customer.first_name }} {{ customer.last_name }}</h3>
+
+			<ul class="customer-mobile-popup__link-list">
+				{%- for link in account.links -%}
+					{%- assign link_handle = link.handle -%}
+
+					<li class="customer-mobile-popup__link-list-item">
+						<a class="customer-mobile-popup__link-list-item-link" href="{{ link.url }}">
+							{{- link.title -}}
+						</a>
+
+						{%- if link_handle == 'my-orders' and orders_count != 0 -%}
+							<span class="customer-mobile-popup__link-list-count">{{- orders_count -}}</span>
+						{%- endif -%}
+
+						{%- if link_handle contains 'wishlist' -%}
+							<span class="customer-mobile-popup__link-list-count hidden" data-wishlist-count></span>
+						{%- endif -%}
+					</li>
+				{% endfor %}
+			</ul>
+			<a class="button button--secondary customer-mobile-popup__link-list--no-user-link" href="{{ routes.account_logout_url }}">{{- 'customer.log_out' | t -}}</a>
+		{%- else -%}
+			<a class="customer-mobile-popup__link-list--no-user-link" href="{{ routes.account_login_url }}">{{- 'customer.log_in' | t -}}</a>
+			<ul class="customer-mobile-popup__link-list--no-user">
+
+				{%- for link in login_popup.links -%}
+					<li class="customer-mobile-popup__link-list--no-user-item">
+						<a href="{{ link.url }}" class="customer-mobile-popup__link-list--no-user-link">{{ link.title }}</a>
+					</li>
+				{%- endfor -%}
+			</ul>
+		{% endif %}
+	</div>
+{% endif %}

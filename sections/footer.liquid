@@ -1,0 +1,324 @@
+{%- assign logo 				= section.settings.logo -%}
+{%- assign logo_svg 			= section.settings.logo_svg -%}
+{%- assign menu 				= section.settings.menu -%}
+{%- assign copywrite 			= section.settings.copywrite -%}
+{%- assign newsletter_title 	= section.settings.newsletter_title -%}
+{%- assign newsletter_content 	= section.settings.newsletter_content -%}
+{%- assign newsletter_list_id 	= section.settings.newsletter_list_id -%}
+{%- assign contact_title 		= section.settings.contact_title -%}
+{%- assign contact_content 		= section.settings.contact_content -%}
+{%- assign copywrite 			= section.settings.copywrite -%}
+
+{%- capture footer_menu -%}
+	{%- for link in menu.links -%}
+		{%- capture footer_menu_content -%}
+			{%- for sublink in link.links -%}
+				<a class="footer-menu__link" href="{{- sublink.url -}}">
+					{{- sublink.title -}}
+				</a>
+			{%- endfor -%}
+		{%- endcapture -%}
+
+		{%- if footer_menu_content == blank -%}
+			{%- continue -%}
+		{%- endif -%}
+
+		<div class="footer-menu__column">
+			<h4 class="footer-menu__title">
+				{{- link.title -}}
+			</h4>
+
+			<div class="footer-menu__content">
+				{%- for sublink in link.links -%}
+					<a class="footer-menu__link" href="{{- sublink.url -}}">
+						{{- sublink.title -}}
+					</a>
+				{%- endfor -%}
+			</div>
+		</div>
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- capture footer_mobile_menu -%}
+	{%- for link in menu.links -%}
+		{%- capture footer_menu_content -%}
+			{%- for sublink in link.links -%}
+				<a class="footer-menu__link" href="{{- sublink.url -}}">
+					{{- sublink.title -}}
+				</a>
+			{%- endfor -%}
+		{%- endcapture -%}
+
+		{%- if footer_menu_content == blank -%}
+			{%- continue -%}
+		{%- endif -%}
+
+		<div class="accordion__item footer-menu__accordion-item js-toggle-item">
+			<button class="accordion__item-toggler footer-menu__accordion-item-toggler js-toggle-button">
+				{{- link.title -}}
+			</button>
+
+			<div class="accordion__item-content footer-menu__accordion-item-content js-toggle-content">
+				<div class="footer-menu__content">
+					{{- footer_menu_content -}}
+				</div>
+			</div>
+		</div>
+	{%- endfor -%}
+{%- endcapture -%}
+
+{%- capture footer_payments -%}
+	{%- for type in shop.enabled_payment_types -%}
+		{%- capture icon -%}
+			{%- capture icon_snippet -%}
+				icon-{{- type | replace: "_", "-" -}}
+			{%- endcapture -%}
+
+			{%- include icon_snippet -%}
+		{%- endcapture -%}
+
+		{%- assign downcased_icon = icon | downcase -%}
+
+		<div class="footer-payments__icons-column">
+			<div class="footer-payments__icon">
+				{%- if downcased_icon contains "could not find asset" -%}
+					{{- type | payment_type_svg_tag: class: 'icon' -}}
+				{%- else -%}
+					{{- icon -}}
+				{%- endif -%}
+			</div>
+		</div>
+	{%- endfor -%}
+{%- endcapture -%}
+
+<footer
+	class="footer"
+	data-section-id="{{- section.id -}}"
+	data-section-type="footer"
+>
+	<div class="footer__main">
+		<div class="container footer__container">
+			<div class="row footer__row">
+				<div class="footer__column footer__column--main">
+					{%- if shop.permanent_domain contains 'cramerco.myshopify.com' -%}
+                  		<div class="klaviyo-form-TUta47"></div>
+					{% endif %}
+					{%- if logo_svg != blank -%}
+						<a href="{{- routes.root_url -}}" class="footer__logo">
+							<div class="footer__logo--svg">
+								{{- logo_svg -}}
+							</div>
+						</a>
+					{%- elsif logo != blank -%}
+						<a href="{{- routes.root_url -}}" class="footer__logo">
+							<picture>
+								<source srcset="{{ logo.src | img_url: '52x52' }} 1x, {{ logo.src | img_url: '104x104' }} 2x, {{ logo.src | img_url: '156x156' }} 3x" media="(min-width: 990px)">
+								<source srcset="{{ logo.src | img_url: '91x91' }} 1x, {{ logo.src | img_url: '182x182' }} 2x, {{ logo.src | img_url: '273x273' }} 3x" media="(max-width: 990px)">
+
+								<img
+									class="footer__logo-image"
+									src="{{- logo.src | img_url: '91x91' -}}"
+									alt="{{- logo.alt -}}"
+									width="{{- logo.width -}}"
+									height="{{- logo.height -}}"
+									loading="lazy"
+								>
+							</picture>
+						</a>
+					{%- endif -%}
+
+					{%- if newsletter_list_id != blank -%}
+						<div class="footer-newsletter">
+							{%- if newsletter_title != blank -%}
+								<h3 class="footer-newsletter__title">
+									{{- newsletter_title -}}
+								</h3>
+							{%- endif -%}
+
+							{%- if newsletter_content != blank -%}
+								<div class="footer-newsletter__content">
+									{{- newsletter_content -}}
+								</div>
+							{%- endif -%}
+
+							<form
+								id="footer_newsletter_form"
+								class="klaviyo_gdpr_embed_{{ newsletter_list_id }} footer-newsletter__form"
+								action="//manage.kmail-lists.com/subscriptions/subscribe"
+								data-ajax-submit="//manage.kmail-lists.com/ajax/subscriptions/subscribe"
+								method="GET"
+								target="_blank"
+								novalidate="novalidate"
+							>
+								<input type="hidden" name="g" value="{{- newsletter_list_id -}}">
+								<input type="hidden" name="$fields" value="$consent">
+								<input type="hidden" name="$list_fields" value="$consent">
+								<input type="hidden" name="$consent" value="email">
+
+								<div class="klaviyo_field_group footer-newsletter__fields">
+									<div class="footer-newsletter__input">
+										<input
+											class="input"
+											type="email"
+											value=""
+											name="email"
+											placeholder="Gib deine E-Mail Adresse ein..."
+										/>
+
+										<div class="klaviyo_form_actions">
+											<button type="submit" class="klaviyo_submit_button footer-newsletter__submit">Anmelden</button>
+										</div>
+									</div>
+								</div>
+
+								<div class="klaviyo_messages">
+									<div class="success_message footer-newsletter__success" style="display: none;"></div>
+									<div class="error_message footer-newsletter__error" style="display: none;"></div>
+								</div>
+							</form>
+						</div>
+					{%- endif -%}
+
+					{%- if contact_title != blank or contact_content != blank -%}
+						<div class="footer__contacts">
+							{%- if contact_title != blank -%}
+								<h4 class="footer__contacts-title">
+									{{- contact_title -}}
+								</h4>
+							{%- endif -%}
+
+							{%- if contact_content != blank -%}
+								<div class="footer__contacts-content">
+									{{- contact_content -}}
+								</div>
+							{%- endif -%}
+						</div>
+					{%- endif -%}
+				</div>
+
+				<div class="footer__column footer__column--menu">
+					{%- if footer_menu != blank -%}
+						<div class="footer-menu footer-menu--desktop">
+							<div class="row footer-menu__row">
+								{{- footer_menu -}}
+							</div>
+						</div>
+					{%- endif -%}
+
+					{%- if footer_mobile_menu != blank -%}
+						<div class="footer-menu footer-menu--mobile">
+							<div class="accordion footer-menu__accordion js-toggle-container" data-accordion-mode="single">
+								{{- footer_mobile_menu -}}
+							</div>
+						</div>
+					{%- endif -%}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{%- if copywrite != blank or footer_payments != blank -%}
+		<div class="footer__bottom">
+			<div class="container footer__container">
+				<div class="row footer__row footer__bottom-row">
+					<div class="footer__bottom-column footer__bottom-column--copywrite">
+						{%- if copywrite != blank -%}
+							<div class="footer__copywrite">
+								{{- copywrite -}}
+							</div>
+						{%- endif -%}
+					</div>
+
+					{%- if footer_payments != blank -%}
+						<div class="footer__bottom-column footer__bottom-column--payments">
+							<div class="footer-payments">
+								<h4 class="footer-payments__title">
+									{{ 'sections.footer.payment' | t }}
+								</h4>
+
+								<div class="footer-payments__icons">
+									<div class="footer-payments__icons-row">
+										{{- footer_payments -}}
+									</div>
+								</div>
+							</div>
+						</div>
+					{%- endif -%}
+				</div>
+			</div>
+		</div>
+	{%- endif -%}
+</footer>
+
+{% schema %}
+{
+	"name": "Footer",
+	"blocks": [],
+	"settings": [
+		{
+			"type": "header",
+			"content": "Main"
+		},
+		{
+			"type": "image_picker",
+			"id": "logo",
+			"label": "Logo"
+		},
+		{
+			"type": "html",
+			"id": "logo_svg",
+			"label": "Footer logo SVG",
+			"info": "Overrides logo image"
+		},
+		{
+			"type": "link_list",
+			"id": "menu",
+			"label": "Menu",
+			"default": "footer"
+		},
+		{
+			"type": "text",
+			"id": "copywrite",
+			"label": "Copywrite",
+			"default": "*Alle Preise inkl. MwSt, zzgl. Versand"
+		},
+		{
+			"type": "header",
+			"content": "Newsletter"
+		},
+		{
+			"type": "text",
+			"id": "newsletter_title",
+			"label": "Title",
+			"default": "STAY UP TO DATE"
+		},
+		{
+			"type": "richtext",
+			"id": "newsletter_content",
+			"label": "Content",
+			"default": "<p>Get the deals straight to your inbox and get €5 for your first purchase after registration</p>"
+		},
+		{
+			"type": "text",
+			"id": "newsletter_list_id",
+			"label": "List ID"
+		},
+		{
+			"type": "header",
+			"content": "Contact"
+		},
+		{
+			"type": "text",
+			"id": "contact_title",
+			"label": "Title",
+			"default": "KOSTENLOSE HOTLINE"
+		},
+		{
+			"type": "richtext",
+			"id": "contact_content",
+			"label": "Content",
+			"default": "<p>Du hast Fragen zu unserem Angebot? Ruf uns an, Mo - Fr. 10:00-17:00 Uhr <span>0800</span> - CRAEMER oder <a href='tel:08002723637'>0800 - 27 23 637</a></p>"
+		}
+	]
+}
+{% endschema %}

@@ -1,0 +1,76 @@
+{% render 'dynamics-people-behind', start_blocks: section.blocks, title: section.settings.title %}
+
+{%- schema -%}
+	{
+		"name": "One Department Gallery",
+		"max_blocks": 3,
+		"settings": [
+			{
+				"type": "text",
+				"id": "title",
+				"label": "Title",
+				"default": "Our atmosphere"
+			}
+		],
+		"blocks": [
+			{
+				"type": "three_images_top_large",
+				"name": "3 images, large at top",
+				"settings": [
+					{
+						"type": "image_picker",
+						"id": "image",
+						"label": "Top image"
+					},
+					{
+						"type": "image_picker",
+						"id": "left_bottom_image",
+						"label": "Left bottom image"
+					},
+					{
+						"type": "image_picker",
+						"id": "right_bottom_image",
+						"label": "Right bottom image"
+					}
+				]
+			},
+			{
+				"type": "three_images_bottom_large",
+				"name": "3 images, large at bottom",
+				"settings": [
+					{
+						"type": "image_picker",
+						"id": "image",
+						"label": "Left top image"
+					},
+					{
+						"type": "image_picker",
+						"id": "right_top_image",
+						"label": "Right top image"
+					},
+					{
+						"type": "image_picker",
+						"id": "bottom_image",
+						"label": "Bottom image"
+					}
+				]
+			},
+			{
+				"type": "two_images",
+				"name": "2 images",
+				"settings": [
+					{
+						"type": "image_picker",
+						"id": "image",
+						"label": "Top image"
+					},
+					{
+						"type": "image_picker",
+						"id": "bottom_image",
+						"label": "Bottom image"
+					}
+				]
+			}
+		]
+	}
+{%- endschema -%}

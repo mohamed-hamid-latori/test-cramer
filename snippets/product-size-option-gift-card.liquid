@@ -1,0 +1,125 @@
+{% comment %}
+	@params
+	product 			- {product object} *required
+	option 				- {product option object} *required
+	current_value 		- {string}
+{% endcomment %}
+
+{%- if option != blank -%}
+	{%- assign option_position 		= option.position -%}
+	{%- assign option_name 			= option.name -%}
+
+	{%- assign option_name_handle 	= option_name | handleize -%}
+
+	{%- unless current_value != blank -%}
+		{%- assign current_value 	= option.selected_value -%}
+	{%- endunless -%}
+
+	{%- capture select_name -%}
+		options[{{- option_name -}}]
+	{%- endcapture -%}
+
+	{%- capture select_id -%}
+		Option{{- option_position -}}
+	{%- endcapture -%}
+
+	{%- capture option_attribute -%}
+		option{{- option_position -}}
+	{%- endcapture -%}
+
+	{%- assign separator				 	= '%%%' -%}
+	{%- assign enable_custom_size_order 	= settings.enable_custom_size_order -%}
+
+	{%- if shop.permanent_domain contains 'cc-newseum.myshopify.com' -%}
+		{%- assign size_order_type = product.metafields.product.custom_size_order.references | first -%}
+	{%- else -%}
+		{%- assign size_order_type = product.metafields.options.custom_size_order.references | first -%}
+	{%- endif -%}
+
+	{%- if size_order_type == blank -%}
+		{%- assign size_order_type = shop.metafields.globals.default_custom_size_order.references | first -%}
+	{%- endif -%}
+
+	{%- if size_order_type != blank -%}
+		{%- assign size_order = shop.metafields.globals['size_order_values'][size_order_type.index] | split: separator -%}
+	{%- endif -%}
+
+	{%- capture values -%}
+		{%- if enable_custom_size_order and size_order != blank -%}
+			{%- assign available_values = option.values 	| join: separator 	| downcase -%}
+			{%- assign available_values = available_values 	| append: separator | prepend: separator -%}
+
+			{%- for value in size_order -%}
+				{%- assign prepared_value 	= value | downcase -%}
+				{%- assign search_value 	= prepared_value | prepend: separator | append: separator -%}
+
+				{%- assign option_available = false -%}
+
+				{%- if available_values contains search_value -%}
+					{%- assign option_available = true -%}
+				{%- endif -%}
+
+				{%- unless option_available -%}
+					{%- continue -%}
+				{%- endunless -%}
+
+				{%- capture id -%}
+					Option{{- option_position -}}-{{- value -}}
+				{%- endcapture -%}
+
+				<option
+					id="{{- id -}}"
+					value="{{- value -}}"
+					{%- if current_value == value -%}selected="selected"{%- endif -%}
+				>
+					{{- value -}}
+				</option>
+			{%- endfor -%}
+		{%- else -%}
+			{%- for value in option.values -%}
+				{%- capture id -%}
+					Option{{- option_position -}}-{{- value -}}
+				{%- endcapture -%}
+
+				<option
+					id="{{- id -}}"
+					value="{{- value -}}"
+					{%- if current_value == value -%}selected="selected"{%- endif -%}
+				>
+					{{- value -}}
+				</option>
+			{%- endfor -%}
+		{%- endif -%}
+	{%- endcapture -%}
+
+	<div class="product-option">
+		<label for="{{- select_id -}}" class="product-option__label">
+			<span>
+				{{- option_name -}}:
+			</span>
+
+			<span data-option-value="{{- option_attribute -}}">
+				{%- if current_value -%}{{- current_value -}}{%- endif -%}
+			</span>
+		</label>
+
+		<div class="custom-select product-option__values product-option__select">
+			<select name="{{- select_name -}}"
+					id="{{- select_id -}}"
+					data-option="{{- option_attribute -}}"
+					data-option-type="select"
+					class="custom-select__select product-option__select"
+					data-custom-choices
+					{% unless current_value != blank %}data-custom-choices-placeholder="true"{% endunless %}
+			>
+				{%- unless current_value != blank -%}
+					<option>
+						{{- 'products.product.options.size.placeholder' | t -}}
+					</option>
+				{%- endunless -%}
+
+				{{- values -}}
+			</select>
+		</div>
+	</div>
+{%- endif -%}

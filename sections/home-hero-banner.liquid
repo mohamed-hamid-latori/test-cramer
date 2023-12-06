@@ -1,0 +1,350 @@
+{%- assign image_desktop 		= section.settings.image_desktop -%}
+{%- assign image_desktop_large 	= section.settings.image_desktop_large | default: image_desktop -%}
+{%- assign image_mobile 		= section.settings.image_mobile | default: image_desktop -%}
+
+<link
+  rel="preload"
+  as="image"
+  href="{{ image_mobile | img_url: '480x' }}"
+  imagesrcset="
+        {{ image_mobile | img_url: '480x' }} 480w,
+        								{{ image_desktop | img_url: '1920x' }} 767w,
+        								{{ image_desktop | img_url: '1920x' }} 1199w,
+        								{{ image_desktop | img_url: '1920x' }} 1920w
+  "
+  imagesizes="92vw"
+>
+
+{%- assign title 			= section.settings.title -%}
+{%- assign subtitle 		= section.settings.subtitle -%}
+
+{%- assign content_position_horizontal 	= section.settings.content_position_horizontal -%}
+{%- assign content_position_vertical 	= section.settings.content_position_vertical -%}
+{%- assign content_color 				= section.settings.content_color -%}
+{%- assign content_width 				= section.settings.content_width -%}
+
+{%- assign text_block_title 			= section.settings.text_block_title -%}
+{%- assign text_block_subtitle 			= section.settings.text_block_subtitle -%}
+
+{%- capture variables -%}
+  --content-position-horizontal: {{ content_position_horizontal }}; --content-position-vertical:
+  {{ content_position_vertical }}; --content-color: {{ content_color }}; --content-width: {{ content_width }};
+
+  {%- case content_position_horizontal -%}
+    {% when 'left' %}
+      --content-margin-left: 0; --content-margin-right: auto;
+    {% when 'center' %}
+      --content-margin-left: auto; --content-margin-right: auto;
+    {% when 'right' %}
+      --content-margin-left: auto; --content-margin-right: 0;
+  {%- endcase -%}
+{%- endcapture -%}
+
+{%- capture buttons -%}
+  {%- for block in section.blocks -%}
+    {%- assign button_text = block.settings.title -%}
+    {%- assign button_link = block.settings.link -%}
+
+    {%- if button_text == blank or button_link == blank -%}
+      {%- continue -%}
+    {%- endif -%}
+
+    {%- assign redirect_to = block.settings.redirect_to -%}
+
+    {%- capture preferred_gender -%}
+      {%- case redirect_to -%}
+        {%- when 'female' -%}
+          {{- settings.redirect_cookie_value_female | handleize -}}
+        {%- when 'male' -%}
+          {{- settings.redirect_cookie_value_male | handleize -}}
+      {%- endcase -%}
+    {%- endcapture -%}
+
+    <a
+      href="{{ button_link }}"
+      class="button button--shadow hero-banner__button"
+      {% if preferred_gender != blank %}
+        data-preferred-gender="{{- preferred_gender -}}"
+      {% endif %}
+    >
+      {{- button_text -}}
+    </a>
+  {%- endfor -%}
+{%- endcapture -%}
+
+
+{% assign today_date = 'now' | date: '%s' | times: 1 %}
+{% assign publishing_date_start = section.settings.date_picker_start | date: '%s' | times: 1 %}
+{% assign publishing_date_end = section.settings.date_picker_end | date: '%s' | times: 1 %}
+
+{% if today_date > publishing_date_start and today_date < publishing_date_end %}
+
+	{%- capture main_content -%}
+		{%- if title != blank -%}
+			<h1 class="hero-banner__main-content-title">
+				{{- title -}}
+			</h1>
+		{%- endif -%}
+
+		{%- if subtitle != blank -%}
+			<p class="hero-banner__main-content-subtitle">
+				{{- subtitle -}}
+			</p>
+		{%- endif -%}
+	{%- endcapture -%}
+
+	{%- capture banner_image -%}
+		{%- if image_desktop != blank -%}
+			{%- render 'picture' with image: image_desktop, image_mobile: image_mobile, size: 'xl', image_class: 'hero-banner__image', lazyload: 'none' -%}
+		{%- endif -%}
+	{%- endcapture -%}
+
+	{%- capture secondary_content -%}
+		{%- if text_block_title != blank -%}
+			<h2 class="section-title hero-banner__secondary-content-title">
+				{{- text_block_title -}}
+			</h2>
+		{%- endif -%}
+
+		{%- if text_block_subtitle != blank -%}
+			<p class="hero-banner__secondary-content-subtitle">
+				{{- text_block_subtitle -}}
+			</p>
+		{%- endif -%}
+	{%- endcapture -%}
+
+	{%- if banner_image != blank or secondary_content != blank -%}
+		<div
+			class="hero-banner"
+			data-section-type="hero-banner"
+			data-section-id="{{- section.id -}}"
+			style="{{- variables | escape -}}"
+		>
+			<div class="container container--full-width hero-banner__container">
+				{%- if banner_image != blank -%}
+					<div class="hero-banner__wrapper">
+						{{- banner_image -}}
+
+						{%- if main_content != blank or buttons != blank -%}
+							<div class="hero-banner__content-wrapper">
+								{%- if main_content != blank -%}
+									<div class="hero-banner__main-content hero-banner__main-content--desktop">
+										{{- main_content -}}
+									</div>
+								{%- endif -%}
+
+								{%- if buttons != blank -%}
+									<div class="hero-banner__buttons hero-banner__buttons--desktop">
+										<div class="hero-banner__buttons-row">
+											{{- buttons -}}
+										</div>
+									</div>
+								{%- endif -%}
+							</div>
+						{%- endif -%}
+					</div>
+
+					{%- if main_content != blank -%}
+						<div class="hero-banner__main-content hero-banner__main-content--mobile">
+							{{- main_content -}}
+						</div>
+					{%- endif -%}
+				{%- endif -%}
+
+				{%- if secondary_content != blank -%}
+					<div class="hero-banner__secondary-content">
+						{{- secondary_content -}}
+					</div>
+				{%- endif -%}
+
+				{%- if buttons != blank -%}
+					<div class="hero-banner__buttons hero-banner__buttons--mobile">
+						<div class="hero-banner__buttons-row">
+							{{- buttons -}}
+						</div>
+					</div>
+				{%- endif -%}
+			</div>
+		</div>
+	{%- endif -%}
+
+{% endif %}
+{% schema %}
+{
+  "name": "Hero banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Banner images"
+    },
+		{
+		 "type": "text",
+		 "id": "date_picker_start",
+		 "label": "Publishing date start",
+		 "default": "01.01.2000 12:00", 
+		 "info": "dd.mm.yyyy hh:mm (24h format)"
+		},
+		{
+		 "type": "text",
+		 "id": "date_picker_end",
+		 "label": "Publishing date end",
+		 "default": "31.12.2100 12:00", 
+		 "info": "dd.mm.yyyy hh:mm (24h format)"
+		},
+    {
+      "type": "image_picker",
+      "id": "image_desktop",
+      "label": "Desktop image",
+      "info": "Starting with 1440px"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image",
+      "info": "Starting with 575px"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_desktop_large",
+      "label": "Extra large desktop image",
+      "info": "Starting with 2048px"
+    },
+    {
+      "type": "header",
+      "content": "Banner content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subheading"
+    },
+    {
+      "type": "color",
+      "id": "content_color",
+      "label": "Content color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "Content width",
+      "options": [
+        {
+          "value": "380px",
+          "label": "Small"
+        },
+        {
+          "value": "571px",
+          "label": "Medium"
+        },
+        {
+          "value": "100%",
+          "label": "Large"
+        }
+      ],
+      "default": "380px"
+    },
+    {
+      "type": "select",
+      "id": "content_position_horizontal",
+      "label": "Horizontal content position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "content_position_vertical",
+      "label": "Vertical content position",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Text block"
+    },
+    {
+      "type": "text",
+      "id": "text_block_title",
+      "label": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "text_block_subtitle",
+      "label": "Subheading"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "button",
+      "name": "Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Button text"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Button link"
+        },
+        {
+          "type": "select",
+          "id": "redirect_to",
+          "label": "Save preferred gender cookie as...",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "female",
+              "label": "Female"
+            },
+            {
+              "value": "male",
+              "label": "Male"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero banner"
+    }
+  ]
+}
+{% endschema %}

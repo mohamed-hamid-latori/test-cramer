@@ -1,0 +1,23 @@
+{% comment %}
+	@params
+	title 				- {string}
+	text 				- {string}
+{% endcomment %}
+
+{%- if title != blank or text != blank -%}
+	<section class="seo-text">
+		<div class="container seo-text__container">
+			{%- if title != blank -%}
+				<h4 class="seo-text__title">
+					{{- title -}}
+				</h4>
+			{%- endif -%}
+
+			{%- if text != blank -%}
+				<div class="rte seo-text__text">
+					{{- text -}}
+				</div>
+			{%- endif -%}
+		</div>
+	</section>
+{%- endif -%}

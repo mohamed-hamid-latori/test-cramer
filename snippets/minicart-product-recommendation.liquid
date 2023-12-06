@@ -1,0 +1,337 @@
+{% comment %}
+	@params
+	product 				- {product object} *required
+{% endcomment %}
+
+{%- assign placeholder_image 	= settings.placeholder_image -%}
+
+{%- assign first_variant 		= product.variants | first -%}
+{%- assign current_variant 		= product.first_available_variant | default: first_variant -%}
+
+{%- assign featured_image 		= current_variant.image | default: product.featured_image | default: placeholder_image -%}
+
+{%- assign product_title 		= product.title -%}
+{%- assign product_url 			= product.url | within: collection -%}
+{%- assign product_vendor 		= product.vendor -%}
+
+{%- assign has_sale = false -%}
+
+{%- if current_variant.compare_at_price > current_variant.price -%}
+	{%- assign has_sale = true -%}
+{%- endif -%}
+
+{%- assign has_only_default_variant = product.has_only_default_variant -%}
+
+{%- assign tags = product.tags | downcase -%}
+
+{%- assign is_offline_only = false -%}
+
+{%- if tags contains 'offline only' -%}
+	{%- assign is_offline_only = true -%}
+{%- endif -%}
+
+{%- capture form_options_label -%}
+	{%- unless has_only_default_variant -%}
+		<ul class="minicart-product__form-option-labels">
+			{%- for option in product.options_with_values -%}
+				{%- assign option_position 	= option.position -%}
+				{%- assign option_name 		= option.name -%}
+
+				{%- capture option_attribute -%}
+					option{{- option_position -}}
+				{%- endcapture -%}
+
+				{%- assign current_value = option.selected_value -%}
+
+				<li class="minicart-product__option minicart-product__form-option-label">
+					<span>
+						{{- option_name -}}:
+					</span>
+
+					<span data-option-value="{{- option_attribute -}}">
+						{%- if current_value -%}{{- current_value -}}{%- endif -%}
+					</span>
+				</li>
+			{%- endfor -%}
+		</ul>
+	{%- endunless -%}
+{%- endcapture -%}
+
+{%- capture form_options -%}
+	{%- unless has_only_default_variant -%}
+		{%- assign size_label 			= 'size,taille,größe,tamanho,tamaño,koko,サイズ' | split: ',' -%}
+
+		{%- for option in product.options_with_values -%}
+			{%- assign option_position 			= option.position -%}
+			{%- assign option_name 				= option.name -%}
+
+			{%- assign option_name_handle 		= option_name | handleize -%}
+			{%- assign downcased_option_name 	= option_name | downcase -%}
+
+			{%- assign current_value 			= option.selected_value -%}
+
+			{%- capture select_name -%}
+				options[{{- option_name -}}]
+			{%- endcapture -%}
+
+			{%- capture option_attribute -%}
+				option{{- option_position -}}
+			{%- endcapture -%}
+
+			{%- if size_label contains downcased_option_name -%}
+				{%- assign separator				 	= '%%%' -%}
+				{%- assign enable_custom_size_order 	= settings.enable_custom_size_order -%}
+				{%- assign size_order_type 				= product.metafields.options.custom_size_order.references | first -%}
+
+				{%- if size_order_type == blank -%}
+					{%- assign size_order_type = shop.metafields.globals.default_custom_size_order.references | first -%}
+				{%- endif -%}
+
+				{%- if size_order_type != blank -%}
+					{%- assign size_order = shop.metafields.globals['size_order_values'][size_order_type.index] | split: separator -%}
+				{%- endif -%}
+
+				{%- capture values -%}
+					{%- if enable_custom_size_order and size_order != blank -%}
+						{%- assign available_values = option.values 	| join: separator 	| downcase -%}
+						{%- assign available_values = available_values 	| append: separator | prepend: separator -%}
+
+						{%- for value in size_order -%}
+							{%- assign prepared_value 	= value | downcase -%}
+							{%- assign search_value 	= prepared_value | prepend: separator | append: separator -%}
+
+							{%- assign option_available = false -%}
+
+							{%- if available_values contains search_value -%}
+								{%- assign option_available = true -%}
+							{%- endif -%}
+
+							{%- unless option_available -%}
+								{%- continue -%}
+							{%- endunless -%}
+
+							{%- capture id -%}
+								Option{{- option_position -}}-{{- value -}}
+							{%- endcapture -%}
+
+							<option
+								id="{{- id -}}"
+								value="{{- value -}}"
+								{%- if current_value == value -%}selected="selected"{%- endif -%}
+							>
+								{{- value -}}
+							</option>
+						{%- endfor -%}
+					{%- else -%}
+						{%- for value in option.values -%}
+							{%- capture id -%}
+								Option{{- option_position -}}-{{- value -}}
+							{%- endcapture -%}
+
+							<option
+								id="{{- id -}}"
+								value="{{- value -}}"
+								{%- if current_value == value -%}selected="selected"{%- endif -%}
+							>
+								{{- value -}}
+							</option>
+						{%- endfor -%}
+					{%- endif -%}
+				{%- endcapture -%}
+
+				<div class="custom-select minicart-product__form-option-values">
+					<select
+						name="{{- select_name -}}"
+						data-option="{{- option_attribute -}}"
+						data-option-type="select"
+						class="custom-select__select minicart-product__form-option-value"
+						data-custom-choices
+						{% unless current_value != blank %}data-custom-choices-placeholder="true"{% endunless %}
+					>
+						{%- unless current_value != blank -%}
+							<option>
+								{{- 'products.product.options.size.placeholder' | t -}}
+							</option>
+						{%- endunless -%}
+
+						{{- values -}}
+					</select>
+				</div>
+			{%- else -%}
+				<div class="custom-select minicart-product__form-option-values hidden">
+					<select name="{{- select_name -}}"
+							id="{{- select_id -}}"
+							data-option="{{- option_attribute -}}"
+							data-option-type="select"
+							class="custom-select__select product-option__select"
+							data-custom-choices
+							{% unless current_value != blank %}data-custom-choices-placeholder="true"{% endunless %}
+					>
+						{%- unless current_value != blank -%}
+							<option>
+								{{- 'products.product.options.select.placeholder' | t -}}
+							</option>
+						{%- endunless -%}
+
+						{%- for value in option.values -%}
+							{%- capture id -%}
+								Option{{- option_position -}}-{{- value -}}
+							{%- endcapture -%}
+
+							<option
+								id="{{- id -}}"
+								value="{{- value -}}"
+								{%- if current_value == value -%}selected="selected"{%- endif -%}
+							>
+								{{- value -}}
+							</option>
+						{%- endfor -%}
+					</select>
+				</div>
+			{%- endif -%}
+		{%- endfor -%}
+	{%- endunless -%}
+{%- endcapture -%}
+
+{%- capture form_price -%}
+	<div class="minicart-product__price" data-product-card-price-wrapper>
+		<div class="minicart-product__price-value minicart-product__price-value--compare-price{% unless has_sale %} hidden{% endunless %}" data-product-card-compare-price>
+			{{- current_variant.compare_at_price | money -}}
+		</div>
+
+		<div class="minicart-product__price-value{% if has_sale %} minicart-product__price-value--sale{% endif %}" data-product-card-price>
+			{{- current_variant.price | money -}}
+		</div>
+	</div>
+{%- endcapture -%}
+
+{%- capture no_script -%}
+	<select name="id" class="no-js hidden">
+		{%- for variant in product.variants -%}
+			<option
+				{% if variant == current_variant %}selected="selected"{% endif %}
+				{% unless variant.available %}disabled="disabled"{% endunless %}
+				value="{{ variant.id }}"
+			>
+				{{- variant.title -}}
+			</option>
+		{%- endfor -%}
+	</select>
+{%- endcapture -%}
+
+{%- capture form_submit -%}
+	<div class="minicart-product__form-submit">
+		{%- if is_offline_only -%}
+			<a
+				href="{{ product_url }}"
+				class="button button--secondary button--full-width minicart-product__form-button"
+				data-product-card-link
+				data-product-link
+			>
+				{{- 'product.product_card.view_product' | t -}}
+			</a>
+		{%- else -%}
+			<button
+				type="submit"
+				name="add"
+				data-product-card-add-to-cart
+				class="button button--secondary button--full-width minicart-product__form-button"
+				{%- unless current_variant.available -%}disabled="disabled"{%- endunless -%}
+				data-product-id="{{- product.id -}}"
+			>
+				<span data-product-card-add-to-cart-text>
+					{%- if current_variant -%}
+						{%- if current_variant.available -%}
+							{{- 'products.product_card.add_product' | t -}}
+						{%- else -%}
+							{{- 'products.product_card.sold_out' | t -}}
+						{%- endif -%}
+					{%- else -%}
+						{{- 'products.product_card.unavailable' | t -}}
+					{%- endif -%}
+				</span>
+			</button>
+		{%- endif -%}
+	</div>
+{%- endcapture -%}
+
+{%- capture product_form -%}
+	<form action="{{- routes.cart_add_url -}}" class="minicart-product__form" method="post" enctype="multipart/form-data" data-product-card-form>
+		{{- no_script -}}
+
+		<div class="minicart-product__form-row">
+			<div class="minicart-product__form-col minicart-product__form-col--large">
+				{{- form_options_label -}}
+			</div>
+
+			<div class="minicart-product__form-col minicart-product__form-col--small">
+				{{- form_price -}}
+			</div>
+		</div>
+
+		<div class="minicart-product__form-row">
+			<div class="minicart-product__form-col minicart-product__form-col--large">
+				{{- form_options -}}
+			</div>
+
+			<div class="minicart-product__form-col minicart-product__form-col--small">
+				{{- form_submit -}}
+			</div>
+		</div>
+	</form>
+{%- endcapture -%}
+
+<div class="minicart-product minicart-product--recommendation" data-product-card data-recommendation-card>
+	<div class="minicart-product__row">
+		<div class="minicart-product__col minicart-product__col--image">
+			<a
+				href="{{ product_url }}"
+			   	class="minicart-product__image-wrapper"
+				data-product-card-link
+				data-product-link
+			>
+				<img
+					class="minicart-product__image"
+					src="{{ featured_image | img_url: '160x' }}"
+					alt="{{ featured_image.alt | default: product_title }}"
+				/>
+			</a>
+		</div>
+
+		<div class="minicart-product__col minicart-product__col--content">
+			<div class="minicart-product__content">
+				<div class="minicart-product__actions">
+					<button
+						type="button"
+						class="minicart-product__actions-button"
+						data-product-card-add-to-wishlist
+					>
+						<span class="visually-hidden">
+							{{ 'products.product.add_to_wishlist' | t: product: product_title }}
+						</span>
+
+						{%- render 'icon-heart' -%}
+					</button>
+				</div>
+
+				<div class="minicart-product__main">
+					{%- if product_vendor != blank -%}
+						<p class="minicart-product__vendor">
+							{{- product_vendor -}}
+						</p>
+					{%- endif -%}
+
+					<a href="{{ product_url }}" class="minicart-product__title" data-product-card-link data-product-link>
+						{{- product_title -}}
+					</a>
+				</div>
+
+				{{- product_form -}}
+			</div>
+		</div>
+	</div>
+
+	<script type="application/json" data-product-card-json>
+		{%- include 'object-product-json', product: product -%}
+	</script>
+</div>

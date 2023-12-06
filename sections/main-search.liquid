@@ -1,0 +1,459 @@
+{%- assign products_per_page = section.settings.products_per_page -%}
+
+{%- paginate search.results by products_per_page -%}
+	<div
+	class="collection main-search template-search {% unless search.performed and search.results.size > 0 %} template-search--empty{% endunless %}"
+	data-section-type="collection"
+	data-section-id="{{- section.id -}}"
+	data-collection
+>
+	<div class="main-search__title">
+		{%- if search.performed -%}
+			<h1 class="boost-pfs-search-result-header h2">{{- 'templates.search.title' | t -}}</h1>
+		{%- else -%}
+			<h1 class="h2">{{- 'general.search.search' | t -}}</h1>
+		{%- endif -%}
+	</div>
+
+	<div class="container container--full-width main-search__filters-toolbar-wrapper filters-toolbar-wrapper">
+		<div class="boost-pfs-search-result-toolbar-wrap">
+			<div class="boost-pfs-search-result-toolbar">
+				<div class="boost-pfs-search-result-item">
+					<ul class="boost-pfs-search-result-panel-controls">
+						<li class="boost-pfs-filter-total-product">{% include 'boost-pfs-filter-skeleton', width: 2 %}</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="main-search__sorting-wrapper collection__toolbar sorting-wrapper boost-pfs-search-panel-product-show">
+			<div class="collection__toolbar-row">
+				<div class="collection__toolbar-col collection__toolbar-col--filter">
+					<div class="collection__toolbar-filter collection__toolbar-filter--mobile">
+						<div class="boost-pfs-filter-tree-mobile-button collection__toolbar-filter-item">
+							{%- render 'boost-pfs-filter-skeleton', type: 'button' -%}
+						</div>
+
+						<div
+							class="collection__toolbar-filter-item boost-pfs-filter-custom-sorting boost-pfs-filter-top-sorting">
+							{%- render 'boost-pfs-filter-skeleton', type: 'button' -%}
+						</div>
+					</div>
+
+					<div class="collection__toolbar-filter collection__toolbar-filter--desktop">
+						<button
+							class="collection__toolbar-filter-toggle collection__toolbar-filter-toggle--show"
+							type="button"
+							data-filter-toggle
+						>
+							<span class="collection__toolbar-filter-toggle-icon">
+								{%- render 'icon-filter' -%}
+							</span>
+							<span>
+								{{- 'collections.filters.show' | t -}}
+							</span>
+						</button>
+
+						<button
+							class="collection__toolbar-filter-toggle collection__toolbar-filter-toggle--hide"
+							type="button"
+							data-filter-toggle
+						>
+							<span class="collection__toolbar-filter-toggle-icon">
+								{%- render 'icon-filter' -%}
+							</span>
+							<span>
+								{{- 'collections.filters.hide' | t -}}
+							</span>
+						</button>
+					</div>
+				</div>
+
+				<div class="collection__toolbar-col collection__toolbar-col--refine-by">
+					<div class="collection__toolbar-refine-by">
+						<div class="boost-pfs-filter-refine-by-wrapper-h collection-refine-by"></div>
+					</div>
+				</div>
+
+				<div class="collection__toolbar-col collection__toolbar-col--sort">
+					<div class="collection__toolbar-sort">
+						<div class="collection__toolbar-sort-item collection__toolbar-sort-item--select">
+							<div class="boost-pfs-filter-custom-sorting boost-pfs-filter-top-sorting collection__toolbar-sort-select">
+								{%- render 'boost-pfs-filter-skeleton', type: 'button' -%}
+							</div>
+						</div>
+
+						<div class="collection__toolbar-sort-item collection__toolbar-sort-item--layout-switch">
+							<div class="collection__toolbar-layout-switch">
+								<button
+									class="collection__toolbar-layout-switch-item collection__toolbar-layout-switch-item--mobile hidden"
+									data-layout-switch data-columns="1">
+									{%- render 'icon-layout-switch-1' -%}
+								</button>
+
+								<button
+									class="collection__toolbar-layout-switch-item collection__toolbar-layout-switch-item--mobile hidden"
+									data-layout-switch data-columns="2">
+									{%- render 'icon-layout-switch-2' -%}
+								</button>
+
+								<button
+									class="collection__toolbar-layout-switch-item collection__toolbar-layout-switch-item--desktop hidden"
+									data-layout-switch data-columns="3">
+									{%- render 'icon-layout-switch-3' -%}
+								</button>
+
+								<button
+									class="collection__toolbar-layout-switch-item collection__toolbar-layout-switch-item--desktop hidden"
+									data-layout-switch data-columns="4">
+									{%- render 'icon-layout-switch-4' -%}
+								</button>
+
+								<button
+									class="collection__toolbar-layout-switch-item collection__toolbar-layout-switch-item--desktop hidden"
+									data-layout-switch data-columns="5">
+									{%- render 'icon-layout-switch-5' -%}
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="collection__products-count">
+				<div class="collection__products-count-value">
+						<span class="boost-pfs-search-total-result boost-pfs-filter-total-product collection__products-count-text" data-tooltip-text="{{- 'collections.products_count_tooltip' | t -}}">
+							{%- render 'boost-pfs-filter-skeleton', width: 1 -%}
+						</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container container--full-width collection__container">
+		<div class="collection__content">
+			<div class="collection__content-row">
+				<div class="boost-pfs-filter-wrapper boost-pfs-search-panel-product-show collection__content-col collection__content-col--filters" data-filter-sidebar>
+					<div class="boost-pfs-filter-tree boost-pfs-filter-tree-v main-search__collection-filters collection-filters collection__filters">
+						{% include 'boost-pfs-filter-skeleton', type: 'filter-tree' %}
+					</div>
+				</div>
+				<div class="boost-pfs-filter-right collection__content-col collection__content-col--products">
+					<div class="collection__products boost-pfs-filter-products" data-collection-products></div>
+
+					<div class="collection__pagination">
+						<div class="collection__pagination-progress">
+							<div class="boost-pfs-filter-progress-viewed collection__pagination-progress-viewed hidden"></div>
+
+							<div class="collection__pagination-progress-bar">
+								<span class="collection__pagination-progress-bar-track"></span>
+								<span class="boost-pfs-filter-progress-bar-indicator collection__pagination-progress-bar-indicator"></span>
+							</div>
+						</div>
+
+						<div class="boost-pfs-filter-bottom-pagination">
+							{% include 'boost-pfs-filter-skeleton', width: 2 %}
+						</div>
+
+						<div class="boost-pfs-filter-load-more"></div>
+
+						<div class="collection__pagination-loaded-message boost-pfs-filter-pagination-loaded-message hidden">
+							{{- 'general.pagination.loaded_text' | t -}}
+						</div>
+					</div>
+				</div>
+
+				<div class="boost-pfs-search-result-wrap boost-hidden">
+					<div class="boost-pfs-search-result-collections">
+						<div class="boost-pfs-search-result-list-item"><a href="#">{% include 'boost-pfs-filter-skeleton', width: 4 %}</a></div>
+						<div class="boost-pfs-search-result-list-item"><a href="#">{% include 'boost-pfs-filter-skeleton', width: 3 %}</a></div>
+						<div class="boost-pfs-search-result-list-item"><a href="#">{% include 'boost-pfs-filter-skeleton', width: 4 %}</a></div>
+					</div>
+					<div class="boost-pfs-search-result-collection-pagination">{% include 'boost-pfs-filter-skeleton', width: 4 %}</div>
+				</div>
+
+				<div class="boost-pfs-search-result-wrap boost-hidden">
+					<div class="boost-pfs-search-result-pages">
+						<div class="boost-pfs-search-result-list-item"><a href="#">{% include 'boost-pfs-filter-skeleton', width: 4 %}</a></div>
+						<div class="boost-pfs-search-result-list-item"><a href="#">{% include 'boost-pfs-filter-skeleton', width: 3 %}</a></div>
+						<div class="boost-pfs-search-result-list-item"><a href="#">{% include 'boost-pfs-filter-skeleton', width: 4 %}</a></div>
+					</div>
+					<div class="boost-pfs-search-result-page-pagination">{% include 'boost-pfs-filter-skeleton', width: 4 %}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{%- endpaginate -%}
+<script>
+
+	// Declare boostPFSThemeConfig variable
+	var boostPFSThemeConfig = {
+		label: {
+			sorting: {% assign temp = 'collections.sorting.title' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Sort by" {% endunless %},
+			sorting_best_selling: {% assign temp = 'collections.sorting.best_selling' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Best Selling" {% endunless %},
+			sorting_featured: {% assign temp = 'collections.sorting.featured' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Featured" {% endunless %},
+			sorting_title_ascending: {% assign temp = 'collections.sorting.az' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Alphabetically, A-Z" {% endunless %},
+			sorting_title_descending: {% assign temp = 'collections.sorting.za' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Alphabetically, Z-A" {% endunless %},
+			sorting_price_ascending: {% assign temp = 'collections.sorting.price_ascending' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Lowest Price" {% endunless %},
+			sorting_price_descending: {% assign temp = 'collections.sorting.price_descending' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Highest Price" {% endunless %},
+			sorting_date_ascending: {% assign temp = 'collections.sorting.date_ascending' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Date, Old to New" {% endunless %},
+			sorting_date_descending: {% assign temp = 'collections.sorting.date_descending' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Date, New to Old" {% endunless %},
+			sorting_sale_descending: {% assign temp = 'collections.sorting.sale_descending' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "% Off" {% endunless %},
+			sorting_relevance: {% assign temp = 'collections.sorting.relevance' | t %} {% unless temp contains 'translation missing' %} {{ temp | json }} {% else %} "Relevance" {% endunless %},
+			sale: {{ 'products.product.on_sale' | t | default: '' | json }},
+			sale_price: {{ 'products.product.sale_price' | t | default: '' | json }},
+			sold_out: {{ 'products.product.sold_out' | t | default: '' | json }},
+			vendor: {{ 'products.product.vendor' | t |default: '' | json }},
+			regular_price: {{ 'products.product.price.regular_price' | t | default: '' | json }},
+			from_price_html: {{ 'products.product_card.starting_at' | t | default: '' | json }},
+			current_page: {{ 'general.pagination.current_page' | t | json }},
+			unit_price: {{ 'products.product.price.unit_price' | t | json }},
+			selected_or_first_unit_price: {{ 'products.product.price.unit_price' | t | json }},
+			unit_price_separator: {{ 'accessibility.unit_price_separator' | t | default: '' | json }},
+			products_count_single: {{ 'collections.products_count_single' | t | json }},
+			products_count_plural: {{ 'collections.products_count_plural' | t | json }},
+			select_size: {{ 'products.product_card.select_size' | t | json }},
+			viewed_progress: {{ 'collections.viewed_progress' | t  | json }},
+			load_more: {{ 'collections.boost.load_more' | t | json }},
+			load_more_total: {{ 'collections.boost.load_more_total' | t  | json }},
+			refine_mobile: {{ 'collections.boost.refine_mobile' | t | json }}
+		},
+		custom: {
+			sold_out_badge_color_scheme: {% if settings.sold_out_badge_color_scheme %} {{ settings.sold_out_badge_color_scheme | json }} {% else %} '' {% endif %},
+			sale_badge_color_scheme: {% if settings.sale_badge_color_scheme %} {{ settings.sale_badge_color_scheme | json }} {% else %} '' {% endif %},
+			products_per_page: {% if section.settings.products_per_page %} {{ section.settings.products_per_page | json }} {% else %} 60 {% endif %},
+			products_per_page_mobile: {% if section.settings.products_per_page_mobile %} {{ section.settings.products_per_page_mobile | json }} {% else %} 30 {% endif %},
+			enable_wishlist: {{ settings.enable_wishlist | json }}
+		},
+		collectionBanners: [
+			{% for block in section.blocks %}
+				{%- assign banner_image = block.settings.image | image_url: 'master' -%}
+				{%- assign banner_title = block.settings.title -%}
+				{%- assign banner_text = block.settings.text -%}
+				{%- assign banner_position = block.settings.position -%}
+				{%- assign banner_size = block.settings.size -%}
+				{%- assign banner_video =  block.settings.video -%}
+				{%- assign banner_title_color = block.settings.title_color -%}
+				{%- assign banner_text_color = block.settings.text_color -%}
+				{%- assign banner_link = block.settings.url -%}
+				{%- assign banner_content_position = block.settings.content_position -%}
+
+				{
+					product_banner_title: {{ banner_title | json }},
+					product_banner_image: {{ banner_image | json }},
+					product_banner_text: {{ banner_text | json }},
+					product_banner_position: {{ banner_position | json }},
+					product_banner_size: {{ banner_size | json }},
+					product_banner_video: {{ banner_video | default: null | json }},
+					banner_title_color: {{ banner_title_color | json }},
+					banner_text_color: {{ banner_text_color | json }},
+					banner_link: {{ banner_link | json }},
+					banner_content_position: {{ banner_content_position | json }}
+				},
+			{% endfor %}
+		]
+	};
+
+	// Declare Templates
+	var boostPFSTemplate = {
+		'soldOutLabelHtml': {%- render 'boost-pfs-filter-html', layout: 'soldOutLabelHtml' -%},
+		'saleLabelHtml': {%- render 'boost-pfs-filter-html', layout: 'saleLabelHtml' -%},
+		'vendorHtml': {%- render 'boost-pfs-filter-html', layout: 'vendorHtml' -%},
+		'wishlistHtml': {%- render 'boost-pfs-filter-html', layout: 'wishlistHtml' -%},
+		// Grid Template
+		'productGridItemHtml': {%- render 'boost-pfs-filter-html', layout: 'productGridItemHtml' -%},
+		// Pagination Template
+		'previousActiveHtml': {%- render 'boost-pfs-filter-html', layout: 'previousActiveHtml' -%},
+		'nextActiveHtml': {%- render 'boost-pfs-filter-html', layout: 'nextActiveHtml' -%},
+		'pageItemHtml': {%- render 'boost-pfs-filter-html', layout: 'pageItemHtml' -%},
+		'pageItemSelectedHtml': {%- render 'boost-pfs-filter-html', layout: 'pageItemSelectedHtml' -%},
+		'pageItemRemainHtml': {%- render 'boost-pfs-filter-html', layout: 'pageItemRemainHtml' -%},
+		'paginateHtml': {%- render 'boost-pfs-filter-html', layout: 'paginateHtml' -%},
+		// Sorting Template
+		'sortingHtml': {%- render 'boost-pfs-filter-html', layout: 'sortingHtml' -%},
+		// Badges
+		'badgeSustainabilityHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeSustainabilityHtml' -%},
+		'badgeOfflineOnlyHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeOfflineOnlyHtml' -%},
+		'badgeSaleHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeSaleHtml' -%},
+		'badgeNewHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeNewHtml' -%},
+		'badgeBestsellerHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeBestsellerHtml' -%},
+		'badgeBioCottonHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeBioCottonHtml' -%},
+		'badgeEcoFriendlyHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeEcoFriendlyHtml' -%},
+		'badgeVeganHtml': {%- render 'boost-pfs-filter-html', layout: 'badgeVeganHtml' -%},
+		'collectionBannerHtml': {%- render 'boost-pfs-filter-html', layout: 'collectionBannerHtml' -%}
+	};
+</script>
+
+{%- assign enable_custom_size_order = settings.enable_custom_size_order -%}
+
+{%- if enable_custom_size_order == true -%}
+	<script type="application/json" data-custom-size-orders>
+		[
+			{%- for size_order in shop.metafields.globals.size_order_values -%}
+				{{- size_order | json -}}{%- unless forloop.last -%},{%- endunless -%}
+			{%- endfor -%}
+		]
+	</script>
+
+	<script type="application/json" data-default-custom-size-order>
+		{%- assign default_size_order_type = shop.metafields.globals.default_custom_size_order.references | first -%}
+
+		{{- shop.metafields.globals['size_order_values'][default_size_order_type.index] | json -}}
+	</script>
+{%- endif -%}
+
+{% schema %}
+{
+	"max_blocks": 3,
+	"settings": [
+		{
+			"type": "range",
+			"id": "products_per_page",
+			"min": 16,
+			"max": 120,
+			"step": 4,
+			"label": "Desktop products per page",
+			"default": 60
+		},
+		{
+			"type": "range",
+			"id": "products_per_page_mobile",
+			"min": 16,
+			"max": 120,
+			"step": 2,
+			"label": "Mobile products per page",
+			"default": 30
+		}
+	],
+	"blocks": [
+		{
+			"name": "Banner",
+			"type": "banner",
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image"
+				},
+				{
+					"type": "text",
+					"id": "video",
+					"label": "Video URL"
+				},
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title"
+				},
+				{
+					"type": "color",
+					"id": "title_color",
+					"label": "Title color"
+				},
+				{
+					"type": "color",
+					"id": "text_color",
+					"label": "Text color"
+				},
+				{
+					"type": "richtext",
+					"id": "text",
+					"label": "Text"
+				},
+				{
+					"type": "url",
+					"id": "url",
+					"label": "URL"
+				},
+				{
+					"type": "number",
+					"id": "position",
+					"label": "Position",
+					"default": 1
+				},
+				{
+					"type": "select",
+					"options": [
+						{
+							"value": "1",
+							"label": "1"
+						},
+						{
+							"value": "2",
+							"label": "2"
+						},
+						{
+							"value": "3",
+							"label": "3"
+						},
+						{
+							"value": "4",
+							"label": "4"
+						},
+						{
+							"value": "5",
+							"label": "5"
+						}
+					],
+					"id": "size",
+					"label": "Size"
+				},
+				{
+					"type": "select",
+					"id": "content_position",
+					"label": "Content position",
+					"options": [
+						{
+							"value": "under-left",
+							"label": "Under left"
+						},
+						{
+							"value": "under-center",
+							"label": "Under center"
+						},
+						{
+							"value": "under-right",
+							"label": "Under right"
+						},
+						{
+							"value": "over-left-bottom",
+							"label": "Over left bottom"
+						},
+						{
+							"value": "over-center-bottom",
+							"label": "Over center bottom"
+						},
+						{
+							"value": "over-right-bottom",
+							"label": "Over right bottom"
+						},
+						{
+							"value": "over-left-middle",
+							"label": "Over left middle"
+						},
+						{
+							"value": "over-center-middle",
+							"label": "Over center middle"
+						},
+						{
+							"value": "over-right-middle",
+							"label": "Over right middle"
+						},
+						{
+							"value": "over-left-top",
+							"label": "Over left top"
+						},
+						{
+							"value": "over-center-top",
+							"label": "Over center top"
+						},
+						{
+							"value": "over-right-top",
+							"label": "Over right top"
+						}
+					]
+				}
+			]
+		}
+	]
+}
+{% endschema %}

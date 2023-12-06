@@ -1,0 +1,206 @@
+{% assign image = section.settings.content_image %}
+{% assign title = section.settings.content_title %}
+{% assign gift_icon = section.settings.gift_icon %}
+{% assign gift_text = section.settings.gift_text %}
+
+<section class="customer-page register_page" data-section-id="{{- section.id -}}">
+	<div class="customer-page__form-wrapper">
+		<div class="customer-page__form-inner">
+			<div class="customer-page__content-wrapper">
+
+				{% if image != blank %}
+					<div class="customer-page__image-wrapper customer-page__registration-image-wrapper">
+						<picture>
+							<source srcset="{{ image | img_url: '846x' }}" media="(max-width: 991px)">
+							<img
+								src="{{ image | img_url:'846x' }}"
+								alt="{{ image.alt }}"
+								class="customer-page__image"
+							>
+						</picture>
+					</div>
+				{% endif %}
+			</div>
+			<div class="customer-page__form-section customer-page__registration-form-section">
+
+				{% if gift_icon != blank %}
+					<picture>
+						<source srcset="{{ gift_icon | img_url: '48x48' }}">
+						<img src="{{ gift_icon | img_url: '48x48' }}" alt="{{ gift_icon.alt }}">
+					</picture>
+				{% endif %}
+				<h1>
+					{{ 'customer.register.title' | t }}
+				</h1>
+
+				{% if gift_text != blank %}
+					<p class="customer-page__gift-block-text">{{- gift_text -}}</p>
+				{% endif %}
+
+				{%- form 'create_customer', class: 'customer-page__form' -%}
+
+					{%- if form.errors -%}
+						<h2 class="customer-page__error-message error-message js-error-message" tabindex="-1" autofocus>
+							{{ 'templates.contact.form.error_heading' | t }}
+						</h2>
+
+						<ul>
+							{%- for field in form.errors -%}
+								<li>
+									{%- if field == 'form' -%}
+										{{ form.errors.messages[field] }}
+									{%- else -%}
+										<a href="#RegisterForm-{{ field }}" class="customer-page__error-message error-message js-error-message">
+											{{ form.errors.translated_fields[field] | capitalize }}
+											{{ form.errors.messages[field] }}
+										</a>
+									{%- endif -%}
+								</li>
+							{%- endfor -%}
+						</ul>
+					{%- endif -%}
+
+					<div class="customer-page__field">
+						<input
+							type="text"
+							name="customer[first_name]"
+							id="RegisterForm-FirstName"
+							class="customer-page__field-input {% if form.errors contains 'form' %}error{% endif %}"
+							aria-required="true"
+							required
+							{% if form.first_name %}value="{{ form.first_name }}"{% endif %}
+							autocomplete="given-name"
+							placeholder="{{ 'customer.register.first_name' | t }}&#42"
+						>
+					</div>
+					<div class="customer-page__field">
+						<input
+							type="text"
+							name="customer[last_name]"
+							id="RegisterForm-LastName"
+							class="customer-page__field-input {% if form.errors contains 'form' %}error{% endif %}"
+							required
+							{% if form.last_name %}value="{{ form.last_name }}"{% endif %}
+							autocomplete="family-name"
+							placeholder="{{ 'customer.register.last_name' | t }}&#42"
+						>
+					</div>
+					<div class="customer-page__field">
+						<input
+							type="email"
+							name="customer[email]"
+							id="RegisterForm-email"
+							class="customer-page__field-input {% if form.errors contains 'email' %}error{% endif %}"
+							{% if form.email %} value="{{ form.email }}"{% endif %}
+							spellcheck="false"
+							autocapitalize="off"
+							autocomplete="email"
+							aria-required="true"
+							{% if form.errors contains 'email' %}
+								aria-invalid="true"
+								aria-describedby="RegisterForm-email-error"
+							{% endif %}
+							placeholder="{{ 'customer.register.email' | t }}&#42"
+						>
+					</div>
+					{%- if form.errors contains 'email' -%}
+						<div class="customer-page__registration-form-error">
+							<span id="RegisterForm-email-error" class="customer-page__error-message js-error-message">
+								{{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}.
+							</span>
+						</div>
+					{%- endif -%}
+					<div id="RegisterForm-Gender" class="customer-page__field">
+						<select id="gender" name="customer[tags][gender]" value="" class="customer-page__field-input customer-page__select" aria-required="true">
+							<option value="" selected>{{ 'customer.register.choose_gender' | t }}</option>
+							<option value="Male">{{ 'customer.register.male' | t }}</option>
+							<option value="Female">{{ 'customer.register.female' | t }}</option>
+							<option value="Not-Given">{{ 'customer.register.not_specified' | t }}</option>
+						</select>
+					</div>
+					<div class="customer-page__field">
+						<input
+							type="text"
+							name="customer[tags][Birthday]"
+							id="RegisterForm-Birthday"
+							class="customer-page__field-input customer-page__date-picker js-registration-datepicker"
+							aria-required="true"
+							placeholder="{{ 'customer.register.birthday' | t }}"
+						>
+					</div>
+
+					<div class="customer-page__field">
+						<input
+							type="password"
+							name="customer[password]"
+							id="RegisterForm-password"
+							class="customer-page__field-input {% if form.errors contains 'password' %}error{% endif %}"
+							minlength="6"
+							aria-required="true"
+							{% if form.errors contains 'password' %}
+								aria-invalid="true"
+								aria-describedby="RegisterForm-password-error"
+							{% endif %}
+							placeholder="{{ 'customer.register.password' | t }}&#42"
+						>
+					</div>
+
+					{%- if form.errors contains 'password' -%}
+						<div class="customer-page__registration-form-error">
+							<span id="RegisterForm-password-error" class="customer-page__error-message js-error-message">
+								{{ form.errors.translated_fields['password'] | capitalize }} {{ form.errors.messages['password'] }}.
+							</span>
+						</div>
+					{%- endif -%}
+
+					<button type="submit" class="button button--primary customer-page__form-button">
+						{{ 'customer.register.submit' | t }}
+					</button>
+
+					<div id="accepts_marketing" class="customer-page__marketing_button">
+						<input type="checkbox" name="customer[accepts_marketing]" value="true" id="marketing"/>
+						<label for="marketing" style="font-weight: normal;">{{ 'customer.register.subscribe_newsletter' | t }}
+						</label>
+					</div>
+					<p>{{ 'customer.register.have_account' | t }}</p>
+					<a href="{{ routes.account_login_url }}" class="customer-page__login-link">{{ 'customer.login_page.sign_in' | t }}</a>
+					{%- if shop.permanent_domain contains 'cramerco.myshopify.com' -%}
+						<input type="hidden" id="customer_tags" name="customer[tags]" value="CCO-OS-KK"/>
+					{%- elsif shop.permanent_domain contains 'hose-mit-herz.myshopify.com' -%}
+						<input type="hidden" id="customer_tags" name="customer[tags]" value="HMH-OS-KK"/>
+					{%- elsif shop.permanent_domain contains 'cc-newseum.myshopify.com' -%}
+						<input type="hidden" id="customer_tags" name="customer[tags]" value="NWSM-OS-KK"/>
+					{%- endif -%}
+				{%- endform -%}
+			</div>
+		</div>
+	</div>
+</section>
+
+{% schema %}
+{
+	"name": "Registration content",
+	"settings": [
+		{
+			"type": "image_picker",
+			"id": "content_image",
+			"label": "Content image"
+		},
+		{
+			"type": "text",
+			"id": "content_title",
+			"label": "Content title"
+		},
+		{
+			"type": "image_picker",
+			"id": "gift_icon",
+			"label": "Gift block icon"
+		},
+		{
+			"type": "text",
+			"id": "gift_text",
+			"label": "Gift block text"
+		}
+	]
+}
+{% endschema %}
